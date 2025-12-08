@@ -287,8 +287,15 @@ export function BookingModal({
                             </div>
                         )}
                     </div>
+                    </div>
                 )}
-            </DialogContent>
-        </Dialog>
+
+            <div className="mt-2 pt-4 border-t text-center">
+                <p className="text-xs text-muted-foreground bg-red-50/50 p-2 rounded-md">
+                    Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
+                </p>
+            </div>
+        </DialogContent>
+        </Dialog >
     );
 }

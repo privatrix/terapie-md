@@ -210,9 +210,22 @@ export function BookingModal({
                                 <label className="text-sm font-medium">Alege Ora</label>
                                 <div className="grid grid-cols-4 gap-2">
                                     {availableSlots.length === 0 ? (
-                                        <p className="col-span-4 text-sm text-muted-foreground text-center py-2">
-                                            Nu sunt locuri disponibile pentru această dată.
-                                        </p>
+                                        <div className="col-span-4 flex flex-col items-center justify-center py-6 space-y-3 bg-secondary/10 rounded-lg border border-dashed border-secondary/50">
+                                            <p className="text-sm font-medium text-center">
+                                                Nu găsești un loc potrivit?
+                                            </p>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full max-w-[240px] border-primary/50 hover:bg-primary/5 text-primary"
+                                                onClick={() => {
+                                                    // In a real app, this would save to a 'waitlist' table
+                                                    alert("Te-ai înscris cu succes pe lista de așteptare! Te vom anunța când se eliberează un loc.");
+                                                }}
+                                            >
+                                                Înscrie-te pe lista de așteptare
+                                            </Button>
+                                        </div>
                                     ) : (
                                         availableSlots.map((t) => (
                                             <Button

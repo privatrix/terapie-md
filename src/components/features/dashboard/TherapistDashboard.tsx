@@ -117,7 +117,7 @@ export function TherapistDashboard({ user }: { user: any }) {
 
             alert("Profil actualizat cu succes!");
             setEditing(false);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating profile:", error);
             alert(`A apărut o eroare: ${error.message || error}`);
         } finally {

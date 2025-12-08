@@ -127,7 +127,7 @@ export default function Home() {
                       <span key={s} className="text-xs bg-secondary/20 text-secondary-foreground px-2 py-1 rounded-full">{s}</span>
                     ))}
                   </div>
-                  <Button className="w-full" variant="outline" asChild>
+                  <Button className="w-full font-semibold" asChild>
                     <Link href={`/terapeuti/${therapist.id}`}>Vezi Profil</Link>
                   </Button>
                 </div>

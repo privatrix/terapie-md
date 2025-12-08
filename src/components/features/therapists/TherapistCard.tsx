@@ -73,11 +73,11 @@ export function TherapistCard({ therapist }: { therapist: TherapistProps }) {
                     <span>{therapist.location}</span>
                 </div>
 
-                <div className="mt-auto pt-6 flex items-center justify-between gap-4">
+                <div className="mt-auto pt-6 flex flex-col gap-3">
                     <div className="text-sm font-medium">
                         {therapist.priceRange} <span className="text-muted-foreground">/ ședință</span>
                     </div>
-                    <Button asChild size="sm">
+                    <Button asChild className="w-full text-base font-semibold shadow-sm hover:shadow-md transition-all" size="lg">
                         <Link href={`/terapeuti/${therapist.id}`}>Vezi Profil</Link>
                     </Button>
                 </div>

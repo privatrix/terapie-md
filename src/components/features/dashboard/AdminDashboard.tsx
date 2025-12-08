@@ -638,6 +638,37 @@ export function AdminDashboard({ user }: { user: any }) {
         }
     };
 
+    const handleChangeUserRole = async (userId: string, newRole: 'client' | 'therapist' | 'admin') => {
+        setProcessingId(userId);
+        const supabase = createClient();
+
+        try {
+            if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+                // Mock behavior
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
+                alert(`Role updated to ${newRole} (Demo Mode)`);
+                return;
+            }
+
+            const { error } = await supabase
+                .from('users')
+                .update({ role: newRole })
+                .eq('id', userId);
+
+            if (error) throw error;
+
+            alert(`Rolul utilizatorului a fost actualizat la: ${newRole}`);
+            fetchAllData();
+
+        } catch (error: any) {
+            console.error("Error updating user role:", error);
+            alert(`Eroare la actualizarea rolului: ${error.message}`);
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
     // ... (rest of the component)
 
     return (

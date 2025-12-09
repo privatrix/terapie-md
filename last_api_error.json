@@ -1,0 +1,18 @@
+{
+  "error": "Therapist hidden or not found",
+  "debug_error": {
+    "code": "42703",
+    "details": null,
+    "hint": null,
+    "message": "column therapist_profiles.available_slots does not exist"
+  },
+  "details": {
+    "therapistId": "ce3394c9-424e-45b7-9a30-67a0a8736256",
+    "offerId": null,
+    "date": "2025-12-15"
+  },
+  "env_check": {
+    "url": "https://tw",
+    "key": "Present"
+  }
+}

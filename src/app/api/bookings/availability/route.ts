@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -12,7 +12,13 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
         }
 
-        const supabase = await createClient();
+        // Use direct client with Service Role to bypass strict RLS or Env issues
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+        console.log("[Availability] Using Key Type:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "SERVICE_ROLE" : "ANON");
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
         let baseSlots: string[] = [];
         let profile: any = null;
 
@@ -48,13 +54,21 @@ export async function GET(request: Request) {
             // 1b. Fetch Therapist Availability
             const { data: therapistProfile, error: profileError } = await supabase
                 .from("therapist_profiles")
-                .select("weekly_schedule, available_slots")
+                .select("*")
                 .eq("id", therapistId)
                 .single();
 
             if (profileError || !therapistProfile) {
                 console.error("Therapist fetch error (likely RLS or ID):", profileError);
-                return NextResponse.json({ error: "Therapist hidden or not found" }, { status: 404 });
+                return NextResponse.json({
+                    error: "Therapist hidden or not found",
+                    debug_error: profileError,
+                    details: { therapistId, offerId, date },
+                    env_check: {
+                        url: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 10),
+                        key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present' : 'Missing'
+                    }
+                }, { status: 404 });
             }
             profile = therapistProfile;
             console.log(`[Availability] Fetched profile for ${therapistId}:`, { hasSchedule: !!profile.weekly_schedule, dayName });

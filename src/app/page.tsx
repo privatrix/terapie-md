@@ -6,10 +6,10 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+      <section className="relative py-8 md:py-32 overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/20">
         <div className="container px-4 md:px-6 mx-auto relative z-10">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-8">
-            <h1 className="font-heading text-4xl md:text-6xl font-bold tracking-tight text-foreground">
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-6 md:space-y-8">
+            <h1 className="font-heading text-3xl md:text-6xl font-bold tracking-tight text-foreground">
               Regăsește <span className="text-primary">echilibrul interior</span> alături de terapeuți acreditați și empatici.
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl">

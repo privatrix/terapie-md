@@ -6,21 +6,28 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { CheckCircle, ArrowRight, ArrowLeft, Upload } from "lucide-react";
 
-// Professional Info
-specializations: string[]; // This will map to the 5 Roles: Psiholog, Psihiatru etc.
-intervention_areas: string[]; // This was the old 'specialties' (Anxiety, etc.)
-languages: string[];
-price_range: string;
-medical_code ?: string; // New field
+type FormData = {
+    // Personal Info
+    name: string;
+    email: string;
+    phone: string;
+    location: string;
 
-// Qualifications
-education: Array<{ degree: string; institution: string; year: string }>;
-experience_years: string;
-license_number: string;
-bio: string;
-availability: string;
-profile_image ?: File;
-credentials ?: File[];
+    // Professional Info
+    specializations: string[]; // This will map to the 5 Roles: Psiholog, Psihiatru etc.
+    intervention_areas: string[]; // This was the old 'specialties' (Anxiety, etc.)
+    languages: string[];
+    price_range: string;
+    medical_code?: string; // New field
+
+    // Qualifications
+    education: Array<{ degree: string; institution: string; year: string }>;
+    experience_years: string;
+    license_number: string;
+    bio: string;
+    availability: string;
+    profile_image?: File;
+    credentials?: File[];
 };
 
 const PROFESSIONAL_ROLES = [
@@ -314,8 +321,8 @@ export default function TherapistApplicationPage() {
                                         <label
                                             key={role}
                                             className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all ${formData.specializations.includes(role)
-                                                    ? "border-primary bg-primary/5 shadow-sm"
-                                                    : "hover:bg-muted/50"
+                                                ? "border-primary bg-primary/5 shadow-sm"
+                                                : "hover:bg-muted/50"
                                                 }`}
                                         >
                                             <input

@@ -19,7 +19,7 @@ export function TherapistCard({ therapist }: { therapist: TherapistProps }) {
     const isPlaceholder = therapist.id.startsWith("placeholder");
 
     return (
-        <Link href={isPlaceholder ? "#" : `/terapeuti/${therapist.id}`} className={`group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all ${isPlaceholder ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-md cursor-pointer'}`}>
+        <Link href={isPlaceholder ? "#" : `/terapeuti/${therapist.id}`} className={`group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all pb-4 ${isPlaceholder ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-md cursor-pointer'}`}>
             <div className="aspect-[4/3] w-full overflow-hidden bg-muted relative">
                 {therapist.photo_url || therapist.imageUrl ? (
                     <img

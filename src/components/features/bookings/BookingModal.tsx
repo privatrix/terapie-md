@@ -166,16 +166,18 @@ export function BookingModal({
             <DialogTrigger asChild>
                 <Button size="lg" className={cn("w-full", className)}>{offerTitle ? "Rezervă Acum" : "Programează o ședință"}</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md overflow-y-auto max-h-[90vh]">
-                <DialogHeader>
-                    <DialogTitle>{displayTitle}</DialogTitle>
-                    <DialogDescription>
-                        Cu {displayName} {priceRange ? `• ${priceRange}` : ""}
-                    </DialogDescription>
-                </DialogHeader>
+            <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col p-0 gap-0">
+                <div className="p-6 pb-2">
+                    <DialogHeader>
+                        <DialogTitle>{displayTitle}</DialogTitle>
+                        <DialogDescription>
+                            Cu {displayName} {priceRange ? `• ${priceRange}` : ""}
+                        </DialogDescription>
+                    </DialogHeader>
+                </div>
 
                 {!user ? (
-                    <div className="py-6 text-center space-y-4">
+                    <div className="p-6 pt-2 text-center space-y-4">
                         <p className="text-muted-foreground">
                             Trebuie să fii autentificat pentru a face o programare.
                         </p>
@@ -189,7 +191,7 @@ export function BookingModal({
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-6 py-4">
+                    <div className="flex-1 overflow-y-auto p-6 pt-2 space-y-6">
                         {/* Date Selection */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Alege Data</label>
@@ -264,41 +266,45 @@ export function BookingModal({
                             </div>
                         )}
 
-                        {/* Summary & Action */}
-                        {date && time && (
-                            <div className="rounded-lg bg-muted p-4 space-y-3">
-                                <div className="flex items-center gap-2 text-sm">
-                                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                                    <span>{format(date, "d MMMM yyyy", { locale: ro })}</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm">
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <span>{time}</span>
-                                </div>
-                                <Button
-                                    className="w-full mt-2"
-                                    onClick={handleBooking}
-                                    disabled={loading}
-                                >
-                                    {loading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Se procesează...
-                                        </>
-                                    ) : (
-                                        "Confirmă Programarea"
-                                    )}
-                                </Button>
-                            </div>
-                        )}
+                        {/* Emergency Text */}
+                        <div className="pt-4 text-center">
+                            <p className="text-xs text-muted-foreground bg-red-50/50 p-2 rounded-md">
+                                Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
+                            </p>
+                        </div>
                     </div>
                 )}
 
-                <div className="mt-2 pt-4 border-t text-center">
-                    <p className="text-xs text-muted-foreground bg-red-50/50 p-2 rounded-md">
-                        Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
-                    </p>
-                </div>
+                {/* Sticky Footer Action */}
+                {user && date && time && (
+                    <div className="p-4 border-t bg-background mt-auto sticky bottom-0 z-10 w-full shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+                        <div className="flex items-center justify-between text-sm mb-3 px-1">
+                            <div className="flex items-center gap-2">
+                                <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">{format(date, "d MMM", { locale: ro })}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">{time}</span>
+                            </div>
+                        </div>
+                        <Button
+                            className="w-full"
+                            size="lg"
+                            onClick={handleBooking}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Se procesează...
+                                </>
+                            ) : (
+                                "Confirmă Programarea"
+                            )}
+                        </Button>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );

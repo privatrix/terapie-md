@@ -189,7 +189,11 @@ export default function TherapistProfilePage() {
                                     </div>
                                     <ShareButton title={therapist.name} />
                                 </div>
-                                <p className="text-xl text-primary font-medium">{therapist.title}</p>
+                                <p className="text-xl text-primary font-medium">
+                                    {therapist.specializations?.length > 0
+                                        ? therapist.specializations.join(", ")
+                                        : therapist.title}
+                                </p>
                             </div>
 
                             {/* Rating */}

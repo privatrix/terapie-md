@@ -93,6 +93,28 @@ export function TherapistDashboard({ user }: { user: any }) {
         setLoading(false);
     };
 
+    const PROFESSIONAL_ROLES = [
+        "Psiholog Clinician",
+        "Psihoterapeut",
+        "Consilier",
+        "Coach",
+        "Psihiatru"
+    ];
+
+    const toggleSpecialization = (role: string) => {
+        const current = profile.specializations || [];
+        const updated = current.includes(role)
+            ? current.filter((r: string) => r !== role)
+            : [...current, role];
+
+        // Auto-update title
+        setProfile({
+            ...profile,
+            specializations: updated,
+            title: updated.join(", ")
+        });
+    };
+
     const handleSaveProfile = async () => {
         setSaving(true);
         const supabase = createClient();
@@ -110,7 +132,9 @@ export function TherapistDashboard({ user }: { user: any }) {
                     availability: profile.availability,
                     available_slots: profile.available_slots,
                     weekly_schedule: profile.weekly_schedule,
-                    photo_url: profile.photo_url
+                    photo_url: profile.photo_url,
+                    specializations: profile.specializations,
+                    medical_code: profile.medical_code
                 })
                 .eq("user_id", user.id);
 
@@ -126,245 +150,73 @@ export function TherapistDashboard({ user }: { user: any }) {
         }
     };
 
-    const handlePhotoUpload = async (file: File) => {
-        try {
-            const photoUrl = await uploadProfilePhoto(user.id, file);
-            await updateTherapistPhoto(user.id, photoUrl);
-            setProfile({ ...profile, photo_url: photoUrl });
-        } catch (error: any) {
-            throw new Error(error.message || 'Eroare la încărcarea fotografiei');
-        }
-    };
+    // ... inside render ...
 
-    const handlePhotoDelete = async () => {
-        try {
-            await deleteProfilePhoto(user.id);
-            await updateTherapistPhoto(user.id, null);
-            setProfile({ ...profile, photo_url: null });
-        } catch (error: any) {
-            throw new Error(error.message || 'Eroare la ștergerea fotografiei');
-        }
-    };
+    <div className="grid gap-4 md:grid-cols-2">
+        <div>
+            <label className="text-sm font-medium">Nume</label>
+            {editing ? (
+                <input
+                    type="text"
+                    className="w-full mt-1 px-3 py-2 border rounded-md"
+                    value={profile.name || ""}
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                />
+            ) : (
+                <p className="text-muted-foreground mt-1">{profile.name}</p>
+            )}
+        </div>
 
-    const handleBookingStatus = async (bookingId: string, status: 'confirmed' | 'cancelled' | 'completed', reason?: string) => {
-        try {
-            const response = await fetch("/api/bookings/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bookingId, status, reason })
-            });
-
-            if (!response.ok) throw new Error("Failed to update booking");
-
-            // Update local state
-            setAppointments(appointments.map(apt =>
-                apt.id === bookingId ? { ...apt, status } : apt
-            ));
-
-            alert(`Programare ${status === 'confirmed' ? 'confirmată' : status === 'completed' ? 'finalizată' : 'respinsă'} cu succes!`);
-        } catch (error) {
-            console.error("Error updating booking:", error);
-            alert("A apărut o eroare.");
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                    <Skeleton className="h-8 w-64" />
-                    <Skeleton className="h-6 w-24 rounded-full" />
+        {/* Specializations (Roles) - Replacing simple Title input */}
+        <div>
+            <label className="text-sm font-medium">Tip Specialist (Roluri)</label>
+            {editing ? (
+                <div className="mt-1 flex flex-wrap gap-2">
+                    {PROFESSIONAL_ROLES.map((role) => {
+                        const isSelected = profile.specializations?.includes(role);
+                        return (
+                            <div
+                                key={role}
+                                onClick={() => toggleSpecialization(role)}
+                                className={`
+                                                    cursor-pointer px-3 py-1.5 rounded-full text-sm border transition-all
+                                                    ${isSelected
+                                        ? "bg-primary text-primary-foreground border-primary"
+                                        : "bg-background hover:bg-muted text-muted-foreground border-input"}
+                                                `}
+                            >
+                                {role}
+                            </div>
+                        );
+                    })}
                 </div>
-                {/* Stats Skeleton */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 space-y-2">
-                            <Skeleton className="h-4 w-1/2" />
-                            <Skeleton className="h-8 w-1/3" />
-                        </div>
-                    ))}
-                </div>
-                {/* Main Content Skeleton */}
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 space-y-6">
-                    <div className="flex justify-between items-center mb-6">
-                        <Skeleton className="h-6 w-32" />
-                        <Skeleton className="h-9 w-24" />
-                    </div>
-                    <div className="space-y-4">
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (!profile) {
-        return (
-            <div className="text-center py-12">
-                <h2 className="text-2xl font-bold mb-4">Profil Incomplet</h2>
-                <p className="text-muted-foreground mb-4">
-                    Nu ai un profil de terapeut creat încă.
+            ) : (
+                <p className="text-muted-foreground mt-1">
+                    {profile.specializations?.join(", ") || profile.title}
                 </p>
-                <Button onClick={() => router.push("/specialisti")}>
-                    Creează Profil
-                </Button>
+            )}
+        </div>
+    </div>
+
+    {/* Medical Code - Conditional */ }
+    {
+        (profile.specializations?.includes("Psihiatru") || profile.medical_code) && (
+            <div>
+                <label className="text-sm font-medium">Cod Parafă (Medical Code)</label>
+                {editing ? (
+                    <input
+                        type="text"
+                        className="w-full mt-1 px-3 py-2 border rounded-md"
+                        value={profile.medical_code || ""}
+                        onChange={(e) => setProfile({ ...profile, medical_code: e.target.value })}
+                        placeholder="Ex: 123456"
+                    />
+                ) : (
+                    <p className="text-muted-foreground mt-1">{profile.medical_code || "Nu este setat"}</p>
+                )}
             </div>
-        );
+        )
     }
-
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Dashboard Terapeut</h2>
-                <Badge>Terapeut</Badge>
-            </div>
-
-            {/* Statistics Section */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Programări</CardTitle>
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{appointments.length}</div>
-                        <p className="text-xs text-muted-foreground">
-                            {appointments.filter(a => a.status === 'completed').length} finalizate
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">În Așteptare</CardTitle>
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.filter(a => a.status === 'pending').length}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Necesită confirmare
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Confirmate</CardTitle>
-                        <Check className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.filter(a => a.status === 'confirmed').length}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Urmează să aibă loc
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Mesaje Noi</CardTitle>
-                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.reduce((acc, curr) => acc + (curr.unreadCount || 0), 0)}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Mesaje necitite
-                        </p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Profile Management */}
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Profilul Meu</CardTitle>
-                    {!editing ? (
-                        <div className="flex gap-2">
-                            <ShareButton
-                                url={`${typeof window !== 'undefined' ? window.location.origin : ''}/terapeuti/${profile.id}`}
-                                title={`Profil Terapeut - ${profile.name}`}
-                            />
-                            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Editează
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    setEditing(false);
-                                    fetchData(); // Reset changes
-                                }}
-                                disabled={saving}
-                            >
-                                <X className="h-4 w-4 mr-2" />
-                                Anulează
-                            </Button>
-                            <Button
-                                size="sm"
-                                onClick={handleSaveProfile}
-                                disabled={saving}
-                            >
-                                {saving ? (
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                ) : (
-                                    <Save className="h-4 w-4 mr-2" />
-                                )}
-                                Salvează
-                            </Button>
-                        </div>
-                    )}
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Photo Upload Section */}
-                    {editing && (
-                        <div className="pb-6 border-b">
-                            <label className="text-sm font-medium block mb-3">Fotografie Profil</label>
-                            <ImageUpload
-                                currentImage={profile.photo_url}
-                                onUpload={handlePhotoUpload}
-                                onDelete={handlePhotoDelete}
-                                disabled={saving}
-                            />
-                        </div>
-                    )}
-
-                    <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                            <label className="text-sm font-medium">Nume</label>
-                            {editing ? (
-                                <input
-                                    type="text"
-                                    className="w-full mt-1 px-3 py-2 border rounded-md"
-                                    value={profile.name || ""}
-                                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                                />
-                            ) : (
-                                <p className="text-muted-foreground mt-1">{profile.name}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium">Titlu</label>
-                            {editing ? (
-                                <input
-                                    type="text"
-                                    className="w-full mt-1 px-3 py-2 border rounded-md"
-                                    value={profile.title || ""}
-                                    onChange={(e) => setProfile({ ...profile, title: e.target.value })}
-                                />
-                            ) : (
-                                <p className="text-muted-foreground mt-1">{profile.title}</p>
-                            )}
-                        </div>
-                    </div>
 
                     <div>
                         <label className="text-sm font-medium">Bio</label>
@@ -426,11 +278,11 @@ export function TherapistDashboard({ user }: { user: any }) {
                     </div>
 
 
-                </CardContent>
-            </Card>
+                </CardContent >
+            </Card >
 
-            {/* Availability Management - Dedicated Card */}
-            <Card>
+        {/* Availability Management - Dedicated Card */ }
+        < Card >
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Programul Meu</CardTitle>
                     {!editingSchedule ? (
@@ -584,10 +436,10 @@ export function TherapistDashboard({ user }: { user: any }) {
                         </p>
                     </div>
                 </CardContent>
-            </Card>
+            </Card >
 
-            {/* Notification Settings */}
-            <Card>
+        {/* Notification Settings */ }
+        < Card >
                 <CardHeader>
                     <CardTitle>Setări Notificări</CardTitle>
                 </CardHeader>
@@ -632,10 +484,10 @@ export function TherapistDashboard({ user }: { user: any }) {
                         </Button>
                     </div>
                 </CardContent>
-            </Card>
+            </Card >
 
-            {/* Upcoming Appointments */}
-            <Card>
+        {/* Upcoming Appointments */ }
+        < Card >
                 <CardHeader>
                     <CardTitle>Programări ({appointments.length})</CardTitle>
                 </CardHeader>
@@ -768,27 +620,27 @@ export function TherapistDashboard({ user }: { user: any }) {
                         </div>
                     )}
                 </CardContent>
-            </Card>
+            </Card >
 
-            <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
-                if (!open) {
-                    setSelectedBookingForChat(null);
-                    window.location.reload();
-                }
-            }}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                        <DialogTitle>Chat cu {selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
-                    </DialogHeader>
-                    {selectedBookingForChat && (
-                        <BookingChat
-                            bookingId={selectedBookingForChat.id}
-                            currentUserId={user.id}
-                            otherUserName={selectedBookingForChat.client?.email || "Client"}
-                        />
-                    )}
-                </DialogContent>
-            </Dialog>
+        <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
+            if (!open) {
+                setSelectedBookingForChat(null);
+                window.location.reload();
+            }
+        }}>
+            <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                    <DialogTitle>Chat cu {selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
+                </DialogHeader>
+                {selectedBookingForChat && (
+                    <BookingChat
+                        bookingId={selectedBookingForChat.id}
+                        currentUserId={user.id}
+                        otherUserName={selectedBookingForChat.client?.email || "Client"}
+                    />
+                )}
+            </DialogContent>
+        </Dialog>
         </div >
     );
 }

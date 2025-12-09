@@ -81,41 +81,8 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                id: 1,
-                name: "Dr. Elena Popescu",
-                title: "Psihoterapeut Integrativ",
-                photo_url: "/therapist-1.png",
-                specialties: ["Anxietate", "Depresie"],
-                desc: "Specializată în anxietate, depresie și probleme de relaționare. Peste 10 ani de experiență.",
-                rating: 4.9,
-                reviewCount: 24,
-                priceRange: "800 MDL"
-              },
-              {
-                id: 2,
-                name: "Dr. Andrei Radu",
-                title: "Psiholog Clinician",
-                photo_url: "/therapist-2.png",
-                specialties: ["Traumă", "Burnout"],
-                desc: "Expert în gestionarea stresului și recuperarea post-traumatică.",
-                rating: 4.8,
-                reviewCount: 18,
-                priceRange: "700 MDL"
-              },
-              {
-                id: "recruitment-home",
-                isRecruitment: true
-              }
-            ].map((therapist: any) => (
-              therapist.isRecruitment ? (
-                <RecruitmentCard key={therapist.id} />
-              ) : (
-                <div key={therapist.id} className="h-full">
-                  <TherapistCard therapist={therapist} />
-                </div>
-              )
+            {[1, 2, 3].map((id) => (
+              <RecruitmentCard key={id} />
             ))}
           </div>
 

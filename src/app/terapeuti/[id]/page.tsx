@@ -364,6 +364,12 @@ export default function TherapistProfilePage() {
                             <p className="text-xs text-muted-foreground text-center">
                                 Vei putea alege data și ora convenabilă pentru tine
                             </p>
+
+                            <div className="pt-2 border-t mt-4">
+                                <p className="text-xs text-muted-foreground text-center bg-red-50/50 p-2 rounded-md">
+                                    Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
+                                </p>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

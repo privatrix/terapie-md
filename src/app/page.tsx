@@ -10,11 +10,10 @@ export default function Home() {
         <div className="container px-4 md:px-6 mx-auto relative z-10">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-8">
             <h1 className="font-heading text-4xl md:text-6xl font-bold tracking-tight text-foreground">
-              Găsește-ți <span className="text-primary">liniștea interioară</span>
+              Regăsește <span className="text-primary">echilibrul interior</span> alături de terapeuți acreditați și empatici.
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Conectăm moldovenii cu cei mai buni specialiști în sănătate mintală.
-              Platformă sigură, confidențială și ușor de utilizat.
+              Descoperă sprijinul personalizat de care ai nevoie printr-o platformă sigură și confidențială.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Button size="lg" className="gap-2" asChild>

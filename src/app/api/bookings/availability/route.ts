@@ -53,19 +53,25 @@ export async function GET(request: Request) {
                 .single();
 
             if (profileError || !therapistProfile) {
-                return NextResponse.json({ error: "Therapist not found" }, { status: 404 });
+                console.error("Therapist fetch error (likely RLS or ID):", profileError);
+                return NextResponse.json({ error: "Therapist hidden or not found" }, { status: 404 });
             }
             profile = therapistProfile;
+            console.log(`[Availability] Fetched profile for ${therapistId}:`, { hasSchedule: !!profile.weekly_schedule, dayName });
 
             if (profile.weekly_schedule && profile.weekly_schedule[dayName]) {
                 const daySchedule = profile.weekly_schedule[dayName];
+                console.log(`[Availability] Schedule for ${dayName}:`, daySchedule);
                 if (daySchedule.active) {
                     baseSlots = daySchedule.slots || [];
                 }
             } else {
+                console.log(`[Availability] No specific schedule for ${dayName}, using defaults.`);
                 baseSlots = profile.available_slots || [];
             }
         }
+
+        console.log(`[Availability] Base slots found: ${baseSlots.length}`);
 
         if (baseSlots.length === 0) {
             return NextResponse.json({ slots: [] });
@@ -92,6 +98,7 @@ export async function GET(request: Request) {
         }
 
         const bookedTimes = bookings?.map(b => b.time.slice(0, 5)) || []; // Ensure format HH:MM
+        console.log(`[Availability] Booked times:`, bookedTimes);
 
         // 3. Filter out booked slots
         // Normalize time formats to ensure matching works (e.g. "09:00:00" vs "09:00")
@@ -99,6 +106,8 @@ export async function GET(request: Request) {
             const normalizedSlot = slot.slice(0, 5);
             return !bookedTimes.some(booked => booked === normalizedSlot);
         });
+
+        console.log(`[Availability] Final available slots: ${availableSlots.length}`);
 
         return NextResponse.json({
             slots: availableSlots

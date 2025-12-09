@@ -12,6 +12,7 @@ export default function TherapistsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"rating" | "price" | "reviews">("rating");
     const [locationFilter, setLocationFilter] = useState<string>("");
+    const [roleFilter, setRoleFilter] = useState<string>("");
 
     useEffect(() => {
         fetchTherapists();
@@ -39,6 +40,7 @@ export default function TherapistsPage() {
                 name: t.name || "Terapeut",
                 title: t.title || "Specialist",
                 specialties: t.specialties || [],
+                specializations: t.specializations || [], // Map new column
                 location: t.location || "Online",
                 rating: t.rating || 0,
                 reviewCount: t.review_count || 0,
@@ -55,6 +57,7 @@ export default function TherapistsPage() {
                     name: "Specialist Nou",
                     title: "Coming Soon",
                     specialties: ["Terapie", "Consiliere"],
+                    specializations: [],
                     location: "Chișinău",
                     rating: 0,
                     reviewCount: 0,
@@ -86,6 +89,13 @@ export default function TherapistsPage() {
             );
         }
 
+        // Role Filter (New)
+        if (roleFilter) {
+            result = result.filter(
+                (t) => t.specializations?.includes(roleFilter) || t.title?.includes(roleFilter)
+            );
+        }
+
         // Location filter
         if (locationFilter) {
             if (locationFilter === "online") {
@@ -114,7 +124,7 @@ export default function TherapistsPage() {
         });
 
         return result;
-    }, [therapists, searchQuery, sortBy, locationFilter]);
+    }, [therapists, searchQuery, sortBy, locationFilter, roleFilter]);
 
     const [visibleCount, setVisibleCount] = useState(12);
     const LOAD_STEP = 12;
@@ -145,6 +155,8 @@ export default function TherapistsPage() {
                     onSortChange={setSortBy}
                     locationFilter={locationFilter}
                     onLocationChange={setLocationFilter}
+                    roleFilter={roleFilter}
+                    onRoleChange={setRoleFilter}
                 />
             </div>
 

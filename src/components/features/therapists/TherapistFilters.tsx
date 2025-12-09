@@ -10,7 +10,17 @@ interface TherapistFiltersProps {
     onSortChange: (sort: "rating" | "price" | "reviews") => void;
     locationFilter: string;
     onLocationChange: (location: string) => void;
+    roleFilter: string;
+    onRoleChange: (role: string) => void;
 }
+
+const PROFESSIONAL_ROLES = [
+    "Psiholog Clinician",
+    "Psihoterapeut",
+    "Consilier",
+    "Coach",
+    "Psihiatru"
+];
 
 export function TherapistFilters({
     searchQuery,
@@ -19,6 +29,8 @@ export function TherapistFilters({
     onSortChange,
     locationFilter,
     onLocationChange,
+    roleFilter,
+    onRoleChange,
 }: TherapistFiltersProps) {
     return (
         <div className="space-y-4 rounded-xl border bg-card p-4 shadow-sm md:p-6">
@@ -34,68 +46,98 @@ export function TherapistFilters({
             </div>
 
             {/* Sort and Location Filters Row */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                {/* Sort Buttons */}
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Sortează:</span>
-                    <Button
-                        variant={sortBy === "rating" ? "default" : "outline"}
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => onSortChange("rating")}
-                    >
-                        <ArrowUpDown className="mr-2 h-4 w-4" />
-                        Rating
-                    </Button>
-                    <Button
-                        variant={sortBy === "price" ? "default" : "outline"}
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => onSortChange("price")}
-                    >
-                        Preț
-                    </Button>
-                    <Button
-                        variant={sortBy === "reviews" ? "default" : "outline"}
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => onSortChange("reviews")}
-                    >
-                        Recenzii
-                    </Button>
+            <div className="flex flex-col gap-4">
+
+                {/* Role Filters (New) */}
+                <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-muted-foreground">Tip Specialist:</span>
+                    <div className="flex flex-wrap gap-2 text-sm">
+                        <Button
+                            variant={roleFilter === "" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onRoleChange("")}
+                            className="bg-primary/90 hover:bg-primary"
+                        >
+                            Toți
+                        </Button>
+                        {PROFESSIONAL_ROLES.map(role => (
+                            <Button
+                                key={role}
+                                variant={roleFilter === role ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => onRoleChange(role)}
+                            >
+                                {role}
+                            </Button>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Location Filters */}
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Locație:</span>
-                    <Button
-                        variant={locationFilter === "" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onLocationChange("")}
-                    >
-                        Toate
-                    </Button>
-                    <Button
-                        variant={locationFilter === "chisinau" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onLocationChange("chisinau")}
-                    >
-                        Chișinău
-                    </Button>
-                    <Button
-                        variant={locationFilter === "online" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onLocationChange("online")}
-                    >
-                        Online
-                    </Button>
-                    <Button
-                        variant={locationFilter === "other" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onLocationChange("other")}
-                    >
-                        Alte orașe
-                    </Button>
+                <div className="h-px bg-border w-full my-1" />
+
+                <div className="flex flex-col sm:flex-row gap-4 sm:justify-between">
+                    {/* Location Filters */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Locație:</span>
+                        <Button
+                            variant={locationFilter === "" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onLocationChange("")}
+                        >
+                            Toate
+                        </Button>
+                        <Button
+                            variant={locationFilter === "chisinau" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onLocationChange("chisinau")}
+                        >
+                            Chișinău
+                        </Button>
+                        <Button
+                            variant={locationFilter === "online" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onLocationChange("online")}
+                        >
+                            Online
+                        </Button>
+                        <Button
+                            variant={locationFilter === "other" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => onLocationChange("other")}
+                        >
+                            Alte orașe
+                        </Button>
+                    </div>
+
+                    {/* Sort Buttons */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Sortează:</span>
+                        <Button
+                            variant={sortBy === "rating" ? "default" : "outline"}
+                            size="sm"
+                            className="whitespace-nowrap"
+                            onClick={() => onSortChange("rating")}
+                        >
+                            <ArrowUpDown className="mr-2 h-4 w-4" />
+                            Rating
+                        </Button>
+                        <Button
+                            variant={sortBy === "price" ? "default" : "outline"}
+                            size="sm"
+                            className="whitespace-nowrap"
+                            onClick={() => onSortChange("price")}
+                        >
+                            Preț
+                        </Button>
+                        <Button
+                            variant={sortBy === "reviews" ? "default" : "outline"}
+                            size="sm"
+                            className="whitespace-nowrap"
+                            onClick={() => onSortChange("reviews")}
+                        >
+                            Recenzii
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

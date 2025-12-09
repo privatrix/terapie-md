@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, ShieldCheck, Lock } from "lucide-react";
 
 export function Footer() {
     return (
@@ -40,6 +40,23 @@ export function Footer() {
                         <span className="sr-only">LinkedIn</span>
                     </Link>
                 </div>
+            </div>
+
+            {/* Trust Badges Section */}
+            <div className="container mx-auto px-4 md:px-6 mt-8 pt-8 border-t flex flex-col items-center text-center gap-4">
+                <div className="flex items-center gap-6 justify-center text-muted-foreground">
+                    <div className="flex flex-col items-center gap-2">
+                        <ShieldCheck className="h-6 w-6" />
+                        <span className="text-xs font-medium">GDPR Compliant</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                        <Lock className="h-6 w-6" />
+                        <span className="text-xs font-medium">Date Criptate</span>
+                    </div>
+                </div>
+                <p className="text-xs text-muted-foreground max-w-md">
+                    Platformă conformă standardelor GDPR. Datele tale sunt criptate și confidențiale.
+                </p>
             </div>
         </footer>
     );

@@ -47,6 +47,23 @@ export default function TherapistsPage() {
                 photo_url: t.photo_url
             }));
 
+            // Ghost Town Fix: Add placeholders if we have few therapists
+            const placeholdersNeeded = Math.max(0, 3 - mappedTherapists.length);
+            for (let i = 0; i < placeholdersNeeded; i++) {
+                mappedTherapists.push({
+                    id: `placeholder-${i}`,
+                    name: "Specialist Nou",
+                    title: "Coming Soon",
+                    specialties: ["Terapie", "Consiliere"],
+                    location: "Chișinău",
+                    rating: 0,
+                    reviewCount: 0,
+                    priceRange: "---",
+                    imageUrl: null,
+                    photo_url: null
+                });
+            }
+
             setTherapists(mappedTherapists);
         } catch (error) {
             console.error("Error fetching therapists:", error);

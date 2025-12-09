@@ -65,34 +65,7 @@
   --font-heading: 'Outfit', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0F1C15;
-    /* Dark Green/Black */
-    --foreground: #F6FFF8;
 
-    --primary: #2D6A4F;
-    /* Forest Green */
-    --primary-foreground: #FFFFFF;
-
-    --secondary: #1B4332;
-    /* Darker Forest */
-    --secondary-foreground: #F6FFF8;
-
-    --accent: #1A2E26;
-    --accent-foreground: #F6FFF8;
-
-    --muted: #1A2E26;
-    --muted-foreground: #9CA3AF;
-
-    --card: #15231D;
-    --card-foreground: #F6FFF8;
-
-    --border: #2C4A3B;
-    --input: #2C4A3B;
-    --ring: #2D6A4F;
-  }
-}
 
 body {
   background-color: var(--background);

@@ -34,8 +34,8 @@ export default function Home() {
       {/* Value Proposition */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container px-4 md:px-6 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
+          <div className="flex flex-row overflow-x-auto pb-6 gap-4 md:grid md:grid-cols-3 md:gap-8 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <Shield className="h-8 w-8" />
               </div>
@@ -44,7 +44,7 @@ export default function Home() {
                 Toți terapeuții sunt verificați manual pentru a asigura cele mai înalte standarde de profesionalism.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <CheckCircle className="h-8 w-8" />
               </div>
@@ -53,7 +53,7 @@ export default function Home() {
                 Datele tale sunt în siguranță. Oferim o platformă securizată pentru liniștea ta.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <Clock className="h-8 w-8" />
               </div>

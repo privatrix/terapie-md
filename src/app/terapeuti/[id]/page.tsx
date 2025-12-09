@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { BookingModal } from "@/components/features/bookings/BookingModal";
 import { ShareButton } from "@/components/common/ShareButton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TherapistProfilePage() {
     const params = useParams();
@@ -111,8 +112,34 @@ export default function TherapistProfilePage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
+                <div className="grid gap-8 lg:grid-cols-3">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="flex flex-col md:flex-row gap-6">
+                            <Skeleton className="w-full md:w-48 h-64 rounded-xl" />
+                            <div className="flex-1 space-y-4">
+                                <div>
+                                    <Skeleton className="h-8 w-3/4 mb-2" />
+                                    <Skeleton className="h-6 w-1/2" />
+                                </div>
+                                <Skeleton className="h-5 w-32" />
+                                <Skeleton className="h-5 w-48" />
+                                <div className="flex gap-2">
+                                    <Skeleton className="h-6 w-20 rounded-full" />
+                                    <Skeleton className="h-6 w-20 rounded-full" />
+                                    <Skeleton className="h-6 w-20 rounded-full" />
+                                </div>
+                            </div>
+                        </div>
+                        <Skeleton className="h-40 w-full rounded-xl" />
+                        <Skeleton className="h-40 w-full rounded-xl" />
+                    </div>
+                    <div className="lg:col-span-1">
+                        <div className="space-y-4">
+                            <Skeleton className="h-64 w-full rounded-xl" />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

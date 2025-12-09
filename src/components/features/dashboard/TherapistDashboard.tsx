@@ -12,6 +12,7 @@ import { uploadProfilePhoto, deleteProfilePhoto, updateTherapistPhoto } from "@/
 import { BookingChat } from "@/components/features/bookings/BookingChat";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ShareButton } from "@/components/common/ShareButton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function TherapistDashboard({ user }: { user: any }) {
     const [profile, setProfile] = useState<any>(null);
@@ -169,8 +170,32 @@ export function TherapistDashboard({ user }: { user: any }) {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                    <Skeleton className="h-8 w-64" />
+                    <Skeleton className="h-6 w-24 rounded-full" />
+                </div>
+                {/* Stats Skeleton */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 space-y-2">
+                            <Skeleton className="h-4 w-1/2" />
+                            <Skeleton className="h-8 w-1/3" />
+                        </div>
+                    ))}
+                </div>
+                {/* Main Content Skeleton */}
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 space-y-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <Skeleton className="h-6 w-32" />
+                        <Skeleton className="h-9 w-24" />
+                    </div>
+                    <div className="space-y-4">
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                        <Skeleton className="h-12 w-full" />
+                    </div>
+                </div>
             </div>
         );
     }

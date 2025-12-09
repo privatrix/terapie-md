@@ -18,6 +18,7 @@ import { Calendar as CalendarIcon, Clock, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BookingModalProps {
     therapistId?: string;
@@ -209,7 +210,11 @@ export function BookingModal({
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Alege Ora</label>
                                 <div className="grid grid-cols-4 gap-2">
-                                    {availableSlots.length === 0 ? (
+                                    {loading ? (
+                                        Array.from({ length: 8 }).map((_, i) => (
+                                            <Skeleton key={i} className="h-8 w-full rounded-md" />
+                                        ))
+                                    ) : availableSlots.length === 0 ? (
                                         <div className="col-span-4 flex flex-col items-center justify-center py-6 space-y-3 bg-secondary/10 rounded-lg border border-dashed border-secondary/50">
                                             <p className="text-sm font-medium text-center">
                                                 Nu găsești un loc potrivit?
@@ -287,15 +292,14 @@ export function BookingModal({
                             </div>
                         )}
                     </div>
-                    </div>
                 )}
 
-            <div className="mt-2 pt-4 border-t text-center">
-                <p className="text-xs text-muted-foreground bg-red-50/50 p-2 rounded-md">
-                    Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
-                </p>
-            </div>
-        </DialogContent>
-        </Dialog >
+                <div className="mt-2 pt-4 border-t text-center">
+                    <p className="text-xs text-muted-foreground bg-red-50/50 p-2 rounded-md">
+                        Urgență medicală? <a href="tel:112" className="text-red-600 font-bold hover:underline">Sună la 112</a>.
+                    </p>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

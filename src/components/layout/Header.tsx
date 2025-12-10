@@ -103,70 +103,95 @@ export function Header() {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Full Screen Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="md:hidden border-t bg-background">
-                    <nav className="container mx-auto flex flex-col space-y-4 p-4">
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 md:hidden animate-in fade-in duration-300 slide-in-from-bottom-10">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-4 top-4 h-12 w-12"
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        <X className="h-8 w-8" />
+                        <span className="sr-only">Close menu</span>
+                    </Button>
+
+                    <nav className="flex flex-col items-center space-y-8">
                         <Link
                             href="/"
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-2xl font-semibold hover:text-primary transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Acasă
                         </Link>
                         <Link
                             href="/terapeuti"
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-2xl font-semibold hover:text-primary transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Terapeuți
                         </Link>
                         <Link
                             href="/oferte"
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-2xl font-semibold hover:text-primary transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Oferte
                         </Link>
                         <Link
                             href="/despre"
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-2xl font-semibold hover:text-primary transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Despre Noi
                         </Link>
-                        <div className="flex flex-col gap-2 pt-4 border-t">
+
+                        <div className="flex flex-col gap-4 mt-8 w-[280px]">
                             {user ? (
                                 <>
                                     <Button
-                                        variant="ghost"
-                                        className="w-full gap-2 justify-start"
+                                        variant="default"
+                                        size="lg"
+                                        className="w-full text-lg h-12"
                                         asChild
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         <Link href="/dashboard">
-                                            <User className="h-4 w-4" />
+                                            <User className="mr-2 h-5 w-5" />
                                             Dashboard
                                         </Link>
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="w-full gap-2"
+                                        size="lg"
+                                        className="w-full text-lg h-12"
                                         onClick={() => {
                                             handleLogout();
                                             setMobileMenuOpen(false);
                                         }}
                                     >
-                                        <LogOut className="h-4 w-4" />
+                                        <LogOut className="mr-2 h-5 w-5" />
                                         Ieși din cont
                                     </Button>
                                 </>
                             ) : (
                                 <>
-                                    <Button variant="outline" className="w-full" asChild>
+                                    <Button
+                                        variant="default"
+                                        size="lg"
+                                        className="w-full text-lg h-12"
+                                        asChild
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
                                         <Link href="/auth/login">Intră în cont</Link>
                                     </Button>
-                                    <Button className="w-full" asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="lg"
+                                        className="w-full text-lg h-12 bg-transparent border-2"
+                                        asChild
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
                                         <Link href="/specialisti">Pentru Specialiști</Link>
                                     </Button>
                                 </>

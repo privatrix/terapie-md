@@ -45,5 +45,6 @@ export async function GET(request: Request) {
     }
 
     // Return the user to an error page with some instructions
-    return NextResponse.redirect(new URL("/auth/auth-code-error", request.url));
+    console.error("Auth callback failed: Invalid token or type");
+    return NextResponse.redirect(new URL("/auth/login?error=AuthCodeError", request.url));
 }

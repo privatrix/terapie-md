@@ -499,7 +499,7 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string) {
   `;
 
   const { data: result, error } = await resend.emails.send({
-    from: 'Terapie.md <onboarding@resend.dev>',
+    from: 'Terapie.md <noreply@terapie.md>',
     to: [email],
     subject: 'Resetare Parolă Terapie.md',
     html: htmlContent,

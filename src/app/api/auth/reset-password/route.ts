@@ -42,7 +42,21 @@ export async function POST(request: NextRequest) {
         }
 
         // Send custom email
-        await sendPasswordResetEmail(email, data.properties.action_link);
+        try {
+            await sendPasswordResetEmail(email, data.properties.action_link);
+        } catch (emailError: any) {
+            console.error("Resend failed, falling back to Supabase native email:", emailError);
+
+            // Fallback: Trigger Supabase's default password reset email
+            // Note: This will send the default Supabase email template, not our custom one.
+            const { error: fallbackError } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback?next=/auth/update-password`
+            });
+
+            if (fallbackError) {
+                throw new Error(`Email sending failed: ${emailError.message} | Fallback failed: ${fallbackError.message}`);
+            }
+        }
 
         return NextResponse.json({ success: true });
 

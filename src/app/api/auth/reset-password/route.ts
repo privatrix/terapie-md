@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
             type: 'recovery',
             email: email,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback?next=/auth/update-password`
+                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/update-password`
             }
         });
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
             // Fallback: Trigger Supabase's default password reset email
             // Note: This will send the default Supabase email template, not our custom one.
             const { error: fallbackError } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback?next=/auth/update-password`
+                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/update-password`
             });
 
             if (fallbackError) {

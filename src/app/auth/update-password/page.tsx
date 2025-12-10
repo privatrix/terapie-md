@@ -15,6 +15,22 @@ export default function UpdatePasswordPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
+    // Check for session on mount
+    /*
+    useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) {
+                // If we have a hash, maybe wait for it to be processed?
+                // supabase-js handles hash automatically on init.
+                console.log("No session found initially.");
+            } else {
+                console.log("Session found:", session.user.email);
+            }
+        });
+    }, []);
+    */
+
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -33,6 +49,13 @@ export default function UpdatePasswordPage() {
 
         try {
             const supabase = createClient();
+
+            // Explicitly check session first
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                throw new Error("Sesiunea de resetare a expirat. Te rugăm să soliciți un nou link.");
+            }
+
             const { error } = await supabase.auth.updateUser({
                 password: password,
             });
@@ -41,6 +64,7 @@ export default function UpdatePasswordPage() {
 
             setSuccess(true);
         } catch (err: any) {
+            console.error("Update password error:", err);
             setError(err.message || "A apărut o eroare. Încearcă din nou.");
         } finally {
             setLoading(false);

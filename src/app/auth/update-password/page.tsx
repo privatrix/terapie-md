@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { CheckCircle } from "lucide-react";
@@ -15,21 +15,31 @@ export default function UpdatePasswordPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    // Check for session on mount
-    /*
+    const [sessionReady, setSessionReady] = useState(false);
+
     useEffect(() => {
         const supabase = createClient();
+
+        // Initial check
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (!session) {
-                // If we have a hash, maybe wait for it to be processed?
-                // supabase-js handles hash automatically on init.
-                console.log("No session found initially.");
-            } else {
-                console.log("Session found:", session.user.email);
+            if (session) {
+                console.log("Session active on mount");
+                setSessionReady(true);
             }
         });
+
+        // Listen for auth state changes (crucial for implicit flow)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log("Auth event:", event);
+            if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+                setSessionReady(true);
+            }
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
-    */
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -134,8 +144,8 @@ export default function UpdatePasswordPage() {
                             />
                         </div>
 
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? "Se actualizează..." : "Actualizează Parola"}
+                        <Button type="submit" className="w-full" disabled={loading || !sessionReady}>
+                            {loading ? "Se actualizează..." : (!sessionReady ? "Se verifică link-ul..." : "Actualizează Parola")}
                         </Button>
                     </form>
                 )}

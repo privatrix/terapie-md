@@ -13,15 +13,10 @@ import { TherapistRecruitmentCard } from "@/components/features/therapists/Recru
 
 // ... (In Render:)
 
-<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {visibleTherapists.map((therapist) => (
-        <TherapistCard key={therapist.id} therapist={therapist} />
-    ))}
+// ... (In Render:)
 
-    {/* Always append 2 Recruitment Cards at the end */}
-    <TherapistRecruitmentCard />
-    <TherapistRecruitmentCard />
-</div>
+// MOVED TO CORRECT LOCATION DOWN BELOW
+
 
 export default function TherapistsPage() {
     const [therapists, setTherapists] = useState<any[]>([]);
@@ -185,6 +180,10 @@ export default function TherapistsPage() {
                                 {visibleTherapists.map((therapist) => (
                                     <TherapistCard key={therapist.id} therapist={therapist} />
                                 ))}
+
+                                {/* Always append 2 Recruitment Cards at the end */}
+                                <TherapistRecruitmentCard />
+                                <TherapistRecruitmentCard />
                             </div>
 
                             {hasMore && (

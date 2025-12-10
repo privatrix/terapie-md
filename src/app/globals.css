@@ -29,6 +29,13 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-mobile-enter: mobileMenuEnter 0.3s ease-out;
+
+  @keyframes mobileMenuEnter {
+     from { opacity: 0; transform: translateY(10px); }
+     to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 :root {

@@ -60,8 +60,34 @@ export default function UpdatePasswordPage() {
         try {
             const supabase = createClient();
 
-            // Attempt update - Supabase client should handle session from URL automatically
-            // Implicit flow tokens are handled by the library internally on instantiation/mount
+            // 1. Try to get current session
+            let { data: { session } } = await supabase.auth.getSession();
+
+            // 2. If no session, try to parse from URL hash manually (Failsafe for Implicit Flow)
+            if (!session && typeof window !== 'undefined') {
+                const hash = window.location.hash;
+                if (hash && hash.includes('access_token')) {
+                    const params = new URLSearchParams(hash.substring(1)); // remove #
+                    const access_token = params.get('access_token');
+                    const refresh_token = params.get('refresh_token');
+
+                    if (access_token && refresh_token) {
+                        const { data, error: setSessionError } = await supabase.auth.setSession({
+                            access_token,
+                            refresh_token
+                        });
+
+                        if (!setSessionError && data.session) {
+                            session = data.session;
+                            console.log("Session manually recovered from hash");
+                        }
+                    }
+                }
+            }
+
+            if (!session) {
+                throw new Error("Sesiunea nu a fost găsită. Te rugăm să dai click din nou pe link-ul din email.");
+            }
 
             const { error } = await supabase.auth.updateUser({
                 password: password,

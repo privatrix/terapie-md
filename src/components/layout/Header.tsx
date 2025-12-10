@@ -105,7 +105,7 @@ export function Header() {
 
             {/* Full Screen Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 md:hidden animate-mobile-enter">
+                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50 md:hidden animate-mobile-enter">
                     <Button
                         variant="ghost"
                         size="icon"

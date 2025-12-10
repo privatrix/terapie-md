@@ -5,6 +5,23 @@ import { TherapistFilters } from "@/components/features/therapists/TherapistFilt
 import { useState, useMemo, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2 } from "lucide-react";
+import { TherapistRecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
+
+// ... (existing code for default export and state) ...
+
+// ... (fetchTherapists logic: REMOVE the old "Ghost Town Fix" pushing placeholders to state) ...
+
+// ... (In Render:)
+
+<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {visibleTherapists.map((therapist) => (
+        <TherapistCard key={therapist.id} therapist={therapist} />
+    ))}
+
+    {/* Always append 2 Recruitment Cards at the end */}
+    <TherapistRecruitmentCard />
+    <TherapistRecruitmentCard />
+</div>
 
 export default function TherapistsPage() {
     const [therapists, setTherapists] = useState<any[]>([]);
@@ -50,22 +67,7 @@ export default function TherapistsPage() {
             }));
 
             // Ghost Town Fix: Add placeholders if we have few therapists
-            const placeholdersNeeded = Math.max(0, 3 - mappedTherapists.length);
-            for (let i = 0; i < placeholdersNeeded; i++) {
-                mappedTherapists.push({
-                    id: `placeholder-${i}`,
-                    name: "Specialist Nou",
-                    title: "Coming Soon",
-                    specialties: ["Terapie", "Consiliere"],
-                    specializations: [],
-                    location: "Chișinău",
-                    rating: 0,
-                    reviewCount: 0,
-                    priceRange: "---",
-                    imageUrl: null,
-                    photo_url: null
-                });
-            }
+            // REMOVED - Using Recruitment Cards instead.
 
             setTherapists(mappedTherapists);
         } catch (error) {

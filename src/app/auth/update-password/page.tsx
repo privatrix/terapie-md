@@ -60,11 +60,8 @@ export default function UpdatePasswordPage() {
         try {
             const supabase = createClient();
 
-            // Explicitly check session first
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                throw new Error("Sesiunea de resetare a expirat. Te rugăm să soliciți un nou link.");
-            }
+            // Attempt update - Supabase client should handle session from URL automatically
+            // Implicit flow tokens are handled by the library internally on instantiation/mount
 
             const { error } = await supabase.auth.updateUser({
                 password: password,
@@ -144,8 +141,8 @@ export default function UpdatePasswordPage() {
                             />
                         </div>
 
-                        <Button type="submit" className="w-full" disabled={loading || !sessionReady}>
-                            {loading ? "Se actualizează..." : (!sessionReady ? "Se verifică link-ul..." : "Actualizează Parola")}
+                        <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? "Se actualizează..." : "Actualizează Parola"}
                         </Button>
                     </form>
                 )}

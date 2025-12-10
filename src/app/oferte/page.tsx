@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search, ArrowUpDown, Plus, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import { RecruitmentOfferCard } from "@/components/features/offers/RecruitmentOfferCard";
 
 export default function OffersPage() {
     const [offers, setOffers] = useState<any[]>([]);
@@ -276,6 +277,10 @@ export default function OffersPage() {
                         {visibleOffers.map((offer) => (
                             <OfferCard key={offer.id} offer={offer} />
                         ))}
+
+                        {/* Always append 2 Recruitment Cards for businesses */}
+                        <RecruitmentOfferCard />
+                        <RecruitmentOfferCard />
                     </div>
 
                     {hasMore && (

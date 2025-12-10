@@ -186,8 +186,9 @@ export default function TherapistApplicationPage() {
             const supabase = createClient();
 
             if (!user) {
-                setError("Trebuie să fii autentificat pentru a aplica.");
-                setLoading(false);
+                // Redirect to signup if not authenticated
+                const returnUrl = encodeURIComponent("/aplicare-terapeut");
+                router.push(`/auth/signup?redirect=${returnUrl}`);
                 return;
             }
 
@@ -234,36 +235,7 @@ export default function TherapistApplicationPage() {
         );
     }
 
-    if (!user && !submitted) {
-        return (
-            <div className="container mx-auto px-4 py-16 max-w-2xl text-center space-y-8">
-                <div className="space-y-4">
-                    <h1 className="font-heading text-3xl font-bold">Autentificare Necesară</h1>
-                    <p className="text-muted-foreground text-lg">
-                        Pentru a aplica ca terapeut, trebuie să ai un cont înregistrat și să fii autentificat.
-                    </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button asChild size="lg" variant="outline">
-                        <a href="/auth/login?redirect=/aplicare-terapeut">Am deja cont / Autentificare</a>
-                    </Button>
-                    <Button asChild size="lg">
-                        <a href="/auth/signup?redirect=/aplicare-terapeut">Creează Cont Nou</a>
-                    </Button>
-                </div>
-
-                <div className="bg-muted/50 p-6 rounded-lg text-left mt-8">
-                    <h3 className="font-semibold mb-2">De ce este necesar contul?</h3>
-                    <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-                        <li>Pentru a-ți putea gestiona profilul ulterior.</li>
-                        <li>Pentru a primi notificări despre statusul aplicației.</li>
-                        <li>Pentru securitatea datelor tale.</li>
-                    </ul>
-                </div>
-            </div>
-        );
-    }
+    // Blocking UI removed to allow viewing the form. Authentication will be checked at submission.
 
     if (submitted) {
         // ... (Keep existing Success UI)

@@ -15,7 +15,32 @@ export default function UpdatePasswordPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
+    const [recoveryData, setRecoveryData] = useState<{ access_token: string, refresh_token: string } | null>(null);
     const [sessionReady, setSessionReady] = useState(false);
+
+    // Capture hash parameters immediately on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const hash = window.location.hash;
+            const search = window.location.search;
+
+            const extractTokens = (str: string) => {
+                const params = new URLSearchParams(str.startsWith('#') || str.startsWith('?') ? str.substring(1) : str);
+                const access_token = params.get('access_token');
+                const refresh_token = params.get('refresh_token');
+                return access_token && refresh_token ? { access_token, refresh_token } : null;
+            };
+
+            const hashTokens = extractTokens(hash);
+            const queryTokens = extractTokens(search);
+            const tokens = hashTokens || queryTokens;
+
+            if (tokens) {
+                console.log("Tokens captured from URL");
+                setRecoveryData(tokens);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const supabase = createClient();
@@ -28,7 +53,6 @@ export default function UpdatePasswordPage() {
             }
         });
 
-        // Listen for auth state changes (crucial for implicit flow)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             console.log("Auth event:", event);
             if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
@@ -36,9 +60,7 @@ export default function UpdatePasswordPage() {
             }
         });
 
-        return () => {
-            subscription.unsubscribe();
-        };
+        return () => subscription.unsubscribe();
     }, []);
 
     const handleUpdate = async (e: React.FormEvent) => {
@@ -60,33 +82,38 @@ export default function UpdatePasswordPage() {
         try {
             const supabase = createClient();
 
-            // 1. Try to get current session
+            // 1. Try to get current session natively
             let { data: { session } } = await supabase.auth.getSession();
 
-            // 2. If no session, try to parse from URL hash manually (Failsafe for Implicit Flow)
-            if (!session && typeof window !== 'undefined') {
-                const hash = window.location.hash;
-                if (hash && hash.includes('access_token')) {
-                    const params = new URLSearchParams(hash.substring(1)); // remove #
-                    const access_token = params.get('access_token');
-                    const refresh_token = params.get('refresh_token');
+            // 2. If no session, try to use captured tokens (Failsafe)
+            if (!session && recoveryData) {
+                console.log("Attempting manual recovery with captured tokens...");
+                const { data, error: setSessionError } = await supabase.auth.setSession({
+                    access_token: recoveryData.access_token,
+                    refresh_token: recoveryData.refresh_token
+                });
 
-                    if (access_token && refresh_token) {
-                        const { data, error: setSessionError } = await supabase.auth.setSession({
-                            access_token,
-                            refresh_token
-                        });
+                if (!setSessionError && data.session) {
+                    session = data.session;
+                    console.log("Session recovered via captured tokens");
+                } else {
+                    console.error("Failed to set session from tokens:", setSessionError);
+                }
+            }
 
-                        if (!setSessionError && data.session) {
-                            session = data.session;
-                            console.log("Session manually recovered from hash");
-                        }
-                    }
+            // 3. Fallback: Check active URL hash again
+            if (!session && typeof window !== 'undefined' && window.location.hash) {
+                const params = new URLSearchParams(window.location.hash.substring(1));
+                const access_token = params.get('access_token');
+                const refresh_token = params.get('refresh_token');
+                if (access_token && refresh_token) {
+                    const { data } = await supabase.auth.setSession({ access_token, refresh_token });
+                    if (data.session) session = data.session;
                 }
             }
 
             if (!session) {
-                throw new Error("Sesiunea nu a fost găsită. Te rugăm să dai click din nou pe link-ul din email.");
+                throw new Error("Link-ul a expirat sau este invalid. Te rugăm să soliciți o nouă resetare a parolei.");
             }
 
             const { error } = await supabase.auth.updateUser({

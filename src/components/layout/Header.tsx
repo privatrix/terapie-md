@@ -1,5 +1,6 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -11,8 +12,11 @@ export function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
+
         // Skip auth if Supabase not configured
         if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
             return;
@@ -43,68 +47,69 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-                <Link href="/" className="flex items-center gap-2">
-                    <span className="font-heading text-xl font-bold text-primary">
-                        Terapie.md
-                    </span>
-                </Link>
-                <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-                    <Link href="/" className="hover:text-primary transition-colors">
-                        Acasă
+        <>
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+                    <Link href="/" className="flex items-center gap-2">
+                        <span className="font-heading text-xl font-bold text-primary">
+                            Terapie.md
+                        </span>
                     </Link>
-                    <Link href="/terapeuti" className="hover:text-primary transition-colors">
-                        Terapeuți
-                    </Link>
-                    <Link href="/oferte" className="hover:text-primary transition-colors">
-                        Oferte
-                    </Link>
-                    <Link href="/despre" className="hover:text-primary transition-colors">
-                        Despre Noi
-                    </Link>
-                </nav>
-                <div className="flex items-center gap-4">
-                    {user ? (
-                        <>
-                            <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
-                                <Link href="/dashboard">
-                                    <User className="h-5 w-5" />
-                                </Link>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="hidden md:inline-flex gap-2"
-                                onClick={handleLogout}
-                            >
-                                <LogOut className="h-4 w-4" />
-                                Ieși din cont
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button variant="outline" className="hidden md:inline-flex" asChild>
-                                <Link href="/auth/login">Intră în cont</Link>
-                            </Button>
-                            <Button className="hidden md:inline-flex" asChild>
-                                <Link href="/specialisti">Pentru Specialiști</Link>
-                            </Button>
-                        </>
-                    )}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="md:hidden h-11 w-11"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    >
-                        {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                        <span className="sr-only">Toggle menu</span>
-                    </Button>
+                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+                        <Link href="/" className="hover:text-primary transition-colors">
+                            Acasă
+                        </Link>
+                        <Link href="/terapeuti" className="hover:text-primary transition-colors">
+                            Terapeuți
+                        </Link>
+                        <Link href="/oferte" className="hover:text-primary transition-colors">
+                            Oferte
+                        </Link>
+                        <Link href="/despre" className="hover:text-primary transition-colors">
+                            Despre Noi
+                        </Link>
+                    </nav>
+                    <div className="flex items-center gap-4">
+                        {user ? (
+                            <>
+                                <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
+                                    <Link href="/dashboard">
+                                        <User className="h-5 w-5" />
+                                    </Link>
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="hidden md:inline-flex gap-2"
+                                    onClick={handleLogout}
+                                >
+                                    <LogOut className="h-4 w-4" />
+                                    Ieși din cont
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button variant="outline" className="hidden md:inline-flex" asChild>
+                                    <Link href="/auth/login">Intră în cont</Link>
+                                </Button>
+                                <Button className="hidden md:inline-flex" asChild>
+                                    <Link href="/specialisti">Pentru Specialiști</Link>
+                                </Button>
+                            </>
+                        )}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden h-11 w-11"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                            <span className="sr-only">Toggle menu</span>
+                        </Button>
+                    </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Full Screen Mobile Menu Overlay */}
-            {mobileMenuOpen && (
+            {mounted && mobileMenuOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50 md:hidden animate-mobile-enter">
                     <Button
                         variant="ghost"
@@ -198,8 +203,9 @@ export function Header() {
                             )}
                         </div>
                     </nav>
-                </div>
+                </div>,
+                document.body
             )}
-        </header>
+        </>
     );
 }

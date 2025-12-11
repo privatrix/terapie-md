@@ -8,24 +8,35 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-8 md:py-32 overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop"
+            alt="Relaxing therapy atmosphere"
+            className="w-full h-full object-cover object-center sm:object-right opacity-30 select-none"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        </div>
+
         <div className="container px-4 md:px-6 mx-auto relative z-10">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-6 md:space-y-8">
-            <h1 className="font-heading text-3xl md:text-6xl font-bold tracking-tight text-foreground">
-              Regăsește <span className="text-primary">echilibrul interior</span> alături de terapeuți acreditați și empatici.
+          <div className="flex flex-col items-start text-left max-w-[90%] md:max-w-2xl space-y-8 md:space-y-10">
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
+              Regăsește <span className="text-primary block mt-2">echilibrul interior</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              Descoperă sprijinul personalizat de care ai nevoie printr-o platformă sigură și confidențială.
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-[90%]">
+              Descoperă sprijinul personalizat de care ai nevoie printr-o platformă sigură și confidențială, conectându-te cu experți dedicați stării tale de bine.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <Button size="lg" className="gap-2" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-4">
+              <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg gap-2" asChild>
                 <Link href="/terapeuti">
-                  Caută Terapeut <ArrowRight className="h-4 w-4" />
+                  Caută Terapeut <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/specialisti">
-                  Pentru Specialiști
+              <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full border-2 bg-background/50 backdrop-blur-sm hover:bg-background/80" asChild>
+                <Link href="/aplicare-terapeut">
+                  Aplică ca Terapeut
                 </Link>
               </Button>
             </div>

@@ -26,7 +26,7 @@ export default function AboutPage() {
                         <div className="relative mx-auto lg:ml-auto w-full max-w-md lg:max-w-full">
                             <div className="aspect-[4/5] md:aspect-square lg:aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl relative">
                                 <img
-                                    src="https://images.unsplash.com/photo-1529156069896-857c8bfaf864?q=80&w=1200&auto=format&fit=crop"
+                                    src="https://images.unsplash.com/photo-1474418397713-7ede21d49118?q=80&w=1200&auto=format&fit=crop"
                                     alt="Wellness and Balance"
                                     className="w-full h-full object-cover"
                                 />

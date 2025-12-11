@@ -134,7 +134,6 @@ export default function TherapistsPage() {
     const hasMore = visibleCount < filteredAndSortedTherapists.length;
 
     return (
-    return (
         <div className="container mx-auto px-4 pt-6 pb-8 md:px-6 md:pt-8 md:pb-12">
             <div className="mb-6">
                 <TherapistFilters

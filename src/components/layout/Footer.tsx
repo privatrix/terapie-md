@@ -59,7 +59,7 @@ export function Footer() {
             </div>
 
             {/* Bottom Bar - Legal & Trust (The Floor) */}
-            <div className="bg-slate-100 py-6 border-t border-slate-200">
+            <div className="bg-white py-6 border-t border-slate-100">
                 <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
 
                     {/* Left: Copyright */}

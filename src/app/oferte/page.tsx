@@ -174,38 +174,26 @@ export default function OffersPage() {
     }
 
     return (
-        <>
-            {/* Hero Section */}
-            <div className="relative bg-slate-50 py-12 md:py-20 border-b">
-                <div className="container mx-auto px-4 md:px-6 flex flex-col items-center text-center">
-                    <h1 className="font-heading text-4xl font-bold md:text-5xl lg:text-6xl text-foreground mb-6">
-                        Oferte Wellness & Evenimente
-                    </h1>
-                    <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed mb-8">
-                        Descoperă pachete speciale, workshop-uri și evenimente dedicate sănătății tale mintale și fizice, create de profesioniști pentru starea ta de bine.
-                    </p>
-
-                    {(isTherapist || isBusiness) && (
-                        <Button asChild size="lg" className="h-12 px-8 text-base shadow-md">
+        <div className="container mx-auto px-4 py-8 md:px-6 md:py-12 pt-6 md:pt-8">
+            {/* Filters */}
+            <div className="mb-8">
+                <OfferFilters
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    sortBy={sortBy}
+                    onSortChange={setSortBy}
+                    locationFilter={locationFilter}
+                    onLocationChange={setLocationFilter}
+                    action={(isTherapist || isBusiness) && (
+                        <Button asChild size="lg" className="h-12 px-6 md:px-8 text-base shadow-md rounded-xl">
                             <Link href="/oferte/nou">
                                 <Plus className="mr-2 h-5 w-5" />
                                 Adaugă Ofertă
                             </Link>
                         </Button>
                     )}
-                </div>
+                />
             </div>
-
-            <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
-                {/* Filters */}
-                <div className="mb-8">
-                    <OfferFilters
-                        searchQuery={searchQuery}
-                        onSearchChange={setSearchQuery}
-                        sortBy={sortBy}
-                        onSortChange={setSortBy}
-                        locationFilter={locationFilter}
-                        onLocationChange={setLocationFilter}
                     />
                 </div>
 
@@ -213,38 +201,40 @@ export default function OffersPage() {
                     {filteredAndSortedOffers.length} {filteredAndSortedOffers.length === 1 ? "ofertă găsită" : "oferte găsite"}
                 </div>
 
-                {filteredAndSortedOffers.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <p className="text-lg font-medium">Nicio ofertă găsită</p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                            Încearcă să modifici criteriile de căutare
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {visibleOffers.map((offer) => (
-                                <OfferCard key={offer.id} offer={offer} />
-                            ))}
-
-                            {/* Always append 2 Recruitment Cards for businesses */}
-                            <RecruitmentOfferCard />
-                            <RecruitmentOfferCard />
-                        </div>
-
-                        {hasMore && (
-                            <div className="mt-12 flex justify-center">
-                                <button
-                                    onClick={handleLoadMore}
-                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
-                                >
-                                    Încarcă mai multe
-                                </button>
-                            </div>
-                        )}
-                    </>
-                )}
+                {
+        filteredAndSortedOffers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+                <p className="text-lg font-medium">Nicio ofertă găsită</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                    Încearcă să modifici criteriile de căutare
+                </p>
             </div>
+        ) : (
+        <>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {visibleOffers.map((offer) => (
+                    <OfferCard key={offer.id} offer={offer} />
+                ))}
+
+                {/* Always append 2 Recruitment Cards for businesses */}
+                <RecruitmentOfferCard />
+                <RecruitmentOfferCard />
+            </div>
+
+            {hasMore && (
+                <div className="mt-12 flex justify-center">
+                    <button
+                        onClick={handleLoadMore}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
+                    >
+                        Încarcă mai multe
+                    </button>
+                </div>
+            )}
+        </>
+    )
+    }
+            </div >
         </>
     );
 }

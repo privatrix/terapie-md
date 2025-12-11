@@ -16,6 +16,7 @@ interface OfferFiltersProps {
     onSortChange: (sort: "price_asc" | "price_desc" | "title" | "newest") => void;
     locationFilter: string;
     onLocationChange: (location: string) => void;
+    action?: React.ReactNode;
 }
 
 export function OfferFilters({
@@ -25,12 +26,16 @@ export function OfferFilters({
     onSortChange,
     locationFilter,
     onLocationChange,
+    action,
 }: OfferFiltersProps) {
     return (
         <div className="bg-white p-5 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-            <h2 className="text-2xl md:text-3xl font-bold font-heading text-slate-900 mb-6 md:mb-8">
-                Găsește Oferte
-            </h2>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold font-heading text-slate-900">
+                    Găsește Oferte
+                </h2>
+                {action && <div>{action}</div>}
+            </div>
 
             <div className="flex flex-col xl:flex-row gap-4">
                 {/* Search Bar */}

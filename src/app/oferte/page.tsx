@@ -13,7 +13,7 @@ export default function OffersPage() {
     const [offers, setOffers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [sortBy, setSortBy] = useState<"price" | "title">("price");
+    const [sortBy, setSortBy] = useState<"price_asc" | "price_desc" | "title" | "newest">("newest");
     const [locationFilter, setLocationFilter] = useState<string>("");
     const [isTherapist, setIsTherapist] = useState(false);
     const [isBusiness, setIsBusiness] = useState(false);
@@ -140,13 +140,16 @@ export default function OffersPage() {
 
         // Sorting
         result.sort((a, b) => {
-            if (sortBy === "price") {
+            if (sortBy === "price_asc") {
                 const getPrice = (priceStr: string) => parseInt(priceStr.match(/\d+/)?.[0] || "0");
                 return getPrice(a.price) - getPrice(b.price);
+            } else if (sortBy === "price_desc") {
+                const getPrice = (priceStr: string) => parseInt(priceStr.match(/\d+/)?.[0] || "0");
+                return getPrice(b.price) - getPrice(a.price);
             } else if (sortBy === "title") {
                 return a.title.localeCompare(b.title);
             }
-            return 0;
+            return 0; // newest is default
         });
 
         return result;

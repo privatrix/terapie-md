@@ -12,8 +12,8 @@ import {
 interface OfferFiltersProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
-    sortBy: "price" | "title";
-    onSortChange: (sort: "price" | "title") => void;
+    sortBy: "price_asc" | "price_desc" | "title" | "newest";
+    onSortChange: (sort: "price_asc" | "price_desc" | "title" | "newest") => void;
     locationFilter: string;
     onLocationChange: (location: string) => void;
 }
@@ -75,19 +75,24 @@ export function OfferFilters({
                     {/* Sort Filter */}
                     <Select
                         value={sortBy}
-                        onValueChange={(value) => onSortChange(value as "price" | "title")}
+                        onValueChange={(value) => onSortChange(value as any)}
                     >
                         <SelectTrigger className="h-12 md:h-14 w-full xl:w-[240px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
                             <div className="flex items-center gap-2.5 truncate">
                                 <ArrowUpDown className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">
-                                    {sortBy === "price" ? "Preț (Crescător)" : "Nume (A-Z)"}
+                                    {sortBy === "price_asc" ? "Preț: Crescător" :
+                                        sortBy === "price_desc" ? "Preț: Descrescător" :
+                                            sortBy === "title" ? "Nume: A-Z" :
+                                                "Cele mai noi"}
                                 </span>
                             </div>
                         </SelectTrigger>
                         <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[240px]">
-                            <SelectItem value="price" className="rounded-lg focus:bg-slate-50">Preț (Crescător)</SelectItem>
-                            <SelectItem value="title" className="rounded-lg focus:bg-slate-50">Nume (A-Z)</SelectItem>
+                            <SelectItem value="newest" className="rounded-lg focus:bg-slate-50">Cele mai noi</SelectItem>
+                            <SelectItem value="price_asc" className="rounded-lg focus:bg-slate-50">Preț: Crescător</SelectItem>
+                            <SelectItem value="price_desc" className="rounded-lg focus:bg-slate-50">Preț: Descrescător</SelectItem>
+                            <SelectItem value="title" className="rounded-lg focus:bg-slate-50">Nume: A-Z</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

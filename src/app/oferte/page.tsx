@@ -194,47 +194,45 @@ export default function OffersPage() {
                     )}
                 />
             </div>
-                    />
-                </div>
 
-                <div className="mb-4 text-sm text-muted-foreground">
-                    {filteredAndSortedOffers.length} {filteredAndSortedOffers.length === 1 ? "ofertă găsită" : "oferte găsite"}
-                </div>
-
-                {
-        filteredAndSortedOffers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <p className="text-lg font-medium">Nicio ofertă găsită</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Încearcă să modifici criteriile de căutare
-                </p>
-            </div>
-        ) : (
-        <>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {visibleOffers.map((offer) => (
-                    <OfferCard key={offer.id} offer={offer} />
-                ))}
-
-                {/* Always append 2 Recruitment Cards for businesses */}
-                <RecruitmentOfferCard />
-                <RecruitmentOfferCard />
+            <div className="mb-4 text-sm text-muted-foreground">
+                {filteredAndSortedOffers.length} {filteredAndSortedOffers.length === 1 ? "ofertă găsită" : "oferte găsite"}
             </div>
 
-            {hasMore && (
-                <div className="mt-12 flex justify-center">
-                    <button
-                        onClick={handleLoadMore}
-                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
-                    >
-                        Încarcă mai multe
-                    </button>
-                </div>
-            )}
-        </>
-    )
-    }
-            </div >
+            {
+                filteredAndSortedOffers.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                        <p className="text-lg font-medium">Nicio ofertă găsită</p>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            Încearcă să modifici criteriile de căutare
+                        </p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {visibleOffers.map((offer) => (
+                                <OfferCard key={offer.id} offer={offer} />
+                            ))}
+
+                            {/* Always append 2 Recruitment Cards for businesses */}
+                            <RecruitmentOfferCard />
+                            <RecruitmentOfferCard />
+                        </div>
+
+                        {hasMore && (
+                            <div className="mt-12 flex justify-center">
+                                <button
+                                    onClick={handleLoadMore}
+                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
+                                >
+                                    Încarcă mai multe
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )
+            }
+        </div >
         </>
     );
 }

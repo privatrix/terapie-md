@@ -7,14 +7,46 @@ export default function AboutPage() {
     return (
         <>
             {/* Hero Section */}
-            <div className="relative bg-slate-50 py-16 md:py-24 border-b">
-                <div className="container mx-auto px-4 md:px-6 text-center">
-                    <h1 className="font-heading text-4xl font-bold md:text-5xl lg:text-6xl mb-6">
-                        Despre Noi
-                    </h1>
-                    <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                        Misiunea noastră este să facem terapia accesibilă, să eliminăm stigmatul din jurul sănătății mintale în Moldova și să construim o comunitate mai puternică împreună.
-                    </p>
+            <div className="relative bg-slate-50 border-b overflow-hidden">
+                <div className="container mx-auto px-4 py-16 md:py-24 md:px-6">
+                    <div className="grid gap-12 lg:grid-cols-2 items-center">
+                        {/* Text Content */}
+                        <div className="space-y-8 text-center lg:text-left">
+                            <div className="space-y-4">
+                                <h1 className="font-heading text-4xl font-bold md:text-5xl lg:text-6xl text-slate-900 leading-tight">
+                                    Reinventăm echilibrul <span className="text-primary">tău interior.</span>
+                                </h1>
+                                <p className="text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0">
+                                    Misiunea noastră este să facem terapia accesibilă, să eliminăm stigmatul din jurul sănătății mintale în Moldova și să construim o comunitate mai puternică împreună.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Hero Image */}
+                        <div className="relative mx-auto lg:ml-auto w-full max-w-md lg:max-w-full">
+                            <div className="aspect-[4/5] md:aspect-square lg:aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl relative">
+                                <img
+                                    src="https://images.unsplash.com/photo-1529156069896-857c8bfaf864?q=80&w=1200&auto=format&fit=crop"
+                                    alt="Wellness and Balance"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                            </div>
+
+                            {/* Floating Badge (Decorative) */}
+                            <div className="absolute -bottom-6 -left-6 md:bottom-8 md:-left-8 bg-white p-4 rounded-2xl shadow-xl hidden md:block animate-bounce-slow">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                        <Heart className="h-5 w-5 fill-current" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Comunitate</p>
+                                        <p className="font-bold text-slate-900">100% Verified</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

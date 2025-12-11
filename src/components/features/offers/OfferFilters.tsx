@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, MapPin, ArrowUpDown } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -28,60 +27,69 @@ export function OfferFilters({
     onLocationChange,
 }: OfferFiltersProps) {
     return (
-        <div className="rounded-xl border bg-card p-4 shadow-sm md:p-6 space-y-6">
-            <div className="space-y-4">
+        <div className="bg-white p-5 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <h2 className="text-2xl md:text-3xl font-bold font-heading text-slate-900 mb-6 md:mb-8">
+                Găsește Oferte
+            </h2>
+
+            <div className="flex flex-col xl:flex-row gap-4">
                 {/* Search Bar */}
-                <div className="relative w-full">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <div className="relative flex-1 group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                        <Search className="h-5 w-5" />
+                    </div>
                     <input
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-9 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="w-full h-12 md:h-14 pl-12 pr-4 rounded-2xl bg-slate-50 border border-transparent ring-offset-white focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/10 transition-all outline-none text-base placeholder:text-muted-foreground/70"
                         placeholder="Caută oferte..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                     />
                 </div>
 
-                {/* Filters Grid: 2 Columns on Desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Filters Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:flex gap-3">
                     {/* Location Filter */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Locație
-                        </label>
-                        <Select
-                            value={locationFilter === "" ? "all" : locationFilter}
-                            onValueChange={(val) => onLocationChange(val === "all" ? "" : val)}
-                        >
-                            <SelectTrigger className="w-full bg-background">
-                                <SelectValue placeholder="Toate Locațiile" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-[100]">
-                                <SelectItem value="all">Toate Locațiile</SelectItem>
-                                <SelectItem value="chisinau">Chișinău</SelectItem>
-                                <SelectItem value="online">Online</SelectItem>
-                                <SelectItem value="other">Alte locații</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <Select
+                        value={locationFilter === "" ? "all" : locationFilter}
+                        onValueChange={(val) => onLocationChange(val === "all" ? "" : val)}
+                    >
+                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[200px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {locationFilter === "" ? "Locație" :
+                                        locationFilter === "chisinau" ? "Chișinău" :
+                                            locationFilter === "online" ? "Online" :
+                                                "Alte locații"}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[200px]">
+                            <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Locațiile</SelectItem>
+                            <SelectItem value="chisinau" className="rounded-lg focus:bg-slate-50">Chișinău</SelectItem>
+                            <SelectItem value="online" className="rounded-lg focus:bg-slate-50">Online</SelectItem>
+                            <SelectItem value="other" className="rounded-lg focus:bg-slate-50">Alte locații</SelectItem>
+                        </SelectContent>
+                    </Select>
 
                     {/* Sort Filter */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Sortează
-                        </label>
-                        <Select
-                            value={sortBy}
-                            onValueChange={(value) => onSortChange(value as "price" | "title")}
-                        >
-                            <SelectTrigger className="w-full bg-background">
-                                <SelectValue placeholder="Sortează după" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-[100]">
-                                <SelectItem value="price">Preț (Crescător)</SelectItem>
-                                <SelectItem value="title">Nume (A-Z)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <Select
+                        value={sortBy}
+                        onValueChange={(value) => onSortChange(value as "price" | "title")}
+                    >
+                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[240px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <ArrowUpDown className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {sortBy === "price" ? "Preț (Crescător)" : "Nume (A-Z)"}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[240px]">
+                            <SelectItem value="price" className="rounded-lg focus:bg-slate-50">Preț (Crescător)</SelectItem>
+                            <SelectItem value="title" className="rounded-lg focus:bg-slate-50">Nume (A-Z)</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
         </div>

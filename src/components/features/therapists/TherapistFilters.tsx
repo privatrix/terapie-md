@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Users, MapPin, ArrowUpDown } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -40,86 +39,93 @@ export function TherapistFilters({
     onRoleChange,
 }: TherapistFiltersProps) {
     return (
-        <div className="rounded-xl border bg-card p-4 shadow-sm md:p-6 space-y-6">
-            <h2 className="text-xl md:text-2xl font-bold font-heading">
+        <div className="bg-white p-5 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <h2 className="text-2xl md:text-3xl font-bold font-heading text-slate-900 mb-6 md:mb-8">
                 Găsește Terapeutul
             </h2>
 
-            <div className="space-y-4">
-                {/* Search Bar */}
-                <div className="relative w-full">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <div className="flex flex-col xl:flex-row gap-4">
+                {/* Search Bar - Grows to fill space */}
+                <div className="relative flex-1 group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                        <Search className="h-5 w-5" />
+                    </div>
                     <input
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-9 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        placeholder="Caută după nume sau specialitate..."
+                        className="w-full h-12 md:h-14 pl-12 pr-4 rounded-2xl bg-slate-50 border border-transparent ring-offset-white focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/10 transition-all outline-none text-base placeholder:text-muted-foreground/70"
+                        placeholder="Caută nume, specializare..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                     />
                 </div>
 
-                {/* Filters Grid: 3 Columns on Desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Filters Row - Grid on mobile, Flex on desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 xl:flex gap-3">
                     {/* Role Filter */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Tip Specialist
-                        </label>
-                        <Select
-                            value={roleFilter === "" ? "all" : roleFilter}
-                            onValueChange={(val) => onRoleChange(val === "all" ? "" : val)}
-                        >
-                            <SelectTrigger className="w-full bg-background">
-                                <SelectValue placeholder="Toți Specialiștii" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-[100]">
-                                <SelectItem value="all">Toți Specialiștii</SelectItem>
-                                {PROFESSIONAL_ROLES.map(role => (
-                                    <SelectItem key={role} value={role}>{role}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <Select
+                        value={roleFilter === "" ? "all" : roleFilter}
+                        onValueChange={(val) => onRoleChange(val === "all" ? "" : val)}
+                    >
+                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[200px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <Users className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {roleFilter === "" ? "Tip Specialist" : roleFilter}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 w-[240px]">
+                            <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toți Specialiștii</SelectItem>
+                            {PROFESSIONAL_ROLES.map(role => (
+                                <SelectItem key={role} value={role} className="rounded-lg focus:bg-slate-50">{role}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
 
                     {/* Location Filter */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Locație
-                        </label>
-                        <Select
-                            value={locationFilter === "" ? "all" : locationFilter}
-                            onValueChange={(val) => onLocationChange(val === "all" ? "" : val)}
-                        >
-                            <SelectTrigger className="w-full bg-background">
-                                <SelectValue placeholder="Toate Locațiile" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-[100]">
-                                <SelectItem value="all">Toate Locațiile</SelectItem>
-                                <SelectItem value="chisinau">Chișinău</SelectItem>
-                                <SelectItem value="online">Online</SelectItem>
-                                <SelectItem value="other">Alte orașe</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <Select
+                        value={locationFilter === "" ? "all" : locationFilter}
+                        onValueChange={(val) => onLocationChange(val === "all" ? "" : val)}
+                    >
+                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[180px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {locationFilter === "" ? "Locație" :
+                                        locationFilter === "chisinau" ? "Chișinău" :
+                                            locationFilter === "online" ? "Online" :
+                                                "Alte orașe"}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[180px]">
+                            <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Locațiile</SelectItem>
+                            <SelectItem value="chisinau" className="rounded-lg focus:bg-slate-50">Chișinău</SelectItem>
+                            <SelectItem value="online" className="rounded-lg focus:bg-slate-50">Online</SelectItem>
+                            <SelectItem value="other" className="rounded-lg focus:bg-slate-50">Alte orașe</SelectItem>
+                        </SelectContent>
+                    </Select>
 
                     {/* Sort Filter */}
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Sortează
-                        </label>
-                        <Select
-                            value={sortBy}
-                            onValueChange={(value) => onSortChange(value as "rating" | "price" | "reviews")}
-                        >
-                            <SelectTrigger className="w-full bg-background">
-                                <SelectValue placeholder="Sortează după" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-[100]">
-                                <SelectItem value="rating">Rating (Desc)</SelectItem>
-                                <SelectItem value="reviews">Nr. Recenzii</SelectItem>
-                                <SelectItem value="price">Preț (Crescător)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <Select
+                        value={sortBy}
+                        onValueChange={(value) => onSortChange(value as "rating" | "price" | "reviews")}
+                    >
+                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[220px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <ArrowUpDown className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {sortBy === "rating" ? "Rating (Desc)" :
+                                        sortBy === "reviews" ? "Nr. Recenzii" :
+                                            "Preț (Crescător)"}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[200px]">
+                            <SelectItem value="rating" className="rounded-lg focus:bg-slate-50">Rating (Cel mai mare)</SelectItem>
+                            <SelectItem value="reviews" className="rounded-lg focus:bg-slate-50">Număr Recenzii</SelectItem>
+                            <SelectItem value="price" className="rounded-lg focus:bg-slate-50">Preț (Cel mai mic)</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
         </div>

@@ -41,6 +41,9 @@ export function TherapistFilters({
 }: TherapistFiltersProps) {
     return (
         <div className="rounded-xl border bg-card p-4 shadow-sm md:p-6 space-y-6">
+            <h2 className="text-xl md:text-2xl font-bold font-heading">
+                Găsește Terapeutul
+            </h2>
             {/* Top Row: Search and Sort */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between">
                 {/* Search Bar - Flexible Width */}

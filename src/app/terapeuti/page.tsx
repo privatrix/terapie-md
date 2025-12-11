@@ -134,72 +134,77 @@ export default function TherapistsPage() {
     const hasMore = visibleCount < filteredAndSortedTherapists.length;
 
     return (
-        <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
-            <div className="mb-8 space-y-4">
-                <h1 className="font-heading text-3xl font-bold md:text-4xl">
-                    Găsește Terapeutul Potrivit
-                </h1>
-                <p className="max-w-2xl text-muted-foreground">
-                    Explorează lista noastră de specialiști verificați și filtrează în funcție de nevoile tale.
-                </p>
-            </div>
-
-            <div className="mb-8">
-                <TherapistFilters
-                    searchQuery={searchQuery}
-                    onSearchChange={setSearchQuery}
-                    sortBy={sortBy}
-                    onSortChange={setSortBy}
-                    locationFilter={locationFilter}
-                    onLocationChange={setLocationFilter}
-                    roleFilter={roleFilter}
-                    onRoleChange={setRoleFilter}
-                />
-            </div>
-
-            {loading ? (
-                <div className="flex justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <>
+            {/* Hero Section */}
+            <div className="relative bg-slate-50 py-12 md:py-20 border-b">
+                <div className="container mx-auto px-4 md:px-6 text-center">
+                    <h1 className="font-heading text-4xl font-bold md:text-5xl lg:text-6xl text-foreground mb-6">
+                        Găsește Terapeutul Potrivit
+                    </h1>
+                    <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
+                        Explorează lista noastră de specialiști verificați și filtrează în funcție de nevoile tale pentru a găsi partenerul ideal în călătoria ta.
+                    </p>
                 </div>
-            ) : (
-                <>
-                    <div className="mb-4 text-sm text-muted-foreground">
-                        {filteredAndSortedTherapists.length} {filteredAndSortedTherapists.length === 1 ? "terapeut găsit" : "terapeuți găsiți"}
+            </div>
+
+            <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
+                <div className="mb-8">
+                    <TherapistFilters
+                        searchQuery={searchQuery}
+                        onSearchChange={setSearchQuery}
+                        sortBy={sortBy}
+                        onSortChange={setSortBy}
+                        locationFilter={locationFilter}
+                        onLocationChange={setLocationFilter}
+                        roleFilter={roleFilter}
+                        onRoleChange={setRoleFilter}
+                    />
+                </div>
+
+                {loading ? (
+                    <div className="flex justify-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
-
-                    {filteredAndSortedTherapists.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <p className="text-lg font-medium">Niciun terapeut găsit</p>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Încearcă să modifici criteriile de căutare
-                            </p>
+                ) : (
+                    <>
+                        <div className="mb-4 text-sm text-muted-foreground">
+                            {filteredAndSortedTherapists.length} {filteredAndSortedTherapists.length === 1 ? "terapeut găsit" : "terapeuți găsiți"}
                         </div>
-                    ) : (
-                        <>
-                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                {visibleTherapists.map((therapist) => (
-                                    <TherapistCard key={therapist.id} therapist={therapist} />
-                                ))}
 
-                                {/* Always append 2 Recruitment Cards at the end */}
-                                <TherapistRecruitmentCard />
-                                <TherapistRecruitmentCard />
+                        {filteredAndSortedTherapists.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-16 text-center">
+                                <p className="text-lg font-medium">Niciun terapeut găsit</p>
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Încearcă să modifici criteriile de căutare
+                                </p>
                             </div>
+                        ) : (
+                            <>
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                    {visibleTherapists.map((therapist) => (
+                                        <TherapistCard key={therapist.id} therapist={therapist} />
+                                    ))}
 
-                            {hasMore && (
-                                <div className="mt-12 flex justify-center">
-                                    <button
-                                        onClick={handleLoadMore}
-                                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
-                                    >
-                                        Încarcă mai mulți
-                                    </button>
+                                    {/* Always append 2 Recruitment Cards at the end */}
+                                    <TherapistRecruitmentCard />
+                                    <TherapistRecruitmentCard />
                                 </div>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
-        </div>
+
+                                {hasMore && (
+                                    <div className="mt-12 flex justify-center">
+                                        <button
+                                            onClick={handleLoadMore}
+                                            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2"
+                                        >
+                                            Încarcă mai mulți
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </div>
+        </>
     );
 }

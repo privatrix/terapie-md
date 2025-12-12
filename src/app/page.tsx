@@ -1,94 +1,126 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, CheckCircle, Clock, Shield } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, Shield, Star, MapPin } from "lucide-react";
 import { TherapistCard } from "@/components/features/therapists/TherapistCard";
 import { RecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        {/* Background Image with Gradient Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop"
-            alt="Relaxing therapy atmosphere"
-            className="w-full h-full object-cover object-center sm:object-right opacity-30 select-none"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        </div>
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-background">
+        <div className="container px-4 md:px-6 mx-auto relative z-10 text-center">
 
-        <div className="container px-4 md:px-6 mx-auto relative z-10">
-          <div className="flex flex-col items-start text-left max-w-[90%] md:max-w-2xl space-y-8 md:space-y-10">
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
-              Regăsește <span className="text-primary block mt-2">echilibrul interior</span>
+          <div className="mx-auto max-w-3xl mb-12">
+            {/* Illustration Placeholder - In real app, use the generated image */}
+            <div className="w-64 h-64 mx-auto mb-8 bg-accent rounded-full flex items-center justify-center relative overflow-hidden">
+              {/* We will replace this with actual Image tag if available, or keep abstract shape */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 animate-pulse"></div>
+              <img src="/hero_illustration.png" alt="Finding Balance" className="object-cover w-full h-full opacity-90 hover:scale-105 transition-transform duration-700" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+            </div>
+
+            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
+              Găsește echilibrul - <span className="text-primary">simplu și natural.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-[90%]">
-              Descoperă sprijinul personalizat de care ai nevoie printr-o platformă sigură și confidențială, conectându-te cu experți dedicați stării tale de bine.
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
+              Evită căutările interminabile. Construit de psihologi, serviciul nostru de conectare îmbină grija umană cu tehnologia pentru a te ghida către terapeutul potrivit.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-4">
-              <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg gap-2" asChild>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="h-14 px-10 text-lg rounded-full shadow-lg hover:shadow-xl transition-all gap-2 bg-primary text-primary-foreground hover:bg-primary/90" asChild>
                 <Link href="/terapeuti">
-                  Caută Terapeut <ArrowRight className="h-5 w-5" />
+                  Găsește Terapeut
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full border-2 bg-background/50 backdrop-blur-sm hover:bg-background/80" asChild>
-                <Link href="/aplicare-terapeut">
-                  Aplică ca Terapeut
-                </Link>
-              </Button>
+            </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-muted-foreground opacity-80">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" />
+              <span>Rapid & Convenabil</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" />
+              <span>Sigur & Anonim</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="w-5 h-5 text-primary" />
+              <span>Potriviri Personalizate</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Value Proposition */}
-      <section className="py-16 md:py-24 bg-background">
+      {/* Testimonial Section (It's Complicated Style) */}
+      <section className="py-24 bg-accent/30">
+        <div className="container px-4 mx-auto max-w-4xl text-center">
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-sm mb-6">
+              <Star className="w-6 h-6 text-secondary fill-secondary" />
+              <Star className="w-6 h-6 text-secondary fill-secondary" />
+              <Star className="w-6 h-6 text-secondary fill-secondary" />
+              <Star className="w-6 h-6 text-secondary fill-secondary" />
+              <Star className="w-6 h-6 text-secondary fill-secondary" />
+            </div>
+            <h3 className="text-2xl md:text-4xl font-heading text-foreground font-medium leading-normal">
+              "Vă mulțumesc mult pentru recomandările personalizate! Am contactat unul dintre terapeuți și am avut deja prima ședință. Pare <span className="text-primary font-bold">foarte promițător!</span>"
+            </h3>
+          </div>
+          <p className="text-lg text-muted-foreground font-medium">Anonymous client</p>
+        </div>
+      </section>
+
+      {/* Directory Preview */}
+      <section className="py-24 bg-background">
         <div className="container px-4 md:px-6 mx-auto">
-          {/* Mobile: Horizontal Scroll | Desktop: Grid */}
-          <div className="flex flex-row overflow-x-auto pb-6 gap-4 md:grid md:grid-cols-3 md:gap-8 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+          <div className="text-center mb-16">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">Explorează Directorul</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Preferi să alegi singur? Răsfoiește directorul nostru cu specialiști verificați din toată țara.
+            </p>
+          </div>
 
-            {/* Card 1 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
-              <div className="p-3 rounded-full bg-primary/10 text-primary">
-                <Shield className="h-8 w-8" />
-              </div>
-              <h3 className="font-heading text-xl font-bold">Specialiști Verificați</h3>
-              <p className="text-muted-foreground">
-                Toți terapeuții sunt verificați manual pentru a asigura cele mai înalte standarde de profesionalism.
-              </p>
+          <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg text-foreground border-b border-border pb-2">După Oraș</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/terapeuti?location=Chisinau" className="hover:text-primary transition-colors">Chișinău</Link></li>
+                <li><Link href="/terapeuti?location=Balti" className="hover:text-primary transition-colors">Bălți</Link></li>
+                <li><Link href="/terapeuti?location=Cahul" className="hover:text-primary transition-colors">Cahul</Link></li>
+                <li><Link href="/terapeuti?location=Ungheni" className="hover:text-primary transition-colors">Ungheni</Link></li>
+                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate orașele</Link></li>
+              </ul>
             </div>
 
-            {/* Card 2 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
-              <div className="p-3 rounded-full bg-primary/10 text-primary">
-                <CheckCircle className="h-8 w-8" />
-              </div>
-              <h3 className="font-heading text-xl font-bold">Confidențialitate</h3>
-              <p className="text-muted-foreground">
-                Datele tale sunt în siguranță. Oferim o platformă securizată pentru liniștea ta.
-              </p>
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg text-foreground border-b border-border pb-2">După Specializare</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/terapeuti?specialization=Depresie" className="hover:text-primary transition-colors">Depresie</Link></li>
+                <li><Link href="/terapeuti?specialization=Anxietate" className="hover:text-primary transition-colors">Anxietate</Link></li>
+                <li><Link href="/terapeuti?specialization=Relatii" className="hover:text-primary transition-colors">Relații de cuplu</Link></li>
+                <li><Link href="/terapeuti?specialization=Trauma" className="hover:text-primary transition-colors">Traume</Link></li>
+                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate specializările</Link></li>
+              </ul>
             </div>
 
-            {/* Card 3 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
-              <div className="p-3 rounded-full bg-primary/10 text-primary">
-                <Clock className="h-8 w-8" />
-              </div>
-              <h3 className="font-heading text-xl font-bold">Programări Ușoare</h3>
-              <p className="text-muted-foreground">
-                Găsește intervalul potrivit și programează-te online în câteva minute.
-              </p>
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg text-foreground border-b border-border pb-2">După Abordare</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/terapeuti?approach=CBT" className="hover:text-primary transition-colors">Terapie Cognitiv-Comportamentală</Link></li>
+                <li><Link href="/terapeuti?approach=Psychoanalysis" className="hover:text-primary transition-colors">Psihanaliză</Link></li>
+                <li><Link href="/terapeuti?approach=Humanistic" className="hover:text-primary transition-colors">Umanistă</Link></li>
+                <li><Link href="/terapeuti?approach=Integrative" className="hover:text-primary transition-colors">Integrativă</Link></li>
+                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate abordările</Link></li>
+              </ul>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Featured Therapists (Mock) */}
-      <section className="py-16 md:py-24 bg-secondary/10">
+      {/* Featured Therapists (kept as grid) */}
+      <section className="py-24 bg-accent/20">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col items-center text-center mb-12 space-y-4">
             <h2 className="font-heading text-3xl md:text-4xl font-bold">

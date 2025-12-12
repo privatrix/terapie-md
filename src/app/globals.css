@@ -49,37 +49,39 @@
 }
 
 :root {
-  --background: #F6FFF8;
-  /* Mint Cream */
-  --foreground: #333333;
-  /* Soft Black */
+  --background: #FFFDF5;
+  /* Soft Cream */
+  --foreground: #1F4E5F;
+  /* Deep Slate Teal */
 
-  --primary: #2D6A4F;
-  /* Forest Green */
+  --primary: #2A9D8F;
+  /* Soft Teal */
   --primary-foreground: #FFFFFF;
 
-  --secondary: #A4C3B2;
-  /* Ocean */
-  --secondary-foreground: #1A2E26;
+  --secondary: #E9C46A;
+  /* Warm Gold/Yellow */
+  --secondary-foreground: #1F4E5F;
 
-  --accent: #EAF4F4;
-  /* Sand/Light Cyan */
-  --accent-foreground: #333333;
+  --accent: #E3F6F5;
+  /* Pastel Mint */
+  --accent-foreground: #1F4E5F;
 
-  --muted: #F0F7F4;
+  --muted: #F2E8CF;
+  /* Warm Beige */
   --muted-foreground: #6B7280;
 
   --card: #FFFFFF;
-  --card-foreground: #333333;
+  --card-foreground: #1F4E5F;
 
   --popover: #FFFFFF;
-  --popover-foreground: #333333;
+  --popover-foreground: #1F4E5F;
 
-  --border: #E5E7EB;
-  --input: #E5E7EB;
-  --ring: #2D6A4F;
+  --border: #E0D8C3;
+  --input: #E0D8C3;
+  --ring: #2A9D8F;
 
-  --radius: 0.5rem;
+  --radius: 1rem;
+  /* Softer, larger radius */
 
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Outfit', sans-serif;

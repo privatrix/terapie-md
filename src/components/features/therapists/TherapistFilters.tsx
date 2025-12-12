@@ -20,13 +20,18 @@ interface TherapistFiltersProps {
     onRoleChange: (role: string) => void;
 }
 
-const PROFESSIONAL_ROLES = [
-    "Psiholog Clinician",
-    "Psihoterapeut",
-    "Consilier",
-    "Coach",
-    "Psihiatru"
-];
+import { CITIES, THERAPIST_SPECIALIZATIONS } from "@/lib/constants";
+
+interface TherapistFiltersProps {
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
+    sortBy: "rating" | "price" | "reviews";
+    onSortChange: (sort: "rating" | "price" | "reviews") => void;
+    locationFilter: string;
+    onLocationChange: (location: string) => void;
+    roleFilter: string;
+    onRoleChange: (role: string) => void;
+}
 
 export function TherapistFilters({
     searchQuery,
@@ -75,7 +80,7 @@ export function TherapistFilters({
                         </SelectTrigger>
                         <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 w-[240px]">
                             <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toți Specialiștii</SelectItem>
-                            {PROFESSIONAL_ROLES.map(role => (
+                            {THERAPIST_SPECIALIZATIONS.map(role => (
                                 <SelectItem key={role} value={role} className="rounded-lg focus:bg-slate-50">{role}</SelectItem>
                             ))}
                         </SelectContent>
@@ -90,18 +95,15 @@ export function TherapistFilters({
                             <div className="flex items-center gap-2.5 truncate">
                                 <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">
-                                    {locationFilter === "" ? "Locație" :
-                                        locationFilter === "chisinau" ? "Chișinău" :
-                                            locationFilter === "online" ? "Online" :
-                                                "Alte orașe"}
+                                    {locationFilter === "" ? "Locație" : locationFilter}
                                 </span>
                             </div>
                         </SelectTrigger>
                         <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[180px]">
                             <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Locațiile</SelectItem>
-                            <SelectItem value="chisinau" className="rounded-lg focus:bg-slate-50">Chișinău</SelectItem>
-                            <SelectItem value="online" className="rounded-lg focus:bg-slate-50">Online</SelectItem>
-                            <SelectItem value="other" className="rounded-lg focus:bg-slate-50">Alte orașe</SelectItem>
+                            {CITIES.map(city => (
+                                <SelectItem key={city} value={city} className="rounded-lg focus:bg-slate-50">{city}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
 

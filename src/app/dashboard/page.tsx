@@ -92,9 +92,7 @@ export default function DashboardPage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="mb-8 font-heading text-3xl font-bold">
-                Salut, {user?.user_metadata?.name || user?.email?.split("@")[0]}! 👋
-            </h1>
+
 
             {role === "admin" ? (
                 <AdminDashboard user={user} />

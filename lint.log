@@ -1,0 +1,353 @@
+﻿
+> terapie-md@0.1.0 lint
+> eslint
+
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\admin\users\delete\route.ts
+  71:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\auth\delete-account\route.ts
+   5:28  warning  'request' is defined but never used       @typescript-eslint/no-unused-vars
+  37:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\auth\reset-password\route.ts
+  47:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  63:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\auth\signup\route.ts
+  57:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  73:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\bookings\availability\route.ts
+   23:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\bookings\create\route.ts
+  90:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\bookings\messages\route.ts
+  101:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\bookings\update\route.ts
+    4:10  warning  'sendBookingStatusEmail' is defined but never used  @typescript-eslint/no-unused-vars
+  107:21  error    Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\create-user\route.ts
+  26:45  warning  'searchError' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  74:21  error    Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\reviews\create\route.ts
+  50:17  error  'query' is never reassigned. Use 'const' instead  prefer-const
+  95:21  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\api\send-email\route.ts
+   3:10  warning  'createClient' is defined but never used  @typescript-eslint/no-unused-vars
+  32:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\aplicare-terapeut\page.tsx
+   68:38  error  Unexpected any. Specify a different type                                                                                                               @typescript-eslint/no-explicit-any
+   98:51  error  Unexpected any. Specify a different type                                                                                                               @typescript-eslint/no-explicit-any
+  222:23  error  Unexpected any. Specify a different type                                                                                                               @typescript-eslint/no-explicit-any
+  260:29  error  Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\auth\login\page.tsx
+  38:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\auth\reset-password\page.tsx
+   6:10  warning  'createClient' is defined but never used  @typescript-eslint/no-unused-vars
+  34:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\auth\signup\page.tsx
+   6:10  warning  'createClient' is defined but never used  @typescript-eslint/no-unused-vars
+  74:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\auth\update-password\page.tsx
+   16:11  warning  'router' is assigned a value but never used        @typescript-eslint/no-unused-vars
+   19:12  warning  'sessionReady' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   56:84  warning  'session' is defined but never used                @typescript-eslint/no-unused-vars
+  126:23  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\business\register\page.tsx
+  66:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\change-password\page.tsx
+  101:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\confidentialitate\page.tsx
+  68:59  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  68:81  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\contact\page.tsx
+  43:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\dashboard\page.tsx
+  13:38  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  16:12  warning  'debugError' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\despre\page.tsx
+  28:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  74:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\oferte\[...slug]\page.tsx
+  127:1   warning  Prevent Client Components from being async functions. See: https://nextjs.org/docs/messages/no-async-client-component                                                                                                                                                                    @next/next/no-async-client-component
+  141:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\oferte\[id]\edit\page.tsx
+  12:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\oferte\[id]\page.tsx
+    7:10  warning  'Calendar' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    7:35  warning  'Share2' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   18:40  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   20:44  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   22:38  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  112:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  172:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  269:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\oferte\page.tsx
+   6:10  warning  'Search' is defined but never used        @typescript-eslint/no-unused-vars
+   6:18  warning  'ArrowUpDown' is defined but never used   @typescript-eslint/no-unused-vars
+  13:42  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\page.tsx
+   4:10  warning  'TherapistCard' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  14:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\[id]\page.tsx
+   16:5   warning  'Calendar' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   17:5   warning  'Loader2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   28:48  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+   29:44  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+   32:38  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+   35:9   error    Error: Cannot access variable before it is declared
+
+`fetchTherapist` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\[id]\page.tsx:35:9
+  33 |
+  34 |     useEffect(() => {
+> 35 |         fetchTherapist();
+     |         ^^^^^^^^^^^^^^ `fetchTherapist` accessed before it is declared
+  36 |         checkAuth();
+  37 |     }, [params.id]);
+  38 |
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\[id]\page.tsx:46:5
+   44 |     };
+   45 |
+>  46 |     const fetchTherapist = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  47 |         const supabase = createClient();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  48 |
+      тАж
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |         setLoading(false);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 102 |     };
+      | ^^^^^^^ `fetchTherapist` is declared here
+  103 |
+  104 |     const handleBookAppointment = () => {
+  105 |         if (!isAuthenticated) {                                                                                                                                                                                          react-hooks/immutability
+   36:9   error    Error: Cannot access variable before it is declared
+
+`checkAuth` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\[id]\page.tsx:36:9
+  34 |     useEffect(() => {
+  35 |         fetchTherapist();
+> 36 |         checkAuth();
+     |         ^^^^^^^^^ `checkAuth` accessed before it is declared
+  37 |     }, [params.id]);
+  38 |
+  39 |     const checkAuth = async () => {
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\[id]\page.tsx:39:5
+  37 |     }, [params.id]);
+  38 |
+> 39 |     const checkAuth = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |         const supabase = createClient();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |         const { data: { session } } = await supabase.auth.getSession();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 42 |         setIsAuthenticated(!!session);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 43 |         setUser(session?.user || null);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 44 |     };
+     | ^^^^^^^ `checkAuth` is declared here
+  45 |
+  46 |     const fetchTherapist = async () => {
+  47 |         const supabase = createClient();  react-hooks/immutability
+   37:8   warning  React Hook useEffect has a missing dependency: 'fetchTherapist'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+   96:73  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  104:11  warning  'handleBookAppointment' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+  168:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @next/next/no-img-element
+  261:76  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  299:54  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\app\terapeuti\page.tsx
+  22:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\bookings\BookingChat.tsx
+   60:8  warning  React Hook useEffect has missing dependencies: 'fetchMessages' and 'supabase'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  107:8  warning  React Hook useEffect has a missing dependency: 'markAsRead'. Either include it or remove the dependency array                      react-hooks/exhaustive-deps
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\bookings\BookingModal.tsx
+   49:38  error    Unexpected any. Specify a different type                                                                    @typescript-eslint/no-explicit-any
+  103:8   warning  React Hook useEffect has a missing dependency: 'offerId'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\dashboard\AdminDashboard.tsx
+    5:41  warning  'CardTitle' is defined but never used                            @typescript-eslint/no-unused-vars
+   10:20  warning  'Loader2' is defined but never used                              @typescript-eslint/no-unused-vars
+   10:29  warning  'FileText' is defined but never used                             @typescript-eslint/no-unused-vars
+   10:78  warning  'BarChart3' is defined but never used                            @typescript-eslint/no-unused-vars
+   15:5   warning  'DialogDescription' is defined but never used                    @typescript-eslint/no-unused-vars
+   23:10  warning  'ExternalLink' is defined but never used                         @typescript-eslint/no-unused-vars
+   23:24  warning  'Eye' is defined but never used                                  @typescript-eslint/no-unused-vars
+   26:50  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   27:54  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   28:70  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   29:50  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   30:50  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   31:40  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   32:66  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   42:12  warning  'loading' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+  197:47  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  231:36  warning  'isExisting' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  305:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  342:11  warning  'handleSendEmail' is assigned a value but never used             @typescript-eslint/no-unused-vars
+  365:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  399:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  407:39  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  519:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  595:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  636:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  667:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  908:46  error    'MapPin' is not defined                                          react/jsx-no-undef
+  991:41  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  991:59  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\dashboard\BusinessDashboard.tsx
+  423:21  error  Parsing error: JSX element 'div' has no corresponding closing tag
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\dashboard\ClientDashboard.tsx
+   22:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   23:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   26:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   27:74  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:63  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   67:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\dashboard\ClientSettings.tsx
+   10:19  warning  'Save' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   13:50  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   30:8   warning  React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   36:23  warning  'error' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+   81:25  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  112:25  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  134:25  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  164:25  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\dashboard\TherapistDashboard.tsx
+    7:10   warning  'DashboardEmptyState' is defined but never used                                                               @typescript-eslint/no-unused-vars
+   10:82   warning  'LogOut' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+   10:90   warning  'FileText' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   10:100  warning  'Bell' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+   10:106  warning  'Settings' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   19:54   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   20:44   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   21:54   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   26:74   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   31:8    warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   84:72   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   86:25   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  147:25   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  160:25   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  170:25   error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  815:14   error    'Dialog' is not defined                                                                                       react/jsx-no-undef
+  821:18   error    'DialogContent' is not defined                                                                                react/jsx-no-undef
+  822:22   error    'DialogHeader' is not defined                                                                                 react/jsx-no-undef
+  823:26   error    'DialogTitle' is not defined                                                                                  react/jsx-no-undef
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\offers\OfferCard.tsx
+   2:10  warning  'Calendar' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  25:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\offers\OfferFilters.tsx
+   9:5   warning  'SelectValue' is defined but never used   @typescript-eslint/no-unused-vars
+  83:73  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\offers\OfferForm.tsx
+   12:10  warning  'Select' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   12:18  warning  'SelectContent' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   12:33  warning  'SelectItem' is defined but never used                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   12:45  warning  'SelectTrigger' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   12:60  warning  'SelectValue' is defined but never used                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   28:69  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   67:11  warning  'addSlot' is assigned a value but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   87:11  warning  'addBulkSlots' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  115:11  warning  'updateSlot' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  138:51  warning  'uploadData' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  153:30  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  218:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  383:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\therapists\RecruitmentCard.tsx
+  4:10  warning  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\therapists\TherapistCard.tsx
+  25:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\features\therapists\TherapistFilters.tsx
+  9:5  warning  'SelectValue' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\layout\Header.tsx
+  13:38  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  18:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\layout\Header.tsx:18:9
+  16 |
+  17 |     useEffect(() => {
+> 18 |         setMounted(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |
+  20 |         // Skip auth if Supabase not configured
+  21 |         if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {  react-hooks/set-state-in-effect
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\ui\ImageUpload.tsx
+  46:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  65:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  83:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\ui\calendar.tsx
+  57:33  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+  58:34  warning  'props' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\ui\input.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\components\ui\textarea.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\lib\storage.ts
+  53:13  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\src\lib\supabase\middleware.ts
+  18:58  warning  'options' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\user\.gemini\antigravity\scratch\terapie-md\supabase\scripts\force_password.ts
+  44:19  warning  'updateData' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+тЬЦ 171 problems (100 errors, 71 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

@@ -264,17 +264,37 @@ export default function OfferDetailsPage() {
                     <div className="rounded-xl border bg-card p-6 shadow-sm">
                         <h3 className="font-semibold mb-4">Despre Furnizor</h3>
                         <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 overflow-hidden rounded-full bg-muted">
-                                {providerImage ? (
-                                    <img src={providerImage} alt={providerName} className="h-full w-full object-cover" />
+                            <div className="h-12 w-12 overflow-hidden rounded-full bg-muted hover:opacity-80 transition-opacity">
+                                {offer.business?.id ? (
+                                    <Link href={`/business/${offer.business.id}`}>
+                                        {providerImage ? (
+                                            <img src={providerImage} alt={providerName} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-bold">
+                                                {providerName[0]}
+                                            </div>
+                                        )}
+                                    </Link>
                                 ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-bold">
-                                        {providerName[0]}
-                                    </div>
+                                    <>
+                                        {providerImage ? (
+                                            <img src={providerImage} alt={providerName} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-bold">
+                                                {providerName[0]}
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                             <div>
-                                <div className="font-medium">{providerName}</div>
+                                {offer.business?.id ? (
+                                    <Link href={`/business/${offer.business.id}`} className="font-medium hover:underline hover:text-primary transition-colors">
+                                        {providerName}
+                                    </Link>
+                                ) : (
+                                    <div className="font-medium">{providerName}</div>
+                                )}
                                 <div className="flex items-center text-sm text-muted-foreground">
                                     <span className="font-bold text-foreground mr-1">{rating}</span>
                                     <span className="text-yellow-500 mr-1">★</span>

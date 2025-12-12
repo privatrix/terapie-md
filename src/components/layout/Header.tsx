@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +13,25 @@ export function Header() {
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const lastScrollY = useRef(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            // Hide on scroll down (if > 10px), show on scroll up
+            if (currentScrollY > lastScrollY.current && currentScrollY > 10) {
+                setIsVisible(false);
+            } else {
+                setIsVisible(true);
+            }
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     useEffect(() => {
         setMounted(true);
@@ -48,7 +67,7 @@ export function Header() {
 
     return (
         <>
-            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
                 <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
                     <Link href="/" className="flex items-center gap-2">
                         <span className="font-heading text-xl font-bold text-primary">
@@ -110,7 +129,7 @@ export function Header() {
             </header>
 
             {mounted && mobileMenuOpen && createPortal(
-                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50 md:hidden animate-mobile-enter">
+                <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50 md:hidden animate-mobile-enter" suppressHydrationWarning>
                     <Button
                         variant="ghost"
                         size="icon"

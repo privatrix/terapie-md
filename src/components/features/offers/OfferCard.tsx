@@ -15,11 +15,15 @@ interface OfferProps {
     tags: string[];
     rating?: number;
     reviewCount?: number;
+    providerImage?: string;
 }
 
 export function OfferCard({ offer }: { offer: OfferProps }) {
     return (
-        <div className="group flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md">
+        <Link
+            href={`/oferte/${offer.id}`}
+            className="group flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer"
+        >
             <div className="aspect-video w-full overflow-hidden bg-muted relative">
                 {offer.image ? (
                     <img
@@ -40,7 +44,14 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
             </div>
             <div className="flex flex-1 flex-col p-6">
                 <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="font-medium text-primary">{offer.provider}</span>
+                    <div className="flex items-center gap-2">
+                        {offer.providerImage && (
+                            <div className="h-6 w-6 rounded-full overflow-hidden border bg-muted">
+                                <img src={offer.providerImage} alt={offer.provider} className="h-full w-full object-cover" />
+                            </div>
+                        )}
+                        <span className="font-medium text-primary">{offer.provider}</span>
+                    </div>
                     <div className="flex items-center gap-1">
                         <span className="font-bold text-foreground">{offer.rating || 0}</span>
                         <span className="text-yellow-500">★</span>
@@ -65,7 +76,7 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
                     ))}
                 </div>
 
-                <div className="mt-auto space-y-4">
+                <div className="mt-auto space-y-4 pt-4 border-t">
                     <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4" />
@@ -77,21 +88,21 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t pt-4">
-                        <div className="flex flex-col">
+                    <div className="flex flex-col gap-3">
+                        <div className="flex items-baseline gap-2">
                             <span className="text-lg font-bold">{offer.price}</span>
                             {offer.originalPrice && (
-                                <span className="text-xs text-muted-foreground line-through">
+                                <span className="text-sm text-muted-foreground line-through">
                                     {offer.originalPrice}
                                 </span>
                             )}
                         </div>
-                        <Button asChild size="sm">
-                            <Link href={`/oferte/${offer.id}`}>Detalii</Link>
+                        <Button className="w-full" size="lg">
+                            <span className="pointer-events-none">Vezi Oferta</span>
                         </Button>
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }

@@ -221,17 +221,12 @@ export function BookingModal({
                                             <p className="text-sm font-medium text-center">
                                                 Nu găsești un loc potrivit?
                                             </p>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="w-full max-w-[240px] border-primary/50 hover:bg-primary/5 text-primary"
-                                                onClick={() => {
-                                                    // In a real app, this would save to a 'waitlist' table
-                                                    alert("Te-ai înscris cu succes pe lista de așteptare! Te vom anunța când se eliberează un loc.");
-                                                }}
-                                            >
-                                                Înscrie-te pe lista de așteptare
-                                            </Button>
+                                            <p className="text-sm font-medium text-center">
+                                                Nu găsești un loc potrivit?
+                                            </p>
+                                            <p className="text-xs text-muted-foreground text-center px-4">
+                                                Încearcă să alegi o altă dată din calendar.
+                                            </p>
                                         </div>
                                     ) : (
                                         availableSlots.map((t) => (

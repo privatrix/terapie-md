@@ -80,8 +80,8 @@ export default function OffersPage() {
                 .from("offers")
                 .select(`
                     *,
-                    therapist:therapist_profiles(name, rating, review_count),
-                    business:business_profiles(company_name, rating, review_count)
+                    therapist:therapist_profiles(name, rating, review_count, photo_url),
+                    business:business_profiles(company_name, rating, review_count, logo_url)
                 `)
                 .eq("active", true)
                 .order("created_at", { ascending: false });
@@ -100,7 +100,8 @@ export default function OffersPage() {
                 tags: offer.tags || [],
                 image: offer.image_url || "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop",
                 rating: offer.business?.rating || offer.therapist?.rating || 0,
-                reviewCount: offer.business?.review_count || offer.therapist?.review_count || 0
+                reviewCount: offer.business?.review_count || offer.therapist?.review_count || 0,
+                providerImage: offer.business?.logo_url || offer.therapist?.photo_url
             }));
 
             setOffers(formattedOffers);
@@ -126,16 +127,11 @@ export default function OffersPage() {
         }
 
         // Location filter
-        if (locationFilter) {
-            if (locationFilter === "online") {
-                result = result.filter((o) => o.location.toLowerCase() === "online");
-            } else if (locationFilter === "chisinau") {
-                result = result.filter((o) => o.location.toLowerCase().includes("chișinău"));
-            } else if (locationFilter === "other") {
-                result = result.filter(
-                    (o) => !o.location.toLowerCase().includes("chișinău") && o.location.toLowerCase() !== "online"
-                );
-            }
+        // Location filter
+        if (locationFilter && locationFilter !== "all") {
+            result = result.filter((o) =>
+                o.location.toLowerCase().includes(locationFilter.toLowerCase())
+            );
         }
 
         // Sorting
@@ -201,11 +197,17 @@ export default function OffersPage() {
 
             {
                 filteredAndSortedOffers.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <p className="text-lg font-medium">Nicio ofertă găsită</p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                            Încearcă să modifici criteriile de căutare
-                        </p>
+                    <div className="space-y-12">
+                        <div className="flex flex-col items-center justify-center py-16 text-center border-b border-dashed">
+                            <p className="text-lg font-medium">Nicio ofertă găsită</p>
+                            <p className="mt-2 text-sm text-muted-foreground">
+                                Încearcă să modifici criteriile de căutare
+                            </p>
+                        </div>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <RecruitmentOfferCard />
+                            <RecruitmentOfferCard />
+                        </div>
                     </div>
                 ) : (
                     <>

@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardStatsCard } from "@/components/dashboard/DashboardStatsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Edit, Save, X, Trash2, Check, XCircle, User, Calendar, MessageSquare } from "lucide-react";
+import { Loader2, Plus, Edit, Save, X, Trash2, Check, XCircle, User, Calendar, MessageSquare, FileText, Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ShareButton } from "@/components/common/ShareButton";
 import { BookingChat } from "@/components/features/bookings/BookingChat";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CITIES } from "@/lib/constants";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export function BusinessDashboard({ user }: { user: any }) {
@@ -203,200 +206,225 @@ export function BusinessDashboard({ user }: { user: any }) {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Panou Business</h2>
-                <Badge variant={profile.verified ? "default" : "secondary"}>
-                    {profile.verified ? "Verificat" : "În așteptare"}
-                </Badge>
+            <div className="flex flex-row justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900">Panou Business</h1>
+                <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-muted-foreground hidden md:inline-block">{profile?.company_name || user?.email}</span>
+                    <Badge variant={profile.verified ? "default" : "secondary"}>
+                        {profile.verified ? "Verificat" : "În așteptare"}
+                    </Badge>
+                </div>
+            </div>
+
+            {/* Statistics Section */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                <DashboardStatsCard
+                    title="Total Programări"
+                    value={appointments.length}
+                    icon={Calendar}
+                    description="Toate programările"
+                    iconColor="text-blue-600"
+                    iconBgColor="bg-blue-100"
+                />
+                <DashboardStatsCard
+                    title="Oferte Active"
+                    value={offers.length}
+                    icon={FileText} // Need to import FileText or similar
+                    description="Oferte publicate"
+                    iconColor="text-purple-600"
+                    iconBgColor="bg-purple-100"
+                />
+                <DashboardStatsCard
+                    title="Mesaje Noi"
+                    value={appointments.reduce((acc, curr) => acc + (curr.unreadCount || 0), 0)}
+                    icon={MessageSquare}
+                    description="Mesaje necitite"
+                    iconColor="text-pink-600"
+                    iconBgColor="bg-pink-100"
+                />
             </div>
 
             <Tabs defaultValue="bookings" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="bookings">Programări</TabsTrigger>
-                    <TabsTrigger value="offers">Oferte</TabsTrigger>
-                    <TabsTrigger value="profile">Profil</TabsTrigger>
-                    <TabsTrigger value="settings">Setări</TabsTrigger>
+                <TabsList className="w-fit max-w-full justify-start h-auto p-1 bg-gray-100/80 border border-gray-200 rounded-full mb-6 gap-1 overflow-x-auto no-scrollbar flex-nowrap shrink-0">
+                    <TabsTrigger value="bookings" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Programări</TabsTrigger>
+                    <TabsTrigger value="offers" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Oferte</TabsTrigger>
+                    <TabsTrigger value="profile" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Profil</TabsTrigger>
+                    <TabsTrigger value="settings" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Setări</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="bookings" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Programări ({appointments.length})</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {appointments.length === 0 ? (
-                                <p className="text-muted-foreground text-center py-4">Nu aveți programări încă.</p>
-                            ) : (
-                                <div className="space-y-4">
-                                    {appointments.map((apt) => (
-                                        <div key={apt.id} className="flex justify-between items-center p-4 border rounded-lg">
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <User className="h-4 w-4 text-muted-foreground" />
-                                                    <span className="font-medium">{apt.client?.name || apt.client?.email || "Client"}</span>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {new Date(apt.date).toLocaleDateString()} • {apt.time}
-                                                </p>
-                                                <p className="text-sm font-medium mt-1">
-                                                    {apt.offer?.title || "Ofertă"}
-                                                </p>
-                                                {apt.notes && (
-                                                    <p className="text-sm text-muted-foreground mt-1">Note: {apt.notes}</p>
-                                                )}
-                                                <div className="pt-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="relative"
-                                                        onClick={() => setSelectedBookingForChat(apt)}
-                                                    >
-                                                        <MessageSquare className="h-4 w-4 mr-2" />
-                                                        Mesaje
-                                                        {apt.unreadCount > 0 && (
-                                                            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse z-10 shadow-sm border border-white">
-                                                                {apt.unreadCount}
-                                                            </span>
-                                                        )}
-                                                    </Button>
-                                                </div>
-                                            </div>
+                <TabsContent value="bookings" className="mt-0">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Programări ({appointments.length})</h2>
+                        </div>
+                        {appointments.length === 0 ? (
+                            <p className="text-muted-foreground text-center py-4">Nu aveți programări încă.</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {appointments.map((apt) => (
+                                    <div key={apt.id} className="flex justify-between items-center p-4 border rounded-lg">
+                                        <div>
                                             <div className="flex items-center gap-2">
-                                                <Badge variant={
-                                                    apt.status === "confirmed" ? "default" :
-                                                        apt.status === "cancelled" ? "destructive" :
-                                                            apt.status === "completed" ? "outline" : "secondary"
-                                                }>
-                                                    {apt.status === "pending" ? "În așteptare" :
-                                                        apt.status === "confirmed" ? "Confirmat" :
-                                                            apt.status === "completed" ? "Finalizat" : "Anulat"}
-                                                </Badge>
-
-                                                {apt.status === "pending" && (
-                                                    <div className="flex gap-1 ml-2">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                                                            onClick={() => {
-                                                                const message = prompt("Mesaj pentru client (opțional):");
-                                                                if (message !== null) {
-                                                                    handleBookingStatus(apt.id, 'confirmed', message);
-                                                                }
-                                                            }}
-                                                            title="Confirmă"
-                                                        >
-                                                            <Check className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                            onClick={() => {
-                                                                const reason = prompt("Motivul respingerii (opțional):");
-                                                                if (reason !== null) {
-                                                                    handleBookingStatus(apt.id, 'cancelled', reason);
-                                                                }
-                                                            }}
-                                                            title="Respinge"
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                )}
-
-                                                {apt.status === "confirmed" && (
-                                                    <div className="flex gap-1 ml-2">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                                            onClick={() => {
-                                                                if (confirm("Marchezi această ședință ca fiind finalizată?")) {
-                                                                    handleBookingStatus(apt.id, 'completed');
-                                                                }
-                                                            }}
-                                                            title="Finalizează"
-                                                        >
-                                                            <Check className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                            onClick={() => {
-                                                                const reason = prompt("Motivul anulării:");
-                                                                if (reason !== null) {
-                                                                    handleBookingStatus(apt.id, 'cancelled', reason);
-                                                                }
-                                                            }}
-                                                            title="Anulează"
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                )}
+                                                <User className="h-4 w-4 text-muted-foreground" />
+                                                <span className="font-medium">{apt.client?.name || apt.client?.email || "Client"}</span>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                {new Date(apt.date).toLocaleDateString()} • {apt.time}
+                                            </p>
+                                            <p className="text-sm font-medium mt-1">
+                                                {apt.offer?.title || "Ofertă"}
+                                            </p>
+                                            {apt.notes && (
+                                                <p className="text-sm text-muted-foreground mt-1">Note: {apt.notes}</p>
+                                            )}
+                                            <div className="pt-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="relative"
+                                                    onClick={() => setSelectedBookingForChat(apt)}
+                                                >
+                                                    <MessageSquare className="h-4 w-4 mr-2" />
+                                                    Mesaje
+                                                    {apt.unreadCount > 0 && (
+                                                        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse z-10 shadow-sm border border-white">
+                                                            {apt.unreadCount}
+                                                        </span>
+                                                    )}
+                                                </Button>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant={
+                                                apt.status === "confirmed" ? "default" :
+                                                    apt.status === "cancelled" ? "destructive" :
+                                                        apt.status === "completed" ? "outline" : "secondary"
+                                            }>
+                                                {apt.status === "pending" ? "În așteptare" :
+                                                    apt.status === "confirmed" ? "Confirmat" :
+                                                        apt.status === "completed" ? "Finalizat" : "Anulat"}
+                                            </Badge>
+
+                                            {apt.status === "pending" && (
+                                                <div className="flex gap-1 ml-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                        onClick={() => {
+                                                            const message = prompt("Mesaj pentru client (opțional):");
+                                                            if (message !== null) {
+                                                                handleBookingStatus(apt.id, 'confirmed', message);
+                                                            }
+                                                        }}
+                                                        title="Confirmă"
+                                                    >
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            const reason = prompt("Motivul respingerii (opțional):");
+                                                            if (reason !== null) {
+                                                                handleBookingStatus(apt.id, 'cancelled', reason);
+                                                            }
+                                                        }}
+                                                        title="Respinge"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            )}
+
+                                            {apt.status === "confirmed" && (
+                                                <div className="flex gap-1 ml-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                        onClick={() => {
+                                                            if (confirm("Marchezi această ședință ca fiind finalizată?")) {
+                                                                handleBookingStatus(apt.id, 'completed');
+                                                            }
+                                                        }}
+                                                        title="Finalizează"
+                                                    >
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            const reason = prompt("Motivul anulării:");
+                                                            if (reason !== null) {
+                                                                handleBookingStatus(apt.id, 'cancelled', reason);
+                                                            }
+                                                        }}
+                                                        title="Anulează"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </TabsContent>
 
-                <TabsContent value="offers" className="space-y-4">
-                    {/* Offers Management */}
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Ofertele Mele ({offers.length})</CardTitle>
+                <TabsContent value="offers" className="mt-0">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                        <div className="flex flex-row items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Ofertele Mele ({offers.length})</h2>
                             <Button asChild>
                                 <Link href="/oferte/nou">
                                     <Plus className="h-4 w-4 mr-2" />
                                     Adaugă Ofertă
                                 </Link>
                             </Button>
-                        </CardHeader>
-                        <CardContent>
-                            {offers.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    Nu aveți nicio ofertă activă. Adăugați prima ofertă pentru a atrage clienți!
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {offers.map((offer) => (
-                                        <div key={offer.id} className="flex items-center justify-between p-4 border rounded-lg">
-                                            <div>
-                                                <h4 className="font-medium">{offer.title}</h4>
-                                                <p className="text-sm text-muted-foreground">{offer.price} MDL • {offer.duration}</p>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <Button variant="ghost" size="sm" asChild>
-                                                    <Link href={`/oferte/${offer.id}/edit`}>
-                                                        <Edit className="h-4 w-4" />
-                                                    </Link>
-                                                </Button>
-                                                <ShareButton
-                                                    url={`${typeof window !== 'undefined' ? window.location.origin : ''}/oferte/${offer.id}`}
-                                                    title={offer.title}
-                                                />
-                                                <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDeleteOffer(offer.id)}>
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
+                        </div>
+                        {offers.length === 0 ? (
+                            <div className="text-center py-8 text-muted-foreground">
+                                Nu aveți nicio ofertă activă. Adăugați prima ofertă pentru a atrage clienți!
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {offers.map((offer) => (
+                                    <div key={offer.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                        <div>
+                                            <h4 className="font-medium">{offer.title}</h4>
+                                            <p className="text-sm text-muted-foreground">{offer.price} MDL • {offer.duration}</p>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                        <div className="flex gap-2">
+                                            <Button variant="ghost" size="sm" asChild>
+                                                <Link href={`/oferte/${offer.id}/edit`}>
+                                                    <Edit className="h-4 w-4" />
+                                                </Link>
+                                            </Button>
+                                            <ShareButton
+                                                url={`${typeof window !== 'undefined' ? window.location.origin : ''}/oferte/${offer.id}`}
+                                                title={offer.title}
+                                            />
+                                            <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDeleteOffer(offer.id)}>
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </TabsContent>
 
-                <TabsContent value="profile" className="space-y-4">
-                    {/* Profile Management */}
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Profil Companie</CardTitle>
+                <TabsContent value="profile" className="mt-0">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                        <div className="flex flex-row items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Profil Companie</h2>
                             {!editing ? (
                                 <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
                                     <Edit className="h-4 w-4 mr-2" />
@@ -430,8 +458,27 @@ export function BusinessDashboard({ user }: { user: any }) {
                                     </Button>
                                 </div>
                             )}
-                        </CardHeader>
-                        <CardContent className="space-y-6">
+                        </div>
+                        <div className="space-y-6">
+                            <div className="flex flex-col items-center justify-center mb-6">
+                                <label className="text-sm font-medium mb-2">Logo Companie</label>
+                                {editing ? (
+                                    <ImageUpload
+                                        value={profile.logo_url}
+                                        onChange={(url) => setProfile({ ...profile, logo_url: url })}
+                                        onRemove={() => setProfile({ ...profile, logo_url: "" })}
+                                        bucket="business-logos"
+                                    />
+                                ) : (
+                                    <div className="h-24 w-24 rounded-full overflow-hidden border bg-muted flex items-center justify-center">
+                                        {profile.logo_url ? (
+                                            <img src={profile.logo_url} alt="Logo" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <Building2 className="h-10 w-10 text-muted-foreground" />
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div>
                                     <label className="text-sm font-medium">Nume Companie</label>
@@ -503,16 +550,37 @@ export function BusinessDashboard({ user }: { user: any }) {
                                     )}
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            <div>
+                                <label className="text-sm font-medium">Locație</label>
+                                {editing ? (
+                                    <Select
+                                        value={profile.location || ""}
+                                        onValueChange={(value) => setProfile({ ...profile, location: value })}
+                                    >
+                                        <SelectTrigger className="w-full mt-1">
+                                            <SelectValue placeholder="Selectează orașul" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {CITIES.map((city) => (
+                                                <SelectItem key={city} value={city}>{city}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                ) : (
+                                    <p className="text-muted-foreground mt-1">{profile.location || "-"}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </TabsContent>
 
-                <TabsContent value="settings" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Setări Cont</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
+                <TabsContent value="settings" className="mt-0">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Setări Cont</h2>
+                        </div>
+                        <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-0.5">
                                     <label className="text-sm font-medium">Notificări Email</label>
@@ -552,8 +620,8 @@ export function BusinessDashboard({ user }: { user: any }) {
                                     {profile.user?.notification_preferences?.email_booking !== false ? "Activat" : "Dezactivat"}
                                 </Button>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </TabsContent>
             </Tabs>
             <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {

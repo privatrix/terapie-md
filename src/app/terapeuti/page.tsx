@@ -94,16 +94,11 @@ export default function TherapistsPage() {
         }
 
         // Location filter
-        if (locationFilter) {
-            if (locationFilter === "online") {
-                result = result.filter((t) => t.location?.toLowerCase() === "online");
-            } else if (locationFilter === "chisinau") {
-                result = result.filter((t) => t.location?.toLowerCase().includes("chișinău"));
-            } else if (locationFilter === "other") {
-                result = result.filter(
-                    (t) => !t.location?.toLowerCase().includes("chișinău") && t.location?.toLowerCase() !== "online"
-                );
-            }
+        // Location filter
+        if (locationFilter && locationFilter !== "all") {
+            result = result.filter((t) =>
+                t.location?.toLowerCase().includes(locationFilter.toLowerCase())
+            );
         }
 
         // Sorting
@@ -159,11 +154,17 @@ export default function TherapistsPage() {
                     </div>
 
                     {filteredAndSortedTherapists.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <p className="text-lg font-medium">Niciun terapeut găsit</p>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Încearcă să modifici criteriile de căutare
-                            </p>
+                        <div className="space-y-12">
+                            <div className="flex flex-col items-center justify-center py-16 text-center border-b border-dashed">
+                                <p className="text-lg font-medium">Niciun terapeut găsit</p>
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Încearcă să modifici criteriile de căutare
+                                </p>
+                            </div>
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                <TherapistRecruitmentCard />
+                                <TherapistRecruitmentCard />
+                            </div>
                         </div>
                     ) : (
                         <>

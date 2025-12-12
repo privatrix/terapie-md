@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardStatsCard } from "@/components/dashboard/DashboardStatsCard";
+import { DashboardEmptyState } from "@/components/dashboard/DashboardEmptyState";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Save, Edit, X, Check, XCircle, MessageSquare, Calendar, Clock, LogOut, FileText, Bell, Settings, User } from "lucide-react";
@@ -10,13 +13,16 @@ import { useRouter } from "next/navigation";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { uploadProfilePhoto, deleteProfilePhoto, updateTherapistPhoto } from "@/lib/storage";
 import { BookingChat } from "@/components/features/bookings/BookingChat";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { ShareButton } from "@/components/common/ShareButton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CITIES, THERAPIST_SPECIALIZATIONS } from "@/lib/constants";
 
 export function TherapistDashboard({ user }: { user: any }) {
     const [profile, setProfile] = useState<any>(null);
     const [appointments, setAppointments] = useState<any[]>([]);
+
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const [editingSchedule, setEditingSchedule] = useState(false);
@@ -52,6 +58,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                     notes: "Prima sesiune"
                 }
             ]);
+
             setLoading(false);
             return;
         }
@@ -87,6 +94,8 @@ export function TherapistDashboard({ user }: { user: any }) {
             });
 
             setAppointments(bookingsWithUnread || []);
+
+
         }
 
         setProfile(profileData);
@@ -192,6 +201,8 @@ export function TherapistDashboard({ user }: { user: any }) {
         }
     };
 
+
+
     if (loading) {
         return (
             <div className="space-y-6">
@@ -240,73 +251,47 @@ export function TherapistDashboard({ user }: { user: any }) {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Dashboard Terapeut</h2>
-                <Badge>Terapeut</Badge>
+            <div className="flex flex-row justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900">Dashboard Terapeut</h1>
+                <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-muted-foreground hidden md:inline-block">{profile?.name || user?.email}</span>
+                    <Badge>Terapeut</Badge>
+                </div>
             </div>
 
             {/* Statistics Section */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Programări</CardTitle>
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{appointments.length}</div>
-                        <p className="text-xs text-muted-foreground">
-                            {appointments.filter(a => a.status === 'completed').length} finalizate
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">În Așteptare</CardTitle>
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.filter(a => a.status === 'pending').length}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Necesită confirmare
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Confirmate</CardTitle>
-                        <Check className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.filter(a => a.status === 'confirmed').length}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Urmează să aibă loc
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Mesaje Noi</CardTitle>
-                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {appointments.reduce((acc, curr) => acc + (curr.unreadCount || 0), 0)}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Mesaje necitite
-                        </p>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <DashboardStatsCard
+                    title="Total Programări"
+                    value={appointments.length}
+                    icon={Calendar}
+                    description={`${appointments.filter(a => a.status === 'completed').length} finalizate`}
+                    iconColor="text-blue-600"
+                    iconBgColor="bg-blue-100"
+                />
+                <DashboardStatsCard
+                    title="În Așteptare"
+                    value={appointments.filter(a => a.status === 'pending').length}
+                    icon={Clock}
+                    description="Necesită confirmare"
+                    iconColor="text-orange-600"
+                    iconBgColor="bg-orange-100"
+                />
+                <DashboardStatsCard
+                    title="Confirmate"
+                    value={appointments.filter(a => a.status === 'confirmed').length}
+                    icon={Check}
+                    description="Urmează să aibă loc"
+                    iconColor="text-green-600"
+                    iconBgColor="bg-green-100"
+                />
+
             </div>
 
             {/* Profile Management */}
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Profilul Meu</CardTitle>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <div className="flex flex-row items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Profilul Meu</h2>
                     {!editing ? (
                         <div className="flex gap-2">
                             <ShareButton
@@ -346,8 +331,8 @@ export function TherapistDashboard({ user }: { user: any }) {
                             </Button>
                         </div>
                     )}
-                </CardHeader>
-                <CardContent className="space-y-6">
+                </div>
+                <div className="space-y-6">
                     {/* Photo Upload Section */}
                     {editing && (
                         <div className="pb-6 border-b">
@@ -376,12 +361,12 @@ export function TherapistDashboard({ user }: { user: any }) {
                             )}
                         </div>
 
-                        {/* Specializations (Roles) - Replacing simple Title input */}
+                        {/* Specializations (Roles) */}
                         <div>
                             <label className="text-sm font-medium">Tip Specialist (Roluri)</label>
                             {editing ? (
                                 <div className="mt-1 flex flex-wrap gap-2">
-                                    {PROFESSIONAL_ROLES.map((role) => {
+                                    {THERAPIST_SPECIALIZATIONS.map((role) => {
                                         const isSelected = profile.specializations?.includes(role);
                                         return (
                                             <div
@@ -412,13 +397,16 @@ export function TherapistDashboard({ user }: { user: any }) {
                         <div>
                             <label className="text-sm font-medium">Cod Parafă (Medical Code)</label>
                             {editing ? (
-                                <input
-                                    type="text"
-                                    className="w-full mt-1 px-3 py-2 border rounded-md"
-                                    value={profile.medical_code || ""}
-                                    onChange={(e) => setProfile({ ...profile, medical_code: e.target.value })}
-                                    placeholder="Ex: 123456"
-                                />
+                                <div className="space-y-1">
+                                    <input
+                                        type="text"
+                                        className="w-full mt-1 px-3 py-2 border rounded-md"
+                                        value={profile.medical_code || ""}
+                                        onChange={(e) => setProfile({ ...profile, medical_code: e.target.value })}
+                                        placeholder="Ex: 123456"
+                                    />
+                                    {!profile.medical_code && <p className="text-xs text-red-500">Obligatoriu pentru Psihiatri</p>}
+                                </div>
                             ) : (
                                 <p className="text-muted-foreground mt-1">{profile.medical_code || "Nu este setat"}</p>
                             )}
@@ -443,12 +431,19 @@ export function TherapistDashboard({ user }: { user: any }) {
                         <div>
                             <label className="text-sm font-medium">Locație</label>
                             {editing ? (
-                                <input
-                                    type="text"
-                                    className="w-full mt-1 px-3 py-2 border rounded-md"
+                                <Select
                                     value={profile.location || ""}
-                                    onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                                />
+                                    onValueChange={(value) => setProfile({ ...profile, location: value })}
+                                >
+                                    <SelectTrigger className="w-full mt-1">
+                                        <SelectValue placeholder="Selectează orașul" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {CITIES.map((city) => (
+                                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             ) : (
                                 <p className="text-muted-foreground mt-1">{profile.location}</p>
                             )}
@@ -483,15 +478,13 @@ export function TherapistDashboard({ user }: { user: any }) {
                             <p className="text-muted-foreground mt-1">{profile.availability}</p>
                         )}
                     </div>
-
-
-                </CardContent >
-            </Card >
+                </div>
+            </div>
 
             {/* Availability Management - Dedicated Card */}
-            < Card >
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Programul Meu</CardTitle>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <div className="flex flex-row items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Programul Meu</h2>
                     {!editingSchedule ? (
                         <Button variant="outline" size="sm" onClick={() => setEditingSchedule(true)}>
                             <Edit className="h-4 w-4 mr-2" />
@@ -525,8 +518,8 @@ export function TherapistDashboard({ user }: { user: any }) {
                             </Button>
                         </div>
                     )}
-                </CardHeader>
-                <CardContent>
+                </div>
+                <div>
                     <div>
                         <p className="text-sm text-muted-foreground mb-4">
                             Configurează programul pentru fiecare zi a săptămânii.
@@ -642,63 +635,56 @@ export function TherapistDashboard({ user }: { user: any }) {
                             * Programările confirmate vor bloca automat intervalul respectiv pentru data specifică.
                         </p>
                     </div>
-                </CardContent>
-            </Card >
-
-            {/* Notification Settings */}
-            < Card >
-                <CardHeader>
-                    <CardTitle>Setări Notificări</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <label className="text-sm font-medium">Notificări Email</label>
-                            <p className="text-sm text-muted-foreground">
-                                Primește emailuri când primești mesaje noi de la clienți.
-                            </p>
-                        </div>
-                        <Button
-                            variant={profile.user?.notification_preferences?.email_booking !== false ? "default" : "outline"}
-                            onClick={async () => {
-                                const current = profile.user?.notification_preferences?.email_booking !== false;
-                                const supabase = createClient();
-                                const { error } = await supabase
-                                    .from("users")
-                                    .update({
-                                        notification_preferences: {
-                                            ...profile.user?.notification_preferences,
-                                            email_booking: !current
-                                        }
-                                    })
-                                    .eq("id", user.id);
-
-                                if (!error) {
-                                    setProfile({
-                                        ...profile,
-                                        user: {
-                                            ...profile.user,
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-0.5">
+                                <label className="text-sm font-medium">Notificări Email</label>
+                                <p className="text-sm text-muted-foreground">
+                                    Primește emailuri când primești mesaje noi de la clienți.
+                                </p>
+                            </div>
+                            <Button
+                                variant={profile.user?.notification_preferences?.email_booking !== false ? "default" : "outline"}
+                                onClick={async () => {
+                                    const current = profile.user?.notification_preferences?.email_booking !== false;
+                                    const supabase = createClient();
+                                    const { error } = await supabase
+                                        .from("users")
+                                        .update({
                                             notification_preferences: {
                                                 ...profile.user?.notification_preferences,
                                                 email_booking: !current
                                             }
-                                        }
-                                    });
-                                }
-                            }}
-                        >
-                            {profile.user?.notification_preferences?.email_booking !== false ? "Activat" : "Dezactivat"}
-                        </Button>
+                                        })
+                                        .eq("id", user.id);
+
+                                    if (!error) {
+                                        setProfile({
+                                            ...profile,
+                                            user: {
+                                                ...profile.user,
+                                                notification_preferences: {
+                                                    ...profile.user?.notification_preferences,
+                                                    email_booking: !current
+                                                }
+                                            }
+                                        });
+                                    }
+                                }}
+                            >
+                                {profile.user?.notification_preferences?.email_booking !== false ? "Activat" : "Dezactivat"}
+                            </Button>
+                        </div>
                     </div>
-                </CardContent>
-            </Card >
+                </div>
+            </div>
 
             {/* Upcoming Appointments */}
-            < Card >
-                <CardHeader>
-                    <CardTitle>Programări ({appointments.length})</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Programări ({appointments.length})</h2>
+                </div>
+                <div>
                     {appointments.length === 0 ? (
                         <p className="text-muted-foreground text-center py-4">Nu ai programări viitoare.</p>
                     ) : (
@@ -826,8 +812,8 @@ export function TherapistDashboard({ user }: { user: any }) {
                             ))}
                         </div>
                     )}
-                </CardContent>
-            </Card >
+                </div>
+            </div>
 
             <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
                 if (!open) {

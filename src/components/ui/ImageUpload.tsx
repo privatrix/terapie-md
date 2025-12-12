@@ -4,16 +4,33 @@ import { useState, useRef } from 'react';
 import { Upload, X, Loader2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { validateImageFile } from '@/lib/storage';
+import { createClient } from '@/lib/supabase/client';
 
 interface ImageUploadProps {
-    currentImage?: string | null;
-    onUpload: (file: File) => Promise<void>;
-    onDelete?: () => Promise<void>;
+    value?: string | null;
+    onChange?: (url: string) => void;
+    onRemove?: () => void;
+    currentImage?: string | null; // Deprecated, use value
+    onUpload?: (file: File) => Promise<void>; // Deprecated, use bucket + onChange
+    onDelete?: () => Promise<void>; // Deprecated, use onRemove
     disabled?: boolean;
+    bucket?: string;
 }
 
-export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: ImageUploadProps) {
-    const [preview, setPreview] = useState<string | null>(currentImage || null);
+export function ImageUpload({
+    value,
+    onChange,
+    onRemove,
+    currentImage,
+    onUpload,
+    onDelete,
+    disabled,
+    bucket
+}: ImageUploadProps) {
+    // Support both new (value) and old (currentImage) props
+    const imageToDisplay = value || currentImage;
+
+    const [preview, setPreview] = useState<string | null>(imageToDisplay || null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,22 +58,52 @@ export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: Imag
         // Upload
         setUploading(true);
         try {
-            await onUpload(file);
+            if (bucket && onChange) {
+                // Internal upload logic
+                const supabase = createClient();
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from(bucket)
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from(bucket)
+                    .getPublicUrl(filePath);
+
+                onChange(publicUrl);
+            } else if (onUpload) {
+                // External upload logic (legacy)
+                await onUpload(file);
+            } else {
+                throw new Error("Misconfigured ImageUpload: provide bucket+onChange or onUpload");
+            }
+
             setError(null);
         } catch (err: any) {
+            console.error(err);
             setError(err.message || 'Eroare la încărcarea imaginii');
-            setPreview(currentImage || null);
+            setPreview(imageToDisplay || null);
         } finally {
             setUploading(false);
         }
     };
 
     const handleDelete = async () => {
-        if (!onDelete) return;
+        if (!onDelete && !onRemove) return;
 
         setUploading(true);
         try {
-            await onDelete();
+            if (onRemove) {
+                onRemove();
+            } else if (onDelete) {
+                await onDelete();
+            }
+
             setPreview(null);
             setError(null);
             if (fileInputRef.current) {
@@ -74,7 +121,7 @@ export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: Imag
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4" suppressHydrationWarning>
             <div className="flex items-center gap-6">
                 {/* Preview Circle */}
                 <div className="relative">
@@ -110,7 +157,7 @@ export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: Imag
                             {preview ? 'Schimbă Fotografia' : 'Adaugă Fotografie'}
                         </Button>
 
-                        {preview && onDelete && (
+                        {preview && (onDelete || onRemove) && (
                             <Button
                                 type="button"
                                 variant="destructive"
@@ -118,7 +165,7 @@ export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: Imag
                                 disabled={disabled || uploading}
                             >
                                 <X className="w-4 h-4 mr-2" />
-                                Șterge
+                                Şterge
                             </Button>
                         )}
                     </div>
@@ -141,6 +188,7 @@ export function ImageUpload({ currentImage, onUpload, onDelete, disabled }: Imag
                 onChange={handleFileSelect}
                 className="hidden"
                 disabled={disabled || uploading}
+                suppressHydrationWarning
             />
         </div>
     );

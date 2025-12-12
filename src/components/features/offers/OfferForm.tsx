@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Loader2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { CITIES } from "@/lib/constants";
 
 const offerSchema = z.object({
     title: z.string().min(5, "Titlul trebuie să aibă cel puțin 5 caractere"),
@@ -30,7 +31,7 @@ export function OfferForm({ initialData, offerId }: { initialData?: any, offerId
     const [imageFile, setImageFile] = useState<File | null>(null);
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<OfferFormValues>({
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<OfferFormValues>({
         resolver: zodResolver(offerSchema),
         defaultValues: initialData ? {
             title: initialData.title,
@@ -41,6 +42,8 @@ export function OfferForm({ initialData, offerId }: { initialData?: any, offerId
             tags: initialData.tags.join(", "),
         } : undefined,
     });
+
+    const currentLocation = watch("location");
 
     const [availability, setAvailability] = useState<Record<string, string[]>>(
         initialData?.availability || {
@@ -261,7 +264,20 @@ export function OfferForm({ initialData, offerId }: { initialData?: any, offerId
 
                 <div className="space-y-2">
                     <Label htmlFor="location">Locație</Label>
-                    <Input id="location" {...register("location")} placeholder="ex: Online sau Adresa cabinetului" />
+                    <Select
+                        value={currentLocation}
+                        onValueChange={(value) => setValue("location", value, { shouldValidate: true })}
+                    >
+                        <SelectTrigger id="location">
+                            <SelectValue placeholder="Selectează locația" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {/* NOTE: CITIES must be imported */}
+                            {CITIES.map((city) => (
+                                <SelectItem key={city} value={city}>{city}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     {errors.location && <p className="text-sm text-red-500">{errors.location.message}</p>}
                 </div>
 
@@ -384,7 +400,7 @@ export function OfferForm({ initialData, offerId }: { initialData?: any, offerId
                         </div>
                     )}
                 </div>
-            </div>
+            </div >
 
             <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
@@ -396,6 +412,6 @@ export function OfferForm({ initialData, offerId }: { initialData?: any, offerId
                     offerId ? "Salvează Modificările" : "Postează Oferta"
                 )}
             </Button>
-        </form>
+        </form >
     );
 }

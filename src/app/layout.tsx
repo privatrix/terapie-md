@@ -28,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ro" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col",
           inter.variable,

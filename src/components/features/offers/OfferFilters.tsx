@@ -9,6 +9,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import { CITIES } from "@/lib/constants";
+
 interface OfferFiltersProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
@@ -62,18 +64,15 @@ export function OfferFilters({
                             <div className="flex items-center gap-2.5 truncate">
                                 <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">
-                                    {locationFilter === "" ? "Locație" :
-                                        locationFilter === "chisinau" ? "Chișinău" :
-                                            locationFilter === "online" ? "Online" :
-                                                "Alte locații"}
+                                    {locationFilter === "" ? "Locație" : locationFilter}
                                 </span>
                             </div>
                         </SelectTrigger>
                         <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[200px]">
                             <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Locațiile</SelectItem>
-                            <SelectItem value="chisinau" className="rounded-lg focus:bg-slate-50">Chișinău</SelectItem>
-                            <SelectItem value="online" className="rounded-lg focus:bg-slate-50">Online</SelectItem>
-                            <SelectItem value="other" className="rounded-lg focus:bg-slate-50">Alte locații</SelectItem>
+                            {CITIES.map(city => (
+                                <SelectItem key={city} value={city} className="rounded-lg focus:bg-slate-50">{city}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
 

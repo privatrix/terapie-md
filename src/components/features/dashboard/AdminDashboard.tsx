@@ -15,7 +15,7 @@ import Link from "next/link"; // Ensure Link is imported
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 // import { toast } from "sonner"; // Removed as not found
 
-export function AdminDashboard() {
+export function AdminDashboard({ user }: { user: any }) {
     const [stats, setStats] = useState({
         totalUsers: 0,
         totalTherapists: 0,

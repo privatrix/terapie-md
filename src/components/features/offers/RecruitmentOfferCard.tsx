@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function RecruitmentOfferCard() {
     return (
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/5 p-6 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 h-full min-h-[380px]">
+        <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl border-2 border-dashed border-muted-foreground/30 bg-white p-6 hover:border-primary/50 hover:bg-white transition-all duration-300 h-full min-h-[380px]">
 
             {/* Background Blur Effect */}
             <div className="absolute inset-0 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity" />

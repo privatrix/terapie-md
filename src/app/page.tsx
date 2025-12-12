@@ -51,7 +51,7 @@ export default function Home() {
           <div className="flex flex-row overflow-x-auto pb-6 gap-4 md:grid md:grid-cols-3 md:gap-8 snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
 
             {/* Card 1 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <Shield className="h-8 w-8" />
               </div>
@@ -62,7 +62,7 @@ export default function Home() {
             </div>
 
             {/* Card 2 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <CheckCircle className="h-8 w-8" />
               </div>
@@ -73,7 +73,7 @@ export default function Home() {
             </div>
 
             {/* Card 3 */}
-            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors border md:border-none">
+            <div className="min-w-[85vw] md:min-w-0 snap-center flex flex-col items-center text-center space-y-4 p-6 rounded-2xl bg-white hover:bg-white transition-colors border shadow-sm">
               <div className="p-3 rounded-full bg-primary/10 text-primary">
                 <Clock className="h-8 w-8" />
               </div>

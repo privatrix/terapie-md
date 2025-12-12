@@ -272,43 +272,44 @@ export function TherapistDashboard({ user }: { user: any }) {
                 </div>
             </div>
 
-            <Tabs defaultValue="dashboard" className="space-y-6">
+            {/* Statistics Section Moved Outside Tabs */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <DashboardStatsCard
+                    title="Total Programări"
+                    value={appointments.length}
+                    icon={Calendar}
+                    description={`${appointments.filter(a => a.status === 'completed').length} finalizate`}
+                    iconColor="text-blue-600"
+                    iconBgColor="bg-blue-50"
+                />
+                <DashboardStatsCard
+                    title="În Așteptare"
+                    value={appointments.filter(a => a.status === 'pending').length}
+                    icon={Clock}
+                    description="Necesită confirmare"
+                    iconColor="text-orange-600"
+                    iconBgColor="bg-orange-50"
+                />
+                <DashboardStatsCard
+                    title="Confirmate"
+                    value={appointments.filter(a => a.status === 'confirmed').length}
+                    icon={Check}
+                    description="Urmează să aibă loc"
+                    iconColor="text-green-600"
+                    iconBgColor="bg-green-50"
+                />
+            </div>
+
+            <Tabs defaultValue="appointments" className="space-y-6">
                 <div className="flex items-center justify-between">
                     <DashboardTabsList>
-                        <DashboardTabsTrigger value="dashboard">Dashboard</DashboardTabsTrigger>
+                        <DashboardTabsTrigger value="appointments">Programări</DashboardTabsTrigger>
+                        <DashboardTabsTrigger value="profile">Profil</DashboardTabsTrigger>
                         <DashboardTabsTrigger value="settings">Setări</DashboardTabsTrigger>
                     </DashboardTabsList>
                 </div>
 
-                <TabsContent value="dashboard" className="space-y-6">
-                    {/* Statistics Section */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <DashboardStatsCard
-                            title="Total Programări"
-                            value={appointments.length}
-                            icon={Calendar}
-                            description={`${appointments.filter(a => a.status === 'completed').length} finalizate`}
-                            iconColor="text-blue-600"
-                            iconBgColor="bg-blue-50"
-                        />
-                        <DashboardStatsCard
-                            title="În Așteptare"
-                            value={appointments.filter(a => a.status === 'pending').length}
-                            icon={Clock}
-                            description="Necesită confirmare"
-                            iconColor="text-orange-600"
-                            iconBgColor="bg-orange-50"
-                        />
-                        <DashboardStatsCard
-                            title="Confirmate"
-                            value={appointments.filter(a => a.status === 'confirmed').length}
-                            icon={Check}
-                            description="Urmează să aibă loc"
-                            iconColor="text-green-600"
-                            iconBgColor="bg-green-50"
-                        />
-
-                    </div>
+                <TabsContent value="profile" className="space-y-6">
 
                     {/* Profile Management */}
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
@@ -704,7 +705,9 @@ export function TherapistDashboard({ user }: { user: any }) {
                             </div>
                         </div>
                     </div>
+                </TabsContent>
 
+                <TabsContent value="appointments" className="space-y-6">
                     {/* Upcoming Appointments */}
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
                         <div className="mb-6">

@@ -16,7 +16,7 @@ export default function Home() {
             <div className="w-64 h-64 mx-auto mb-8 bg-accent rounded-full flex items-center justify-center relative overflow-hidden">
               {/* We will replace this with actual Image tag if available, or keep abstract shape */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 animate-pulse"></div>
-              <img src="/hero_illustration.png" alt="Finding Balance" className="object-cover w-full h-full opacity-90 hover:scale-105 transition-transform duration-700" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+              <img src="/hero_illustration.png" alt="Finding Balance" className="object-cover w-full h-full opacity-90 hover:scale-105 transition-transform duration-700" />
             </div>
 
             <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">

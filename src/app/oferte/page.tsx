@@ -180,14 +180,6 @@ export default function OffersPage() {
                     onSortChange={setSortBy}
                     locationFilter={locationFilter}
                     onLocationChange={setLocationFilter}
-                    action={(isTherapist || isBusiness) && (
-                        <Button asChild size="lg" className="h-12 px-6 md:px-8 text-base shadow-md rounded-xl">
-                            <Link href="/oferte/nou">
-                                <Plus className="mr-2 h-5 w-5" />
-                                Adaugă Ofertă
-                            </Link>
-                        </Button>
-                    )}
                 />
             </div>
 

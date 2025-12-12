@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardStatsCard } from "@/components/dashboard/DashboardStatsCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { DashboardTabsList, DashboardTabsTrigger } from "@/components/dashboard/DashboardTabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Plus, Edit, Save, X, Trash2, Check, XCircle, User, Calendar, MessageSquare, FileText, Building2 } from "lucide-react";
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { ShareButton } from "@/components/common/ShareButton";
+import { AccountSettings } from "@/components/dashboard/AccountSettings";
 import { BookingChat } from "@/components/features/bookings/BookingChat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CITIES } from "@/lib/constants";
@@ -224,7 +226,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                     icon={Calendar}
                     description="Toate programările"
                     iconColor="text-blue-600"
-                    iconBgColor="bg-blue-100"
+                    iconBgColor="bg-blue-50"
                 />
                 <DashboardStatsCard
                     title="Oferte Active"
@@ -232,7 +234,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                     icon={FileText} // Need to import FileText or similar
                     description="Oferte publicate"
                     iconColor="text-purple-600"
-                    iconBgColor="bg-purple-100"
+                    iconBgColor="bg-purple-50"
                 />
                 <DashboardStatsCard
                     title="Mesaje Noi"
@@ -240,17 +242,17 @@ export function BusinessDashboard({ user }: { user: any }) {
                     icon={MessageSquare}
                     description="Mesaje necitite"
                     iconColor="text-pink-600"
-                    iconBgColor="bg-pink-100"
+                    iconBgColor="bg-pink-50"
                 />
             </div>
 
             <Tabs defaultValue="bookings" className="space-y-4">
-                <TabsList className="w-fit max-w-full justify-start h-auto p-1 bg-gray-100/80 border border-gray-200 rounded-full mb-6 gap-1 overflow-x-auto no-scrollbar flex-nowrap shrink-0">
-                    <TabsTrigger value="bookings" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Programări</TabsTrigger>
-                    <TabsTrigger value="offers" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Oferte</TabsTrigger>
-                    <TabsTrigger value="profile" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Profil</TabsTrigger>
-                    <TabsTrigger value="settings" className="rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">Setări</TabsTrigger>
-                </TabsList>
+                <DashboardTabsList className="mb-6">
+                    <DashboardTabsTrigger value="bookings">Programări</DashboardTabsTrigger>
+                    <DashboardTabsTrigger value="offers">Oferte</DashboardTabsTrigger>
+                    <DashboardTabsTrigger value="profile">Profil</DashboardTabsTrigger>
+                    <DashboardTabsTrigger value="settings">Setări</DashboardTabsTrigger>
+                </DashboardTabsList>
 
                 <TabsContent value="bookings" className="mt-0">
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
@@ -262,7 +264,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                         ) : (
                             <div className="space-y-4">
                                 {appointments.map((apt) => (
-                                    <div key={apt.id} className="flex justify-between items-center p-4 border rounded-lg">
+                                    <div key={apt.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all gap-4">
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <User className="h-4 w-4 text-muted-foreground" />
@@ -379,7 +381,7 @@ export function BusinessDashboard({ user }: { user: any }) {
 
                 <TabsContent value="offers" className="mt-0">
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
-                        <div className="flex flex-row items-center justify-between mb-6">
+                        <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
                             <h2 className="text-2xl font-bold text-gray-900">Ofertele Mele ({offers.length})</h2>
                             <Button asChild>
                                 <Link href="/oferte/nou">
@@ -395,7 +397,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                         ) : (
                             <div className="space-y-4">
                                 {offers.map((offer) => (
-                                    <div key={offer.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div key={offer.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all gap-4">
                                         <div>
                                             <h4 className="font-medium">{offer.title}</h4>
                                             <p className="text-sm text-muted-foreground">{offer.price} MDL • {offer.duration}</p>
@@ -423,7 +425,7 @@ export function BusinessDashboard({ user }: { user: any }) {
 
                 <TabsContent value="profile" className="mt-0">
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
-                        <div className="flex flex-row items-center justify-between mb-6">
+                        <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
                             <h2 className="text-2xl font-bold text-gray-900">Profil Companie</h2>
                             {!editing ? (
                                 <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
@@ -576,52 +578,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-0">
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">Setări Cont</h2>
-                        </div>
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-0.5">
-                                    <label className="text-sm font-medium">Notificări Email</label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Primește emailuri când primești rezervări noi.
-                                    </p>
-                                </div>
-                                <Button
-                                    variant={profile.user?.notification_preferences?.email_booking !== false ? "default" : "outline"}
-                                    onClick={async () => {
-                                        const current = profile.user?.notification_preferences?.email_booking !== false;
-                                        const supabase = createClient();
-                                        const { error } = await supabase
-                                            .from("users")
-                                            .update({
-                                                notification_preferences: {
-                                                    ...profile.user?.notification_preferences,
-                                                    email_booking: !current
-                                                }
-                                            })
-                                            .eq("id", user.id);
-
-                                        if (!error) {
-                                            setProfile({
-                                                ...profile,
-                                                user: {
-                                                    ...profile.user,
-                                                    notification_preferences: {
-                                                        ...profile.user?.notification_preferences,
-                                                        email_booking: !current
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }}
-                                >
-                                    {profile.user?.notification_preferences?.email_booking !== false ? "Activat" : "Dezactivat"}
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
+                    <AccountSettings user={user} />
                 </TabsContent>
             </Tabs>
             <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
@@ -630,15 +587,16 @@ export function BusinessDashboard({ user }: { user: any }) {
                     fetchData(); // Refresh to update unread counts
                 }
             }}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                        <DialogTitle>Chat cu {selectedBookingForChat?.client?.name || selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
+                <DialogContent className="w-[95vw] max-w-[500px] p-0 overflow-hidden rounded-2xl">
+                    <DialogHeader className="p-4 border-b bg-muted/50">
+                        <DialogTitle className="text-base">Chat cu {selectedBookingForChat?.client?.name || selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
                     </DialogHeader>
                     {selectedBookingForChat && (
                         <BookingChat
                             bookingId={selectedBookingForChat.id}
                             currentUserId={user.id}
                             otherUserName={selectedBookingForChat.client?.name || selectedBookingForChat.client?.email || "Client"}
+                            className="border-0 rounded-none h-[500px]"
                         />
                     )}
                 </DialogContent>

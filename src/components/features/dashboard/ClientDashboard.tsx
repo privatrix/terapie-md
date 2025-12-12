@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { X, Star } from "lucide-react";
 import { ReviewModal } from "@/components/features/reviews/ReviewModal";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClientSettings } from "./ClientSettings";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { DashboardTabsList, DashboardTabsTrigger } from "@/components/dashboard/DashboardTabs";
+import { AccountSettings } from "@/components/dashboard/AccountSettings";
 import { MessageSquare, Settings, Calendar as CalendarIcon } from "lucide-react";
 import { BookingChat } from "@/components/features/bookings/BookingChat";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -152,7 +153,7 @@ export function ClientDashboard({ user }: { user: any }) {
                     icon={CalendarIcon}
                     description="Istoric complet"
                     iconColor="text-blue-600"
-                    iconBgColor="bg-blue-100"
+                    iconBgColor="bg-blue-50"
                 />
                 <DashboardStatsCard
                     title="Confirmate"
@@ -160,7 +161,7 @@ export function ClientDashboard({ user }: { user: any }) {
                     icon={Clock}
                     description="Viitoare"
                     iconColor="text-green-600"
-                    iconBgColor="bg-green-100"
+                    iconBgColor="bg-green-50"
                 />
                 <DashboardStatsCard
                     title="Mesaje Noi"
@@ -168,21 +169,21 @@ export function ClientDashboard({ user }: { user: any }) {
                     icon={MessageSquare}
                     description="Mesaje necitite"
                     iconColor="text-pink-600"
-                    iconBgColor="bg-pink-100"
+                    iconBgColor="bg-pink-50"
                 />
             </div>
 
             <Tabs defaultValue="bookings" className="w-full">
-                <TabsList className="w-fit max-w-full justify-start h-auto p-1 bg-gray-100/80 border border-gray-200 rounded-full mb-6 gap-1 overflow-x-auto no-scrollbar flex-nowrap shrink-0">
-                    <TabsTrigger value="bookings" className="flex items-center gap-2 rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">
+                <DashboardTabsList className="mb-6">
+                    <DashboardTabsTrigger value="bookings" className="flex items-center gap-2">
                         <CalendarIcon className="h-4 w-4" />
                         Programări
-                    </TabsTrigger>
-                    <TabsTrigger value="settings" className="flex items-center gap-2 rounded-full px-4 py-2.5 min-w-fit data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-primary font-medium transition-all text-gray-500 hover:text-gray-700 hover:bg-white/50">
+                    </DashboardTabsTrigger>
+                    <DashboardTabsTrigger value="settings" className="flex items-center gap-2">
                         <Settings className="h-4 w-4" />
                         Setări Cont
-                    </TabsTrigger>
-                </TabsList>
+                    </DashboardTabsTrigger>
+                </DashboardTabsList>
 
                 <TabsContent value="bookings" className="mt-6">
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
@@ -198,7 +199,7 @@ export function ClientDashboard({ user }: { user: any }) {
                         ) : (
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {bookings.map((booking) => (
-                                    <Card key={booking.id}>
+                                    <Card key={booking.id} className="border-gray-100 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
                                         <CardHeader className="pb-2">
                                             <div className="flex justify-between items-start">
                                                 <CardTitle className="text-lg font-medium">
@@ -297,7 +298,7 @@ export function ClientDashboard({ user }: { user: any }) {
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-6">
-                    <ClientSettings user={user} />
+                    <AccountSettings user={user} />
                 </TabsContent>
             </Tabs>
 
@@ -317,22 +318,19 @@ export function ClientDashboard({ user }: { user: any }) {
             <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
                 if (!open) {
                     setSelectedBookingForChat(null);
-                    // Refresh bookings to update unread count
-                    // We can trigger a re-fetch or just update local state if we had a way
-                    // For now, let's just reload the page or trigger the effect
-                    // A simple way is to toggle a refresh trigger
-                    window.location.reload(); // Simplest for now, though not ideal
+                    window.location.reload();
                 }
             }}>
-                <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                        <DialogTitle>Chat cu {selectedBookingForChat?.therapist?.name}</DialogTitle>
+                <DialogContent className="w-[95vw] max-w-[500px] p-0 overflow-hidden rounded-2xl">
+                    <DialogHeader className="p-4 border-b bg-muted/50">
+                        <DialogTitle className="text-base">Chat cu {selectedBookingForChat?.therapist?.name}</DialogTitle>
                     </DialogHeader>
                     {selectedBookingForChat && (
                         <BookingChat
                             bookingId={selectedBookingForChat.id}
                             currentUserId={user.id}
                             otherUserName={selectedBookingForChat.therapist?.name || "Terapeut"}
+                            className="border-0 rounded-none h-[500px]"
                         />
                     )}
                 </DialogContent>

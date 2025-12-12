@@ -23,19 +23,20 @@ export function DashboardEmptyState({
     return (
         <div className={cn(
             "flex flex-col items-center justify-center py-12 text-center",
+            "bg-white rounded-3xl shadow-sm border border-gray-50 p-10",
             className
         )}>
-            <div className="bg-gray-50 p-4 rounded-full mb-4">
-                <Icon className="h-12 w-12 text-gray-300" />
+            <div className="mb-6">
+                <Icon className="h-16 w-16 text-gray-200" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
                 {title}
             </h3>
-            <p className="text-sm text-muted-foreground max-w-sm mb-6">
+            <p className="text-sm text-gray-500 max-w-sm mb-8 text-center leading-relaxed">
                 {description}
             </p>
             {action && (
-                <Button onClick={action.onClick} variant="outline">
+                <Button onClick={action.onClick} variant="default" className="rounded-xl px-6">
                     {action.label}
                 </Button>
             )}

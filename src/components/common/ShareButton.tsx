@@ -50,12 +50,12 @@ export function ShareButton({ url, title, className }: ShareButtonProps) {
             {copied ? (
                 <>
                     <Check className="mr-2 h-4 w-4" />
-                    Copiat!
+                    <span className="hidden sm:inline">Copiat!</span>
                 </>
             ) : (
                 <>
                     <Share2 className="mr-2 h-4 w-4" />
-                    Distribuie
+                    <span className="hidden sm:inline">Distribuie</span>
                 </>
             )}
         </Button>

@@ -20,33 +20,33 @@ export function DashboardStatsCard({
     description,
     trend,
     className,
-    iconColor = "text-primary",
-    iconBgColor = "bg-primary/10"
+    iconColor = "text-blue-600",
+    iconBgColor = "bg-blue-50"
 }: DashboardStatsCardProps) {
     return (
         <Card className={cn(
-            "relative overflow-hidden transition-all duration-300",
-            "bg-white/80 backdrop-blur-md border border-border/50",
-            "shadow-sm hover:shadow-md hover:-translate-y-1",
+            "relative overflow-hidden transition-all duration-200",
+            "bg-white border border-gray-100",
+            "shadow-sm hover:shadow-md",
             "rounded-2xl",
             className
         )}>
             <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                         {title}
                     </h3>
-                    <div className={cn("p-2 rounded-full", iconBgColor)}>
+                    <div className={cn("flex items-center justify-center h-10 w-10 rounded-full", iconBgColor)}>
                         <Icon className={cn("h-5 w-5", iconColor)} />
                     </div>
                 </div>
 
                 <div className="space-y-1">
-                    <div className="text-4xl font-black tracking-tight text-foreground">
+                    <div className="text-4xl font-black text-gray-900">
                         {value}
                     </div>
                     {(description || trend) && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <p className="text-sm text-gray-500 flex items-center gap-2">
                             {trend && <span className="text-green-600 font-medium">{trend}</span>}
                             {description}
                         </p>

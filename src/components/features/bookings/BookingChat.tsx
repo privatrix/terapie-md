@@ -18,9 +18,10 @@ interface BookingChatProps {
     bookingId: string;
     currentUserId: string;
     otherUserName: string;
+    className?: string;
 }
 
-export function BookingChat({ bookingId, currentUserId, otherUserName }: BookingChatProps) {
+export function BookingChat({ bookingId, currentUserId, otherUserName, className }: BookingChatProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [loading, setLoading] = useState(true);
@@ -159,10 +160,8 @@ export function BookingChat({ bookingId, currentUserId, otherUserName }: Booking
     }
 
     return (
-        <div className="flex flex-col h-[400px] border rounded-md">
-            <div className="p-3 border-b bg-muted/50">
-                <h3 className="font-medium text-sm">Chat cu {otherUserName}</h3>
-            </div>
+        <div className={cn("flex flex-col h-[400px] border rounded-md", className)}>
+            {/* Header removed from here as it's handled by DialogHeader */}
 
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (

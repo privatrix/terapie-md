@@ -82,7 +82,7 @@ export default function AdminUserDetailPage() {
                         .single();
 
                     if (businessData) {
-                        setUser(prev => ({ ...prev, business_profile: businessData }));
+                        setUser((prev: any) => ({ ...prev, business_profile: businessData }));
                     }
                 }
 

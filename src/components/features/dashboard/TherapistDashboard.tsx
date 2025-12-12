@@ -662,7 +662,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                                     * Programările confirmate vor bloca automat intervalul respectiv pentru data specifică.
                                 </p>
                             </div>
-                            <div>
+                            <div className="mt-8 pt-8 border-t border-gray-100">
                                 <div className="flex items-center justify-between">
                                     <div className="space-y-0.5">
                                         <label className="text-sm font-medium">Notificări Email</label>

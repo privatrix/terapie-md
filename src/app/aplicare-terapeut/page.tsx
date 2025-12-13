@@ -318,7 +318,12 @@ export default function TherapistApplicationPage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Telefon *</label>
-                                <input type="tel" value={formData.phone} onChange={(e) => updateFormData("phone", e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                                <input
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={(e) => updateFormData("phone", e.target.value.replace(/[^0-9+]/g, ""))}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Locație *</label>

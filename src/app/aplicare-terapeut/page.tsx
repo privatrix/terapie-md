@@ -567,9 +567,10 @@ export default function TherapistApplicationPage() {
                                     <input
                                         type="text"
                                         value={formData.experience_years}
-                                        onChange={(e) => updateFormData("experience_years", e.target.value)}
+                                        onChange={(e) => updateFormData("experience_years", e.target.value.replace(/[^0-9]/g, ""))}
                                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                        placeholder="ex: 5+ ani"
+                                        placeholder="ex: 5"
+                                        maxLength={2}
                                     />
                                 </div>
                             </div>

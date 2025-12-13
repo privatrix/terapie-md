@@ -87,6 +87,7 @@ export default function TherapistApplicationPage() {
         const checkAuth = async () => {
             const supabase = createClient();
             const { data: { user } } = await supabase.auth.getUser();
+            console.log("Auth Check Result:", user);
             setUser(user);
             setAuthChecking(false);
         };
@@ -110,6 +111,18 @@ export default function TherapistApplicationPage() {
             }
         }
     }, []);
+
+    // Effect to trigger submit after data is loaded and auth is confirmed
+    useEffect(() => {
+        const isPending = localStorage.getItem("therapist_application_pending");
+        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
+
+        if (!authChecking && user && isPending && formData.name) {
+            console.log("Triggering Auto-Submit...");
+            // Show a visual indicator if needed, or just let the submit loading state take over
+            submitApplication(user);
+        }
+    }, [authChecking, user, formData]);
 
     const [formData, setFormData] = useState<FormData>({
         name: "",

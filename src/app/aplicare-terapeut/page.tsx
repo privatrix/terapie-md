@@ -60,6 +60,16 @@ const INTERVENTION_AREAS = [ // Renamed from SPECIALTIES_OPTIONS
 
 const LANGUAGES_OPTIONS = ["Română", "Rusă", "Engleză", "Franceză", "Italiană"];
 
+const EDUCATION_LEVELS = [
+    "Licență",
+    "Master",
+    "Doctorat",
+    "Rezidențiat",
+    "Formare în Psihoterapie",
+    "Cursuri de Specializare",
+    "Altul"
+];
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CITIES } from "@/lib/constants";
 
@@ -492,13 +502,21 @@ export default function TherapistApplicationPage() {
                                 <label className="text-sm font-medium">Educație *</label>
                                 {formData.education.map((edu, index) => (
                                     <div key={index} className="grid gap-3 md:grid-cols-3 p-4 border rounded-lg">
-                                        <input
-                                            type="text"
+                                        <Select
                                             value={edu.degree}
-                                            onChange={(e) => updateEducation(index, "degree", e.target.value)}
-                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                            placeholder="Diplomă/Grad"
-                                        />
+                                            onValueChange={(value) => updateEducation(index, "degree", value)}
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Diplomă/Grad" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {EDUCATION_LEVELS.map((level) => (
+                                                    <SelectItem key={level} value={level}>
+                                                        {level}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <input
                                             type="text"
                                             value={edu.institution}
@@ -510,9 +528,10 @@ export default function TherapistApplicationPage() {
                                             <input
                                                 type="text"
                                                 value={edu.year}
-                                                onChange={(e) => updateEducation(index, "year", e.target.value)}
+                                                onChange={(e) => updateEducation(index, "year", e.target.value.replace(/[^0-9]/g, ""))}
                                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                                                 placeholder="An"
+                                                maxLength={4}
                                             />
                                             {formData.education.length > 1 && (
                                                 <Button

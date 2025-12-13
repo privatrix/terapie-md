@@ -17,7 +17,8 @@ type FormData = {
     specializations: string[]; // This will map to the 5 Roles: Psiholog, Psihiatru etc.
     intervention_areas: string[]; // This was the old 'specialties' (Anxiety, etc.)
     languages: string[];
-    price_range: string;
+    priceMin: string;
+    priceMax: string;
     medical_code?: string; // New field
 
     // Qualifications
@@ -90,7 +91,8 @@ export default function TherapistApplicationPage() {
         intervention_areas: [], // Conditions
         medical_code: "",
         languages: ["Română"],
-        price_range: "",
+        priceMin: "",
+        priceMax: "",
         education: [{ degree: "", institution: "", year: "" }],
         experience_years: "",
         license_number: "",
@@ -149,7 +151,8 @@ export default function TherapistApplicationPage() {
                 return !!(
                     formData.specializations.length > 0 &&
                     formData.intervention_areas.length > 0 &&
-                    formData.price_range &&
+                    formData.priceMin &&
+                    formData.priceMax &&
                     (!isPsychiatrist || formData.medical_code) // Require code if Psihiatru
                 );
             case 3:
@@ -209,7 +212,7 @@ export default function TherapistApplicationPage() {
                         specializations: formData.specializations,
                         medical_code: formData.medical_code,
                         languages: formData.languages,
-                        price_range: formData.price_range,
+                        price_range: `${formData.priceMin} - ${formData.priceMax} MDL`,
                         education: formData.education,
                         experience_years: formData.experience_years,
                         license_number: formData.license_number,
@@ -437,14 +440,30 @@ export default function TherapistApplicationPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Interval de prețuri *</label>
-                                <input
-                                    type="text"
-                                    value={formData.price_range}
-                                    onChange={(e) => updateFormData("price_range", e.target.value)}
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                    placeholder="500 - 700 MDL"
-                                />
+                                <label className="text-sm font-medium">Interval de prețuri (MDL) *</label>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex-1">
+                                        <input
+                                            type="number"
+                                            value={formData.priceMin}
+                                            onChange={(e) => updateFormData("priceMin", e.target.value)}
+                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                            placeholder="Min (ex: 500)"
+                                            min="0"
+                                        />
+                                    </div>
+                                    <span className="text-muted-foreground">-</span>
+                                    <div className="flex-1">
+                                        <input
+                                            type="number"
+                                            value={formData.priceMax}
+                                            onChange={(e) => updateFormData("priceMax", e.target.value)}
+                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                                            placeholder="Max (ex: 800)"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

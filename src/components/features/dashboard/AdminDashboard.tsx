@@ -36,9 +36,27 @@ export function AdminDashboard({ user }: { user: any }) {
 
     const fetchData = async () => {
         try {
-            // Fetch Users with Profiles
-            const { data: usersData, error: usersError } = await supabase.from('profiles').select('*');
-            if (usersData) {
+            console.log("Fetching admin dashboard data...");
+
+            const [
+                usersResult,
+                appsResult,
+                businessAppsResult,
+                therapistsResult,
+                businessesResult,
+                contactsResult
+            ] = await Promise.allSettled([
+                supabase.from('users').select('*'),
+                supabase.from('therapist_profiles').select('*, users(email, phone)').eq('is_verified', false),
+                supabase.from('business_profiles').select('*').eq('is_verified', false), // Check if business_profiles exists in schema, otherwise might need adaptation
+                supabase.from('therapist_profiles').select('*, users(*)').eq('is_verified', true),
+                supabase.from('business_profiles').select('*').eq('is_verified', true),
+                supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
+            ]);
+
+            // Handle Users
+            if (usersResult.status === 'fulfilled' && usersResult.value.data) {
+                const usersData = usersResult.value.data;
                 setUsers(usersData);
                 const roleCounts = usersData.reduce((acc: any, user: any) => {
                     acc[user.role] = (acc[user.role] || 0) + 1;
@@ -51,46 +69,47 @@ export function AdminDashboard({ user }: { user: any }) {
                     totalClients: roleCounts.client || 0,
                     totalBusinesses: roleCounts.business || 0
                 }));
+            } else if (usersResult.status === 'rejected') {
+                console.error("Error fetching users:", usersResult.reason);
+            } else if (usersResult.status === 'fulfilled' && usersResult.value.error) {
+                console.error("Supabase error fetching users:", usersResult.value.error);
             }
 
-            // Fetch Therapist Applications (Mock logic: Assuming is_verified=false means pending)
-            // In a real app, we'd join with profiles. For now, we'll assume we can get them.
-            // Simplified for restoration:
-            const { data: apps } = await supabase.from('therapist_profiles').select('*, profiles(email, phone)').eq('is_verified', false);
-            if (apps) {
-                const formattedApps = apps.map(app => ({
+            // Handle Therapist Apps
+            if (appsResult.status === 'fulfilled' && appsResult.value.data) {
+                const formattedApps = appsResult.value.data.map((app: any) => ({
                     ...app,
-                    email: app.profiles?.email,
-                    phone: app.profiles?.phone
+                    email: app.users?.email,
+                    phone: app.users?.phone
                 }));
                 setApplications(formattedApps);
                 setStats(prev => ({ ...prev, pendingApplications: formattedApps.length }));
             }
 
-            // Fetch Business Applications
-            const { data: bApps } = await supabase.from('business_profiles').select('*').eq('is_verified', false);
-            if (bApps) {
-                setBusinessApplications(bApps);
-                setStats(prev => ({ ...prev, pendingBusinessApps: bApps.length }));
+            // Handle Business Apps
+            if (businessAppsResult.status === 'fulfilled' && businessAppsResult.value.data) {
+                setBusinessApplications(businessAppsResult.value.data);
+                setStats(prev => ({ ...prev, pendingBusinessApps: businessAppsResult.value.data.length }));
             }
 
-            // Fetch Verified Therapists
-            const { data: thers } = await supabase.from('therapist_profiles').select('*, profiles(*)').eq('is_verified', true);
-            if (thers) setTherapists(thers);
+            // Handle Therapists
+            if (therapistsResult.status === 'fulfilled' && therapistsResult.value.data) {
+                setTherapists(therapistsResult.value.data);
+            }
 
-            // Fetch Verified Businesses
-            const { data: bus } = await supabase.from('business_profiles').select('*').eq('is_verified', true);
-            if (bus) setBusinesses(bus);
+            // Handle Businesses
+            if (businessesResult.status === 'fulfilled' && businessesResult.value.data) {
+                setBusinesses(businessesResult.value.data);
+            }
 
-            // Fetch Contacts
-            const { data: contacts } = await supabase.from('contact_submissions').select('*').order('created_at', { ascending: false });
-            if (contacts) {
-                setContactSubmissions(contacts);
-                setStats(prev => ({ ...prev, newContactMessages: contacts.filter(c => c.status === 'new').length }));
+            // Handle Contacts
+            if (contactsResult.status === 'fulfilled' && contactsResult.value.data) {
+                setContactSubmissions(contactsResult.value.data);
+                setStats(prev => ({ ...prev, newContactMessages: contactsResult.value.data.filter((c: any) => c.status === 'new').length }));
             }
 
         } catch (error) {
-            console.error("Error fetching dashboard data:", error);
+            console.error("Critical error in dashboard fetch:", error);
         }
     };
 
@@ -101,7 +120,7 @@ export function AdminDashboard({ user }: { user: any }) {
     const handleApprove = async (app: any) => {
         setProcessingId(app.id);
         await supabase.from('therapist_profiles').update({ is_verified: true }).eq('id', app.id);
-        await supabase.from('profiles').update({ role: 'therapist' }).eq('id', app.id); // Ensure role is set
+        await supabase.from('users').update({ role: 'therapist' }).eq('id', app.id); // Ensure role is set
         await fetchData();
         setProcessingId(null);
     };
@@ -116,7 +135,7 @@ export function AdminDashboard({ user }: { user: any }) {
     const handleApproveBusiness = async (app: any) => {
         setProcessingId(app.id);
         await supabase.from('business_profiles').update({ is_verified: true }).eq('id', app.id);
-        await supabase.from('profiles').update({ role: 'business' }).eq('id', app.owner_id); // Assuming owner_id exists
+        await supabase.from('users').update({ role: 'business' }).eq('id', app.owner_id); // Assuming owner_id exists
         await fetchData();
         setProcessingId(null);
     };
@@ -137,15 +156,15 @@ export function AdminDashboard({ user }: { user: any }) {
 
     const handleDeleteUser = async (id: string) => {
         setProcessingId(id);
-        // Delete profile (cascades usually)
-        await supabase.from('profiles').delete().eq('id', id);
+        // Delete user (cascades usually)
+        await supabase.from('users').delete().eq('id', id);
         await fetchData();
         setProcessingId(null);
     };
 
     const handleChangeUserRole = async (id: string, role: string) => {
         setProcessingId(id);
-        await supabase.from('profiles').update({ role }).eq('id', id);
+        await supabase.from('users').update({ role }).eq('id', id);
         await fetchData();
         setProcessingId(null);
     };

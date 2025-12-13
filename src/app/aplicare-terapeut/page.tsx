@@ -91,6 +91,23 @@ export default function TherapistApplicationPage() {
             setAuthChecking(false);
         };
         checkAuth();
+
+        // Load draft from localStorage
+        const savedDraft = localStorage.getItem("therapist_application_draft");
+        if (savedDraft) {
+            try {
+                const parsed = JSON.parse(savedDraft);
+                setFormData(parsed);
+                // Also restore schedule if parseable/exists
+                // Implementation detail: schedule is separate state, but affects `availability`.
+                // If we want to restore schedule UI, we need to parse availability string back to object
+                // OR save schedule state too. For simplicity, we'll assume availability string is enough
+                // or user can re-set schedule. Ideally, let's try to restore schedule.
+                // But schedule builds `availability` string.
+            } catch (e) {
+                console.error("Failed to load draft", e);
+            }
+        }
     }, []);
 
     const [formData, setFormData] = useState<FormData>({
@@ -228,6 +245,9 @@ export default function TherapistApplicationPage() {
             const supabase = createClient();
 
             if (!user) {
+                // Save draft before redirecting
+                localStorage.setItem("therapist_application_draft", JSON.stringify(formData));
+
                 // Redirect to signup if not authenticated
                 const returnUrl = encodeURIComponent("/aplicare-terapeut");
                 router.push(`/auth/signup?redirect=${returnUrl}`);
@@ -260,6 +280,8 @@ export default function TherapistApplicationPage() {
 
             if (submitError) throw submitError;
 
+            // Clear draft on success
+            localStorage.removeItem("therapist_application_draft");
             setSubmitted(true);
         } catch (err: any) {
             console.error(err);

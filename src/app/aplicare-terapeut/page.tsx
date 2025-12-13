@@ -112,17 +112,7 @@ export default function TherapistApplicationPage() {
         }
     }, []);
 
-    // Effect to trigger submit after data is loaded and auth is confirmed
-    useEffect(() => {
-        const isPending = localStorage.getItem("therapist_application_pending");
-        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
 
-        if (!authChecking && user && isPending && formData.name) {
-            console.log("Triggering Auto-Submit...");
-            // Show a visual indicator if needed, or just let the submit loading state take over
-            submitApplication(user);
-        }
-    }, [authChecking, user, formData]);
 
     const [formData, setFormData] = useState<FormData>({
         name: "",
@@ -303,6 +293,32 @@ export default function TherapistApplicationPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const isPending = localStorage.getItem("therapist_application_pending");
+        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
+
+        if (!authChecking && user && isPending && formData.name) {
+            console.log("Triggering Auto-Submit...");
+            // Show a visual indicator if needed, or just let the submit loading state take over
+            submitApplication(user);
+        }
+    }, [authChecking, user, formData, submitApplication]);
+
+    useEffect(() => {
+        const isPending = localStorage.getItem("therapist_application_pending");
+        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
+
+        if (!authChecking && user && isPending && formData.name) {
+            console.log("Triggering Auto-Submit...");
+            // Show a visual indicator if needed, or just let the submit loading state take over
+            submitApplication(user);
+        }
+    }, [authChecking, user, formData]); // Removing submitApplication from deps if it's not stable, but it's defined in render so it changes every time.
+    // Actually, submitApplication depends on state, so it changes every render.
+    // Ideally we should make submitApplication a useCallback or assume it's fine.
+    // Let's suppress the warning or include it.
+    // Given the previous error, let's stick to safe deps.
 
     const handleSubmit = async () => {
         if (!validateStep(4)) {

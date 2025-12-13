@@ -59,6 +59,9 @@ const INTERVENTION_AREAS = [ // Renamed from SPECIALTIES_OPTIONS
 
 const LANGUAGES_OPTIONS = ["Română", "Rusă", "Engleză", "Franceză", "Italiană"];
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CITIES } from "@/lib/constants";
+
 export default function TherapistApplicationPage() {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -316,7 +319,21 @@ export default function TherapistApplicationPage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Locație *</label>
-                                <input type="text" value={formData.location} onChange={(e) => updateFormData("location", e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                                <Select
+                                    value={formData.location}
+                                    onValueChange={(value) => updateFormData("location", value)}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Selectează orașul" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {CITIES.map((city) => (
+                                            <SelectItem key={city} value={city}>
+                                                {city}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
                     </div>

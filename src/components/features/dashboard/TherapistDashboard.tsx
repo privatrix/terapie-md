@@ -709,137 +709,136 @@ export function TherapistDashboard({ user }: { user: any }) {
 
                 <TabsContent value="appointments" className="space-y-6">
                     {/* Upcoming Appointments */}
-                        <div>
-                            {appointments.length === 0 ? (
-                                <p className="text-muted-foreground text-center py-4">Nu ai programări viitoare.</p>
-                            ) : (
-                                <div className="space-y-4">
-                                    {appointments.map((apt) => (
-                                        <div key={apt.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all gap-4">
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <User className="h-4 w-4 text-muted-foreground" />
-                                                    <span className="font-medium">{apt.client?.name || apt.client?.email || "Client"}</span>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {new Date(apt.date).toLocaleDateString()} • {apt.time}
-                                                </p>
-                                                {apt.notes && (
-                                                    <p className="text-sm text-muted-foreground mt-1">Note: {apt.notes}</p>
-                                                )}
-                                            </div>
+                    <div>
+                        {appointments.length === 0 ? (
+                            <p className="text-muted-foreground text-center py-4">Nu ai programări viitoare.</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {appointments.map((apt) => (
+                                    <div key={apt.id} className="flex flex-col md:flex-row justify-between items-start md:items-center p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all gap-4">
+                                        <div>
                                             <div className="flex items-center gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    onClick={() => setSelectedBookingForChat(apt)}
-                                                    title="Mesaje"
-                                                    className="relative"
-                                                >
-                                                    <MessageSquare className="h-4 w-4" />
-                                                    {apt.unreadCount > 0 && (
-                                                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
-                                                            {apt.unreadCount}
-                                                        </span>
-                                                    )}
-                                                </Button>
-
-                                                <Badge variant={
-                                                    apt.status === "confirmed" ? "default" :
-                                                        apt.status === "cancelled" ? "destructive" :
-                                                            apt.status === "completed" ? "outline" : "secondary"
-                                                }>
-                                                    {apt.status === "pending" ? "În așteptare" :
-                                                        apt.status === "confirmed" ? "Confirmat" :
-                                                            apt.status === "completed" ? "Finalizat" : "Anulat"}
-                                                </Badge>
-
-                                                {apt.status === "pending" && (
-                                                    <div className="flex gap-1 ml-2">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                                                            onClick={() => {
-                                                                const message = prompt("Mesaj pentru client (opțional - ex: adresă, cod acces):");
-                                                                if (message !== null) {
-                                                                    handleBookingStatus(apt.id, 'confirmed', message);
-                                                                }
-                                                            }}
-                                                            title="Confirmă"
-                                                        >
-                                                            <Check className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                            onClick={() => {
-                                                                const reason = prompt("Motivul respingerii (opțional):");
-                                                                if (reason !== null) {
-                                                                    handleBookingStatus(apt.id, 'cancelled', reason);
-                                                                }
-                                                            }}
-                                                            title="Respinge"
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                )}
-
-                                                {apt.status === "confirmed" && (
-                                                    <div className="flex gap-1 ml-2">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                                            onClick={() => {
-                                                                if (confirm("Marchezi această ședință ca fiind finalizată? Clientul va putea lăsa o recenzie.")) {
-                                                                    handleBookingStatus(apt.id, 'completed');
-                                                                }
-                                                            }}
-                                                            title="Finalizează"
-                                                        >
-                                                            <Check className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                                                            onClick={() => {
-                                                                const message = prompt("Mesaj pentru reprogramare (ex: Motivul, când sunteți disponibil):");
-                                                                if (message !== null) {
-                                                                    handleBookingStatus(apt.id, 'cancelled', `Solicitare reprogramare: ${message}`);
-                                                                }
-                                                            }}
-                                                            title="Reprogramează (Cere clientului să refacă programarea)"
-                                                        >
-                                                            <Calendar className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                            onClick={() => {
-                                                                const reason = prompt("Motivul anulării:");
-                                                                if (reason !== null) {
-                                                                    handleBookingStatus(apt.id, 'cancelled', reason);
-                                                                }
-                                                            }}
-                                                            title="Anulează"
-                                                        >
-                                                            <XCircle className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
-                                                )}
+                                                <User className="h-4 w-4 text-muted-foreground" />
+                                                <span className="font-medium">{apt.client?.name || apt.client?.email || "Client"}</span>
                                             </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                {new Date(apt.date).toLocaleDateString()} • {apt.time}
+                                            </p>
+                                            {apt.notes && (
+                                                <p className="text-sm text-muted-foreground mt-1">Note: {apt.notes}</p>
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                                </div>
-                            )}
-                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => setSelectedBookingForChat(apt)}
+                                                title="Mesaje"
+                                                className="relative"
+                                            >
+                                                <MessageSquare className="h-4 w-4" />
+                                                {apt.unreadCount > 0 && (
+                                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                                                        {apt.unreadCount}
+                                                    </span>
+                                                )}
+                                            </Button>
+
+                                            <Badge variant={
+                                                apt.status === "confirmed" ? "default" :
+                                                    apt.status === "cancelled" ? "destructive" :
+                                                        apt.status === "completed" ? "outline" : "secondary"
+                                            }>
+                                                {apt.status === "pending" ? "În așteptare" :
+                                                    apt.status === "confirmed" ? "Confirmat" :
+                                                        apt.status === "completed" ? "Finalizat" : "Anulat"}
+                                            </Badge>
+
+                                            {apt.status === "pending" && (
+                                                <div className="flex gap-1 ml-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                        onClick={() => {
+                                                            const message = prompt("Mesaj pentru client (opțional - ex: adresă, cod acces):");
+                                                            if (message !== null) {
+                                                                handleBookingStatus(apt.id, 'confirmed', message);
+                                                            }
+                                                        }}
+                                                        title="Confirmă"
+                                                    >
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            const reason = prompt("Motivul respingerii (opțional):");
+                                                            if (reason !== null) {
+                                                                handleBookingStatus(apt.id, 'cancelled', reason);
+                                                            }
+                                                        }}
+                                                        title="Respinge"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            )}
+
+                                            {apt.status === "confirmed" && (
+                                                <div className="flex gap-1 ml-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                        onClick={() => {
+                                                            if (confirm("Marchezi această ședință ca fiind finalizată? Clientul va putea lăsa o recenzie.")) {
+                                                                handleBookingStatus(apt.id, 'completed');
+                                                            }
+                                                        }}
+                                                        title="Finalizează"
+                                                    >
+                                                        <Check className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                                                        onClick={() => {
+                                                            const message = prompt("Mesaj pentru reprogramare (ex: Motivul, când sunteți disponibil):");
+                                                            if (message !== null) {
+                                                                handleBookingStatus(apt.id, 'cancelled', `Solicitare reprogramare: ${message}`);
+                                                            }
+                                                        }}
+                                                        title="Reprogramează (Cere clientului să refacă programarea)"
+                                                    >
+                                                        <Calendar className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            const reason = prompt("Motivul anulării:");
+                                                            if (reason !== null) {
+                                                                handleBookingStatus(apt.id, 'cancelled', reason);
+                                                            }
+                                                        }}
+                                                        title="Anulează"
+                                                    >
+                                                        <XCircle className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-0">

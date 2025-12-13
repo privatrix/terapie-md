@@ -21,7 +21,7 @@ import { AccountSettings } from "@/components/dashboard/AccountSettings";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { CITIES, THERAPIST_SPECIALIZATIONS } from "@/lib/constants";
+import { CITIES, THERAPIST_SPECIALIZATIONS, THERAPIST_SPECIALTIES, THERAPIST_APPROACHES } from "@/lib/constants";
 
 export function TherapistDashboard({ user }: { user: any }) {
     const [profile, setProfile] = useState<any>(null);

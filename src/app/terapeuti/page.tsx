@@ -6,25 +6,20 @@ import { useState, useMemo, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2 } from "lucide-react";
 import { TherapistRecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
-
-// ... (existing code for default export and state) ...
-
-// ... (fetchTherapists logic: REMOVE the old "Ghost Town Fix" pushing placeholders to state) ...
-
-// ... (In Render:)
-
-// ... (In Render:)
-
-// MOVED TO CORRECT LOCATION DOWN BELOW
-
+import { useSearchParams } from "next/navigation";
 
 export default function TherapistsPage() {
+    const searchParams = useSearchParams();
     const [therapists, setTherapists] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState<"rating" | "price" | "reviews">("rating");
-    const [locationFilter, setLocationFilter] = useState<string>("");
-    const [roleFilter, setRoleFilter] = useState<string>("");
+
+    // Initialize filters from URL
+    const [locationFilter, setLocationFilter] = useState<string>(searchParams.get("location") || "");
+    const [roleFilter, setRoleFilter] = useState<string>(searchParams.get("role") || "");
+    const [specializationFilter, setSpecializationFilter] = useState<string>(searchParams.get("specialization") || "");
+    const [approachFilter, setApproachFilter] = useState<string>(searchParams.get("approach") || "");
 
     useEffect(() => {
         fetchTherapists();
@@ -61,9 +56,6 @@ export default function TherapistsPage() {
                 photo_url: t.photo_url
             }));
 
-            // Ghost Town Fix: Add placeholders if we have few therapists
-            // REMOVED - Using Recruitment Cards instead.
-
             setTherapists(mappedTherapists);
         } catch (error) {
             console.error("Error fetching therapists:", error);
@@ -86,14 +78,28 @@ export default function TherapistsPage() {
             );
         }
 
-        // Role Filter (New)
+        // Role Filter (e.g. Psiholog Clinician)
         if (roleFilter) {
             result = result.filter(
                 (t) => t.specializations?.includes(roleFilter) || t.title?.includes(roleFilter)
             );
         }
 
-        // Location filter
+        // Specialization Filter (e.g. Depresie)
+        if (specializationFilter) {
+            result = result.filter(
+                (t) => t.specialties?.some((s: string) => s.toLowerCase().includes(specializationFilter.toLowerCase()))
+            );
+        }
+
+        // Approach Filter (e.g. CBT)
+        if (approachFilter) {
+            result = result.filter(
+                (t) => t.specialties?.some((s: string) => s.toLowerCase().includes(approachFilter.toLowerCase()))
+                    || t.title?.toLowerCase().includes(approachFilter.toLowerCase())
+            );
+        }
+
         // Location filter
         if (locationFilter && locationFilter !== "all") {
             result = result.filter((t) =>
@@ -116,7 +122,7 @@ export default function TherapistsPage() {
         });
 
         return result;
-    }, [therapists, searchQuery, sortBy, locationFilter, roleFilter]);
+    }, [therapists, searchQuery, sortBy, locationFilter, roleFilter, specializationFilter, approachFilter]);
 
     const [visibleCount, setVisibleCount] = useState(12);
     const LOAD_STEP = 12;

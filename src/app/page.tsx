@@ -86,8 +86,8 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="font-bold text-lg text-foreground border-b border-border pb-2">După Oraș</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li><Link href="/terapeuti?location=Chisinau" className="hover:text-primary transition-colors">Chișinău</Link></li>
-                <li><Link href="/terapeuti?location=Balti" className="hover:text-primary transition-colors">Bălți</Link></li>
+                <li><Link href="/terapeuti?location=Chișinău" className="hover:text-primary transition-colors">Chișinău</Link></li>
+                <li><Link href="/terapeuti?location=Bălți" className="hover:text-primary transition-colors">Bălți</Link></li>
                 <li><Link href="/terapeuti?location=Cahul" className="hover:text-primary transition-colors">Cahul</Link></li>
                 <li><Link href="/terapeuti?location=Ungheni" className="hover:text-primary transition-colors">Ungheni</Link></li>
                 <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate orașele</Link></li>
@@ -99,8 +99,8 @@ export default function Home() {
               <ul className="space-y-2 text-muted-foreground">
                 <li><Link href="/terapeuti?specialization=Depresie" className="hover:text-primary transition-colors">Depresie</Link></li>
                 <li><Link href="/terapeuti?specialization=Anxietate" className="hover:text-primary transition-colors">Anxietate</Link></li>
-                <li><Link href="/terapeuti?specialization=Relatii" className="hover:text-primary transition-colors">Relații de cuplu</Link></li>
-                <li><Link href="/terapeuti?specialization=Trauma" className="hover:text-primary transition-colors">Traume</Link></li>
+                <li><Link href="/terapeuti?specialization=Relații de Cuplu" className="hover:text-primary transition-colors">Relații de cuplu</Link></li>
+                <li><Link href="/terapeuti?specialization=Traumă" className="hover:text-primary transition-colors">Traume</Link></li>
                 <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate specializările</Link></li>
               </ul>
             </div>
@@ -108,10 +108,10 @@ export default function Home() {
             <div className="space-y-4">
               <h3 className="font-bold text-lg text-foreground border-b border-border pb-2">După Abordare</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li><Link href="/terapeuti?approach=CBT" className="hover:text-primary transition-colors">Terapie Cognitiv-Comportamentală</Link></li>
-                <li><Link href="/terapeuti?approach=Psychoanalysis" className="hover:text-primary transition-colors">Psihanaliză</Link></li>
-                <li><Link href="/terapeuti?approach=Humanistic" className="hover:text-primary transition-colors">Umanistă</Link></li>
-                <li><Link href="/terapeuti?approach=Integrative" className="hover:text-primary transition-colors">Integrativă</Link></li>
+                <li><Link href="/terapeuti?approach=Terapie Cognitiv-Comportamentală" className="hover:text-primary transition-colors">Terapie Cognitiv-Comportamentală</Link></li>
+                <li><Link href="/terapeuti?approach=Psihanaliză" className="hover:text-primary transition-colors">Psihanaliză</Link></li>
+                <li><Link href="/terapeuti?approach=Umanistă" className="hover:text-primary transition-colors">Umanistă</Link></li>
+                <li><Link href="/terapeuti?approach=Integrativă" className="hover:text-primary transition-colors">Integrativă</Link></li>
                 <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate abordările</Link></li>
               </ul>
             </div>

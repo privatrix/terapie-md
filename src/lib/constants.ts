@@ -45,3 +45,16 @@ export const OFFER_CATEGORIES = [
     "Workshop",
     "Retreat"
 ] as const;
+
+export const THERAPIST_APPROACHES = [
+    "Terapie Cognitiv-Comportamentală",
+    "Psihanaliză",
+    "Umanistă",
+    "Integrativă",
+    "Sistemică",
+    "Gestalt",
+    "Art Terapie",
+    "Terapie Centrată pe Emoții",
+    "Terapie de Familie",
+    "Terapie prin Joc"
+] as const;

@@ -94,16 +94,17 @@ export default function TherapistApplicationPage() {
 
         // Load draft from localStorage
         const savedDraft = localStorage.getItem("therapist_application_draft");
+        const savedSchedule = localStorage.getItem("therapist_application_schedule");
+
         if (savedDraft) {
             try {
                 const parsed = JSON.parse(savedDraft);
                 setFormData(parsed);
-                // Also restore schedule if parseable/exists
-                // Implementation detail: schedule is separate state, but affects `availability`.
-                // If we want to restore schedule UI, we need to parse availability string back to object
-                // OR save schedule state too. For simplicity, we'll assume availability string is enough
-                // or user can re-set schedule. Ideally, let's try to restore schedule.
-                // But schedule builds `availability` string.
+
+                if (savedSchedule) {
+                    const parsedSchedule = JSON.parse(savedSchedule);
+                    setSchedule(parsedSchedule);
+                }
             } catch (e) {
                 console.error("Failed to load draft", e);
             }
@@ -247,6 +248,7 @@ export default function TherapistApplicationPage() {
             if (!user) {
                 // Save draft before redirecting
                 localStorage.setItem("therapist_application_draft", JSON.stringify(formData));
+                localStorage.setItem("therapist_application_schedule", JSON.stringify(schedule));
 
                 // Redirect to signup if not authenticated
                 const returnUrl = encodeURIComponent("/aplicare-terapeut");
@@ -282,6 +284,7 @@ export default function TherapistApplicationPage() {
 
             // Clear draft on success
             localStorage.removeItem("therapist_application_draft");
+            localStorage.removeItem("therapist_application_schedule");
             setSubmitted(true);
         } catch (err: any) {
             console.error(err);

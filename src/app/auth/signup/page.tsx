@@ -258,7 +258,10 @@ export default function SignupPage() {
 
                 <div className="text-center text-sm text-muted-foreground">
                     Ai deja cont?{" "}
-                    <Link href="/auth/login" className="text-primary hover:underline font-medium">
+                    <Link
+                        href={`/auth/login${searchParams.get("redirect") ? `?redirect=${searchParams.get("redirect")}` : ""}`}
+                        className="text-primary hover:underline font-medium"
+                    >
                         Intră în cont
                     </Link>
                 </div>

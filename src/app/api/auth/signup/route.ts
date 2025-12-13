@@ -5,7 +5,7 @@ import { sendConfirmationEmail } from "@/lib/email";
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { email, password, role, name } = body;
+        const { email, password, role, name, redirect } = body;
 
         if (!email || !password || !role || !name) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -24,12 +24,19 @@ export async function POST(request: Request) {
         );
 
         // Generate signup link (creates user if not exists)
+        // Ensure redirect URL is absolute
+        let redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || request.headers.get("origin")}/auth/callback`;
+        if (redirect) {
+            redirectTo += `?next=${encodeURIComponent(redirect)}`;
+        }
+
         const { data, error } = await supabaseAdmin.auth.admin.generateLink({
             type: "signup",
             email,
             password,
             options: {
-                data: { role, name }
+                data: { role, name },
+                redirectTo
             }
         });
 

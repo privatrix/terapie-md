@@ -43,7 +43,8 @@ export default function SignupPage() {
                     name,
                     email,
                     password,
-                    role
+                    role,
+                    redirect: searchParams.get("redirect")
                 })
             });
 

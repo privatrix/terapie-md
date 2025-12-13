@@ -255,7 +255,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                 </DashboardTabsList>
 
                 <TabsContent value="bookings" className="mt-0">
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                    <div>
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-2xl font-bold text-gray-900">Programări ({appointments.length})</h2>
                         </div>
@@ -380,7 +380,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                 </TabsContent>
 
                 <TabsContent value="offers" className="mt-0">
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                    <div>
                         <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
                             <h2 className="text-2xl font-bold text-gray-900">Ofertele Mele ({offers.length})</h2>
                             <Button asChild>
@@ -424,7 +424,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                 </TabsContent>
 
                 <TabsContent value="profile" className="mt-0">
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
+                    <div>
                         <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
                             <h2 className="text-2xl font-bold text-gray-900">Profil Companie</h2>
                             {!editing ? (
@@ -574,7 +574,6 @@ export function BusinessDashboard({ user }: { user: any }) {
                                 )}
                             </div>
                         </div>
-                    </div>
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-0">

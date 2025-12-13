@@ -186,115 +186,109 @@ export function ClientDashboard({ user }: { user: any }) {
                 </DashboardTabsList>
 
                 <TabsContent value="bookings" className="mt-6">
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 min-h-[500px]">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">Programări</h2>
-                        </div>
-                        {bookings.length === 0 ? (
-                            <DashboardEmptyState
-                                icon={CalendarIcon}
-                                title="Nu ai nicio programare"
-                                description="Programează-te la un terapeut pentru a începe."
-                            />
-                        ) : (
-                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                                {bookings.map((booking) => (
-                                    <Card key={booking.id} className="border-gray-100 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
-                                        <CardHeader className="pb-2">
-                                            <div className="flex justify-between items-start">
-                                                <CardTitle className="text-lg font-medium">
-                                                    {booking.offer?.title || booking.therapist?.name || booking.business?.company_name || "Terapeut"}
-                                                </CardTitle>
-                                                {booking.offer?.title && (
-                                                    <div className="text-sm text-muted-foreground">
-                                                        {booking.therapist?.name || booking.business?.company_name}
-                                                    </div>
-                                                )}
-                                                <Badge variant={
-                                                    booking.status === "confirmed" ? "default" :
-                                                        booking.status === "cancelled" ? "destructive" :
-                                                            booking.status === "completed" ? "outline" : "secondary"
-                                                }>
-                                                    {booking.status === "confirmed" ? "Confirmat" :
-                                                        booking.status === "cancelled" ? "Anulat" :
-                                                            booking.status === "completed" ? "Finalizat" : "În așteptare"}
-                                                </Badge>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent className="space-y-3 text-sm">
-
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="h-4 w-4 text-muted-foreground" />
-                                                <span>{format(new Date(booking.date), "d MMMM yyyy", { locale: ro })}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <span>{booking.time}</span>
-                                            </div>
-                                            {booking.therapist?.location && (
-                                                <div className="flex items-center gap-2">
-                                                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                                                    <span>{booking.therapist.location}</span>
+                    {bookings.length === 0 ? (
+                        <DashboardEmptyState
+                            icon={CalendarIcon}
+                            title="Nu ai nicio programare"
+                            description="Programează-te la un terapeut pentru a începe."
+                        />
+                    ) : (
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {bookings.map((booking) => (
+                                <Card key={booking.id} className="border-gray-100 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all">
+                                    <CardHeader className="pb-2">
+                                        <div className="flex justify-between items-start">
+                                            <CardTitle className="text-lg font-medium">
+                                                {booking.offer?.title || booking.therapist?.name || booking.business?.company_name || "Terapeut"}
+                                            </CardTitle>
+                                            {booking.offer?.title && (
+                                                <div className="text-sm text-muted-foreground">
+                                                    {booking.therapist?.name || booking.business?.company_name}
                                                 </div>
                                             )}
+                                            <Badge variant={
+                                                booking.status === "confirmed" ? "default" :
+                                                    booking.status === "cancelled" ? "destructive" :
+                                                        booking.status === "completed" ? "outline" : "secondary"
+                                            }>
+                                                {booking.status === "confirmed" ? "Confirmat" :
+                                                    booking.status === "cancelled" ? "Anulat" :
+                                                        booking.status === "completed" ? "Finalizat" : "În așteptare"}
+                                            </Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="space-y-3 text-sm">
 
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                                            <span>{format(new Date(booking.date), "d MMMM yyyy", { locale: ro })}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4 text-muted-foreground" />
+                                            <span>{booking.time}</span>
+                                        </div>
+                                        {booking.therapist?.location && (
+                                            <div className="flex items-center gap-2">
+                                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                                <span>{booking.therapist.location}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="pt-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full relative"
+                                                onClick={() => setSelectedBookingForChat(booking)}
+                                            >
+                                                <MessageSquare className="h-4 w-4 mr-2" />
+                                                Mesaje
+                                                {booking.unreadCount > 0 && (
+                                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                                        {booking.unreadCount}
+                                                    </span>
+                                                )}
+                                            </Button>
+                                        </div>
+
+                                        {booking.status !== "cancelled" && booking.status !== "completed" && (
                                             <div className="pt-2">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    className="w-full relative"
-                                                    onClick={() => setSelectedBookingForChat(booking)}
+                                                    className="w-full text-destructive hover:text-destructive"
+                                                    onClick={() => {
+                                                        if (window.confirm("Ești sigur că vrei să anulezi programarea?")) {
+                                                            handleCancel(booking.id);
+                                                        }
+                                                    }}
                                                 >
-                                                    <MessageSquare className="h-4 w-4 mr-2" />
-                                                    Mesaje
-                                                    {booking.unreadCount > 0 && (
-                                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                                            {booking.unreadCount}
-                                                        </span>
-                                                    )}
+                                                    <X className="h-4 w-4 mr-2" />
+                                                    Anulează Programarea
                                                 </Button>
                                             </div>
+                                        )}
 
-                                            {booking.status !== "cancelled" && booking.status !== "completed" && (
-                                                <div className="pt-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="w-full text-destructive hover:text-destructive"
-                                                        onClick={() => {
-                                                            if (window.confirm("Ești sigur că vrei să anulezi programarea?")) {
-                                                                handleCancel(booking.id);
-                                                            }
-                                                        }}
-                                                    >
-                                                        <X className="h-4 w-4 mr-2" />
-                                                        Anulează Programarea
-                                                    </Button>
-                                                </div>
-                                            )}
-
-                                            {booking.status === "completed" && (
-                                                <div className="pt-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="w-full text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
-                                                        onClick={() => {
-                                                            setSelectedBookingForReview(booking);
-                                                            setReviewModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <Star className="h-4 w-4 mr-2" />
-                                                        Lasă o Recenzie
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                        {booking.status === "completed" && (
+                                            <div className="pt-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-full text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                                                    onClick={() => {
+                                                        setSelectedBookingForReview(booking);
+                                                        setReviewModalOpen(true);
+                                                    }}
+                                                >
+                                                    <Star className="h-4 w-4 mr-2" />
+                                                    Lasă o Recenzie
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-6">
@@ -302,18 +296,20 @@ export function ClientDashboard({ user }: { user: any }) {
                 </TabsContent>
             </Tabs>
 
-            {selectedBookingForReview && (
-                <ReviewModal
-                    isOpen={reviewModalOpen}
-                    onClose={() => {
-                        setReviewModalOpen(false);
-                        setSelectedBookingForReview(null);
-                    }}
-                    onSubmit={handleReviewSubmit}
-                    therapistName={selectedBookingForReview.therapist?.name}
-                    businessName={selectedBookingForReview.business?.company_name}
-                />
-            )}
+            {
+                selectedBookingForReview && (
+                    <ReviewModal
+                        isOpen={reviewModalOpen}
+                        onClose={() => {
+                            setReviewModalOpen(false);
+                            setSelectedBookingForReview(null);
+                        }}
+                        onSubmit={handleReviewSubmit}
+                        therapistName={selectedBookingForReview.therapist?.name}
+                        businessName={selectedBookingForReview.business?.company_name}
+                    />
+                )
+            }
 
             <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
                 if (!open) {
@@ -335,6 +331,6 @@ export function ClientDashboard({ user }: { user: any }) {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     );
 }

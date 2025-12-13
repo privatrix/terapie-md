@@ -709,10 +709,6 @@ export function TherapistDashboard({ user }: { user: any }) {
 
                 <TabsContent value="appointments" className="space-y-6">
                     {/* Upcoming Appointments */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">Programări ({appointments.length})</h2>
-                        </div>
                         <div>
                             {appointments.length === 0 ? (
                                 <p className="text-muted-foreground text-center py-4">Nu ai programări viitoare.</p>
@@ -841,8 +837,9 @@ export function TherapistDashboard({ user }: { user: any }) {
                                     ))}
                                 </div>
                             )}
+                                </div>
+                            )}
                         </div>
-                    </div>
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-0">

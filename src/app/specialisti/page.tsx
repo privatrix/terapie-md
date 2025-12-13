@@ -20,7 +20,7 @@ export default function SpecialistsPage() {
             </div>
 
             {/* Benefits */}
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 mb-20">
+            <div className="grid gap-8 md:grid-cols-3 mb-20">
                 <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-xl bg-card border shadow-sm">
                     <div className="p-3 rounded-full bg-primary/10 text-primary">
                         <Users className="h-8 w-8" />
@@ -28,15 +28,6 @@ export default function SpecialistsPage() {
                     <h3 className="font-heading text-lg font-bold">Vizibilitate Crescută</h3>
                     <p className="text-sm text-muted-foreground">
                         Ajungi la mai mulți clienți potențiali din toată Moldova.
-                    </p>
-                </div>
-                <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-xl bg-card border shadow-sm">
-                    <div className="p-3 rounded-full bg-primary/10 text-primary">
-                        <TrendingUp className="h-8 w-8" />
-                    </div>
-                    <h3 className="font-heading text-lg font-bold">Creștere Profesională</h3>
-                    <p className="text-sm text-muted-foreground">
-                        Dezvoltă-ți practica cu instrumente moderne și suport dedicat.
                     </p>
                 </div>
                 <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-xl bg-card border shadow-sm">

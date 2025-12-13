@@ -7,7 +7,7 @@ export default function AboutPage() {
     return (
         <>
             {/* Hero Section */}
-            <div className="relative bg-slate-50 border-b overflow-hidden">
+            <div className="relative bg-background border-b overflow-hidden">
                 <div className="container mx-auto px-4 py-16 md:py-24 md:px-6">
                     <div className="grid gap-12 lg:grid-cols-2 items-center">
                         {/* Text Content */}
@@ -89,7 +89,7 @@ export default function AboutPage() {
                     </div>
 
                     <div className="grid gap-8 md:grid-cols-3">
-                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-secondary/10">
+                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-white">
                             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
                                 <div className="p-4 rounded-full bg-background text-primary shadow-sm">
                                     <Heart className="h-8 w-8" />
@@ -101,7 +101,7 @@ export default function AboutPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-secondary/10">
+                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-white">
                             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
                                 <div className="p-4 rounded-full bg-background text-primary shadow-sm">
                                     <Shield className="h-8 w-8" />
@@ -113,7 +113,7 @@ export default function AboutPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-secondary/10">
+                        <Card className="border-none shadow-md hover:shadow-xl transition-shadow bg-white">
                             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
                                 <div className="p-4 rounded-full bg-background text-primary shadow-sm">
                                     <Users className="h-8 w-8" />

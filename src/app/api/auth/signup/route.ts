@@ -55,34 +55,35 @@ export async function POST(request: Request) {
         }
 
         // Send confirmation email via Resend
-        try {
-            await sendConfirmationEmail(
-                email,
-                name,
-                data.properties.action_link
-            );
-        } catch (emailError: any) {
-            console.error("Email sending failed:", emailError);
-            // If in Resend test mode (restricted recipient), return the link to the frontend
-            if (emailError.message?.includes("only send testing emails") ||
-                emailError.message?.includes("resend.com/domains")) {
-                return NextResponse.json({
-                    success: true,
-                    warning: "EMAIL_RESTRICTED",
-                    confirmationLink: data.properties.action_link
-                });
-            }
-            throw emailError; // Re-throw other errors
+        await sendConfirmationEmail(
+            email,
+            name,
+            data.properties.action_link
+        );
+    } catch (emailError: any) {
+        console.error("Email sending failed:", emailError);
+
+        // ALWAYS return the link if email fails in Development, or if specifically restricted
+        if (process.env.NODE_ENV === 'development' ||
+            emailError.message?.includes("only send testing emails") ||
+            emailError.message?.includes("resend.com/domains")) {
+            return NextResponse.json({
+                success: true,
+                warning: "EMAIL_RESTRICTED",
+                confirmationLink: data.properties.action_link
+            });
         }
-
-        return NextResponse.json({ success: true });
-
-    } catch (error: any) {
-        console.error("Signup error details:", {
-            message: error.message,
-            stack: error.stack,
-            cause: error.cause
-        });
-        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+        throw emailError;
     }
+
+    return NextResponse.json({ success: true });
+
+} catch (error: any) {
+    console.error("Signup error details:", {
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause
+    });
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+}
 }

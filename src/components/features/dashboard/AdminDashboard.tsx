@@ -15,6 +15,8 @@ import Link from "next/link"; // Ensure Link is imported
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 // import { toast } from "sonner"; // Removed as not found
 
+import { ApplicationDetailsModal } from "@/components/features/admin/ApplicationDetailsModal";
+
 export function AdminDashboard({ user }: { user: any }) {
     const [stats, setStats] = useState({
         totalUsers: 0,
@@ -25,6 +27,7 @@ export function AdminDashboard({ user }: { user: any }) {
         pendingBusinessApps: 0,
         newContactMessages: 0
     });
+    const [selectedApp, setSelectedApp] = useState<any>(null);
     const [applications, setApplications] = useState<any[]>([]); // Using any for recovery speed
     const [businessApplications, setBusinessApplications] = useState<any[]>([]);
     const [therapists, setTherapists] = useState<any[]>([]);
@@ -47,8 +50,8 @@ export function AdminDashboard({ user }: { user: any }) {
                 contactsResult
             ] = await Promise.allSettled([
                 supabase.from('users').select('*'),
-                supabase.from('therapist_profiles').select('*, users(email, phone)').eq('is_verified', false),
-                supabase.from('business_profiles').select('*').eq('is_verified', false), // Check if business_profiles exists in schema, otherwise might need adaptation
+                supabase.from('therapist_applications').select('*').eq('status', 'pending'),
+                supabase.from('business_profiles').select('*').eq('is_verified', false),
                 supabase.from('therapist_profiles').select('*, users(*)').eq('is_verified', true),
                 supabase.from('business_profiles').select('*').eq('is_verified', true),
                 supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
@@ -69,21 +72,12 @@ export function AdminDashboard({ user }: { user: any }) {
                     totalClients: roleCounts.client || 0,
                     totalBusinesses: roleCounts.business || 0
                 }));
-            } else if (usersResult.status === 'rejected') {
-                console.error("Error fetching users:", usersResult.reason);
-            } else if (usersResult.status === 'fulfilled' && usersResult.value.error) {
-                console.error("Supabase error fetching users:", usersResult.value.error);
             }
 
             // Handle Therapist Apps
             if (appsResult.status === 'fulfilled' && appsResult.value.data) {
-                const formattedApps = appsResult.value.data.map((app: any) => ({
-                    ...app,
-                    email: app.users?.email,
-                    phone: app.users?.phone
-                }));
-                setApplications(formattedApps);
-                setStats(prev => ({ ...prev, pendingApplications: formattedApps.length }));
+                setApplications(appsResult.value.data);
+                setStats(prev => ({ ...prev, pendingApplications: appsResult.value.data.length }));
             }
 
             // Handle Business Apps
@@ -119,15 +113,30 @@ export function AdminDashboard({ user }: { user: any }) {
 
     const handleApprove = async (app: any) => {
         setProcessingId(app.id);
-        await supabase.from('therapist_profiles').update({ is_verified: true }).eq('id', app.id);
-        await supabase.from('users').update({ role: 'therapist' }).eq('id', app.id); // Ensure role is set
-        await fetchData();
-        setProcessingId(null);
+        try {
+            const response = await fetch('/api/admin/applications/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ applicationId: app.id }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to approve');
+            }
+
+            await fetchData();
+        } catch (error: any) {
+            console.error("Approval failed:", error);
+            alert(`Failed to approve application: ${error.message}`);
+        } finally {
+            setProcessingId(null);
+        }
     };
 
     const handleReject = async (id: string) => {
         setProcessingId(id);
-        await supabase.from('therapist_profiles').delete().eq('id', id);
+        await supabase.from('therapist_applications').update({ status: 'rejected' }).eq('id', id);
         await fetchData();
         setProcessingId(null);
     };
@@ -135,7 +144,7 @@ export function AdminDashboard({ user }: { user: any }) {
     const handleApproveBusiness = async (app: any) => {
         setProcessingId(app.id);
         await supabase.from('business_profiles').update({ is_verified: true }).eq('id', app.id);
-        await supabase.from('users').update({ role: 'business' }).eq('id', app.owner_id); // Assuming owner_id exists
+        await supabase.from('users').update({ role: 'business' }).eq('id', app.owner_id);
         await fetchData();
         setProcessingId(null);
     };
@@ -156,7 +165,6 @@ export function AdminDashboard({ user }: { user: any }) {
 
     const handleDeleteUser = async (id: string) => {
         setProcessingId(id);
-        // Delete user (cascades usually)
         await supabase.from('users').delete().eq('id', id);
         await fetchData();
         setProcessingId(null);
@@ -183,8 +191,38 @@ export function AdminDashboard({ user }: { user: any }) {
         alert(`Răspuns trimis către ${name}`);
     };
 
+    const handleRequestInfo = async (app: any, message: string) => {
+        try {
+            const response = await fetch('/api/admin/applications/request-info', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    applicationId: app.id,
+                    name: app.name,
+                    email: app.email,
+                    message
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to send request');
+            alert("Request sent successfully!");
+        } catch (error) {
+            console.error("Request info failed:", error);
+            alert("Failed to send request");
+        }
+    };
+
     return (
         <div className="space-y-6">
+            <ApplicationDetailsModal
+                application={selectedApp}
+                isOpen={!!selectedApp}
+                onClose={() => setSelectedApp(null)}
+                onApprove={(app) => { handleApprove(app); setSelectedApp(null); }}
+                onReject={(id) => { handleReject(id); setSelectedApp(null); }}
+                onRequestInfo={handleRequestInfo}
+            />
+
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <DashboardStatsCard
@@ -294,11 +332,15 @@ export function AdminDashboard({ user }: { user: any }) {
                                         </div>
                                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                             {applications.map((app) => (
-                                                <Card key={app.id} className="group relative overflow-hidden transition-all hover:shadow-md border-gray-100 bg-white rounded-2xl shadow-sm">
+                                                <Card
+                                                    key={app.id}
+                                                    className="group relative overflow-hidden transition-all hover:shadow-md border-gray-100 bg-white rounded-2xl shadow-sm cursor-pointer hover:border-primary/30"
+                                                    onClick={() => setSelectedApp(app)}
+                                                >
                                                     <CardHeader className="pb-3">
                                                         <div className="flex justify-between items-start">
                                                             <div>
-                                                                <h3 className="font-bold text-lg text-gray-900">{app.name}</h3>
+                                                                <h3 className="font-bold text-lg text-gray-900 group-hover:text-primary transition-colors">{app.name}</h3>
                                                                 <Badge variant="secondary" className="mt-1">{app.title}</Badge>
                                                             </div>
                                                             <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">Pending</Badge>
@@ -311,10 +353,10 @@ export function AdminDashboard({ user }: { user: any }) {
                                                             <div className="flex items-center gap-2"><Building2 className="h-3 w-3" /> {app.location}</div>
                                                         </div>
                                                         <div className="pt-3 flex gap-2">
-                                                            <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700 h-8" onClick={() => handleApprove(app)} disabled={!!processingId}>
+                                                            <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700 h-8" onClick={(e) => { e.stopPropagation(); handleApprove(app); }} disabled={!!processingId}>
                                                                 <Check className="h-3.5 w-3.5 mr-1.5" /> Aprobă
                                                             </Button>
-                                                            <Button size="sm" variant="outline" className="flex-1 h-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleReject(app.id)} disabled={!!processingId}>
+                                                            <Button size="sm" variant="outline" className="flex-1 h-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={(e) => { e.stopPropagation(); handleReject(app.id); }} disabled={!!processingId}>
                                                                 <X className="h-3.5 w-3.5 mr-1.5" /> Respinge
                                                             </Button>
                                                         </div>

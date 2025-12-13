@@ -34,9 +34,10 @@ export default function LoginPage() {
                 router.push("/change-password");
             } else {
                 const redirectUrl = searchParams.get("redirect") || "/";
-                router.push(redirectUrl);
+                // Force full reload to ensure auth state is picked up
+                window.location.assign(redirectUrl);
             }
-            router.refresh();
+            // router.refresh(); // Not needed with window.location.assign
         } catch (err: any) {
             setError(err.message || "Failed to login");
         } finally {

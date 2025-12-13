@@ -5,9 +5,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export interface ApprovalEmailData {
   name: string;
   email: string;
-  tempPassword: string;
   type: 'terapeut' | 'business';
   loginUrl: string;
+  password?: string;
 }
 
 export interface DocumentRequestEmailData {
@@ -61,14 +61,16 @@ export async function sendApprovalEmail(data: ApprovalEmailData) {
             <p>Felicitări! Aplicația dvs. pentru <strong>${typeText}</strong> a fost aprobată de echipa Terapie.md.</p>
             
             <div class="credentials">
-              <h3>Date de autentificare:</h3>
+              <h3>Detalii cont:</h3>
               <p><strong>Email:</strong> ${data.email}</p>
-              <p><strong>Parolă temporară:</strong> <code style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px;">${data.tempPassword}</code></p>
+              ${data.password ? `<p><strong>Parolă temporară:</strong> <code style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px;">${data.password}</code></p>` : ''}
             </div>
             
+            ${data.password ? `
             <div class="warning">
               <p><strong>⚠️ IMPORTANT:</strong> La prima autentificare, veți fi nevoit să schimbați parola pentru securitatea contului dvs.</p>
             </div>
+            ` : ''}
             
             <a href="${data.loginUrl}" class="button">Autentifică-te acum</a>
             

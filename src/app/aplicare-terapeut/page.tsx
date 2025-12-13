@@ -5,6 +5,9 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { CheckCircle, ArrowRight, ArrowLeft, Upload } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { CITIES, THERAPIST_APPROACHES } from "@/lib/constants";
 
 type FormData = {
     // Personal Info
@@ -14,12 +17,13 @@ type FormData = {
     location: string;
 
     // Professional Info
-    specializations: string[]; // This will map to the 5 Roles: Psiholog, Psihiatru etc.
-    intervention_areas: string[]; // This was the old 'specialties' (Anxiety, etc.)
+    specializations: string[];
+    intervention_areas: string[];
+    therapeutic_approaches: string[];
     languages: string[];
     priceMin: string;
     priceMax: string;
-    medical_code?: string; // New field
+    medical_code?: string;
 
     // Qualifications
     education: Array<{ degree: string; institution: string; year: string }>;
@@ -39,7 +43,7 @@ const PROFESSIONAL_ROLES = [
     "Psihiatru"
 ];
 
-const INTERVENTION_AREAS = [ // Renamed from SPECIALTIES_OPTIONS
+const INTERVENTION_AREAS = [
     "Anxietate",
     "Depresie",
     "Stres",
@@ -70,10 +74,6 @@ const EDUCATION_LEVELS = [
     "Altul"
 ];
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { CITIES } from "@/lib/constants";
-
 export default function TherapistApplicationPage() {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -84,16 +84,26 @@ export default function TherapistApplicationPage() {
     const [authChecking, setAuthChecking] = useState(true);
 
     useEffect(() => {
+        const supabase = createClient();
         const checkAuth = async () => {
-            const supabase = createClient();
             const { data: { user } } = await supabase.auth.getUser();
-            console.log("Auth Check Result:", user);
-            setUser(user);
-            setAuthChecking(false);
+            if (user) {
+                setUser(user);
+                setAuthChecking(false);
+            }
         };
         checkAuth();
 
-        // Load draft from localStorage
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setUser(session.user);
+            } else {
+                setUser(null);
+            }
+            setAuthChecking(false);
+        });
+
+        // Load draft
         const savedDraft = localStorage.getItem("therapist_application_draft");
         const savedSchedule = localStorage.getItem("therapist_application_schedule");
 
@@ -101,26 +111,24 @@ export default function TherapistApplicationPage() {
             try {
                 const parsed = JSON.parse(savedDraft);
                 setFormData(parsed);
-
                 if (savedSchedule) {
-                    const parsedSchedule = JSON.parse(savedSchedule);
-                    setSchedule(parsedSchedule);
+                    setSchedule(JSON.parse(savedSchedule));
                 }
             } catch (e) {
                 console.error("Failed to load draft", e);
             }
         }
+        return () => subscription.unsubscribe();
     }, []);
-
-
 
     const [formData, setFormData] = useState<FormData>({
         name: "",
         email: "",
         phone: "",
         location: "",
-        specializations: [], // Roles
-        intervention_areas: [], // Conditions
+        specializations: [],
+        intervention_areas: [],
+        therapeutic_approaches: [],
         medical_code: "",
         languages: ["Română"],
         priceMin: "",
@@ -161,7 +169,7 @@ export default function TherapistApplicationPage() {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const toggleArrayItem = (field: "specializations" | "intervention_areas" | "languages", item: string) => {
+    const toggleArrayItem = (field: "specializations" | "intervention_areas" | "languages" | "therapeutic_approaches", item: string) => {
         setFormData((prev) => ({
             ...prev,
             [field]: prev[field].includes(item)
@@ -170,7 +178,6 @@ export default function TherapistApplicationPage() {
         }));
     };
 
-    // ... (rest of helper functions addEducation, updateEducation, removeEducation same as before)
     const addEducation = () => {
         setFormData((prev) => ({
             ...prev,
@@ -197,26 +204,19 @@ export default function TherapistApplicationPage() {
     const validateStep = (currentStep: number): boolean => {
         switch (currentStep) {
             case 1:
-                return !!(
-                    formData.name &&
-                    formData.email &&
-                    formData.phone &&
-                    formData.location
-                );
+                return !!(formData.name && formData.email && formData.phone && formData.location);
             case 2:
                 const isPsychiatrist = formData.specializations.includes("Psihiatru");
                 return !!(
                     formData.specializations.length > 0 &&
                     formData.intervention_areas.length > 0 &&
+                    formData.therapeutic_approaches.length > 0 &&
                     formData.priceMin &&
                     formData.priceMax &&
-                    (!isPsychiatrist || formData.medical_code) // Require code if Psihiatru
+                    (!isPsychiatrist || formData.medical_code)
                 );
             case 3:
-                return !!(
-                    formData.education.some((e) => e.degree && e.institution) &&
-                    formData.experience_years
-                );
+                return !!(formData.education.some((e) => e.degree && e.institution) && formData.experience_years);
             case 4:
                 return !!(formData.bio && formData.availability);
             default:
@@ -224,178 +224,91 @@ export default function TherapistApplicationPage() {
         }
     };
 
-    // ... (nextStep, prevStep same as before)
     const nextStep = () => {
-        if (validateStep(step)) {
-            setError("");
-            setStep(step + 1);
-        } else {
-            setError("Te rugăm să completezi toate câmpurile obligatorii");
-        }
+        if (validateStep(step)) setStep(step + 1);
+        else setError("Te rugăm să completezi toate câmpurile obligatorii");
     };
-
     const prevStep = () => setStep(step - 1);
 
     const submitApplication = async (currentUser: any) => {
         setLoading(true);
         setError("");
-
         try {
             const supabase = createClient();
-
-            // Generate availability string from current schedule if needed, 
-            // but formData.availability is updated via useEffect [schedule].
-            // However, on first render after restore, that useEffect might run too late?
-            // Let's ensure availability is consistent.
-            // Actually, if we just restored formData, it has availability string.
-            // If we just restored schedule, the useEffect will update formData.availability.
-
-            // To be safe, let's recalculate if availability is empty but schedule exists?
-            // Or just trust formData.
-
-            const { error: submitError } = await supabase
-                .from("therapist_applications")
-                .insert([
-                    {
-                        user_id: currentUser.id,
-                        name: formData.name,
-                        email: formData.email,
-                        phone: formData.phone,
-                        location: formData.location,
-                        title: formData.specializations.join(", "),
-                        specialties: formData.intervention_areas,
-                        specializations: formData.specializations,
-                        medical_code: formData.medical_code,
-                        languages: formData.languages,
-                        price_range: `${formData.priceMin} - ${formData.priceMax} MDL`,
-                        education: formData.education,
-                        experience_years: formData.experience_years,
-                        license_number: formData.license_number,
-                        bio: formData.bio,
-                        availability: formData.availability,
-                        status: "pending",
-                    },
-                ]);
-
+            const allSpecialties = [...formData.intervention_areas, ...formData.therapeutic_approaches];
+            const { error: submitError } = await supabase.from("therapist_applications").insert([{
+                user_id: currentUser?.id || null,
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                location: formData.location,
+                title: formData.specializations.join(", "),
+                specialties: allSpecialties,
+                specializations: formData.specializations,
+                medical_code: formData.medical_code,
+                languages: formData.languages,
+                price_range: `${formData.priceMin} - ${formData.priceMax} MDL`,
+                education: formData.education,
+                experience_years: formData.experience_years,
+                license_number: formData.license_number,
+                bio: formData.bio,
+                availability: formData.availability,
+                status: "pending",
+            }]);
             if (submitError) throw submitError;
-
-            // Clear draft on success
             localStorage.removeItem("therapist_application_draft");
             localStorage.removeItem("therapist_application_schedule");
             localStorage.removeItem("therapist_application_pending");
             setSubmitted(true);
         } catch (err: any) {
             console.error(err);
-            setError(err.message || "A apărut o eroare la trimiterea aplicației");
-            // If error, remove pending flag so we don't loop
-            localStorage.removeItem("therapist_application_pending");
+            setError(err.message || "Eroare la trimitere");
         } finally {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        const isPending = localStorage.getItem("therapist_application_pending");
-        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
-
-        if (!authChecking && user && isPending && formData.name) {
-            console.log("Triggering Auto-Submit...");
-            // Show a visual indicator if needed, or just let the submit loading state take over
-            submitApplication(user);
-        }
-    }, [authChecking, user, formData, submitApplication]);
-
-    useEffect(() => {
-        const isPending = localStorage.getItem("therapist_application_pending");
-        console.log("Auto-Submit Check:", { authChecking, user: !!user, isPending, hasName: !!formData.name });
-
-        if (!authChecking && user && isPending && formData.name) {
-            console.log("Triggering Auto-Submit...");
-            // Show a visual indicator if needed, or just let the submit loading state take over
-            submitApplication(user);
-        }
-    }, [authChecking, user, formData]); // Removing submitApplication from deps if it's not stable, but it's defined in render so it changes every time.
-    // Actually, submitApplication depends on state, so it changes every render.
-    // Ideally we should make submitApplication a useCallback or assume it's fine.
-    // Let's suppress the warning or include it.
-    // Given the previous error, let's stick to safe deps.
 
     const handleSubmit = async () => {
         if (!validateStep(4)) {
             setError("Te rugăm să completezi toate câmpurile");
             return;
         }
-
-        if (!user) {
-            // Save draft before redirecting
-            localStorage.setItem("therapist_application_draft", JSON.stringify(formData));
-            localStorage.setItem("therapist_application_schedule", JSON.stringify(schedule));
-            localStorage.setItem("therapist_application_pending", "true");
-
-            // Redirect to signup if not authenticated
-            const returnUrl = encodeURIComponent("/aplicare-terapeut");
-            router.push(`/auth/signup?redirect=${returnUrl}`);
-            return;
-        }
-
         submitApplication(user);
     };
 
+    useEffect(() => {
+        const isPending = localStorage.getItem("therapist_application_pending");
+        if (!authChecking && user && isPending && formData.name) {
+            submitApplication(user);
+        }
+    }, [authChecking, user, formData]);
+
     if (authChecking) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
-        );
+        return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
     }
 
-    // Blocking UI removed to allow viewing the form. Authentication will be checked at submission.
-
     if (submitted) {
-        // ... (Keep existing Success UI)
         return (
             <div className="container mx-auto px-4 py-16 max-w-2xl">
                 <div className="text-center space-y-6">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
-                        <CheckCircle className="w-10 h-10" />
-                    </div>
+                    <div className="w-16 h-16 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center"><CheckCircle className="w-10 h-10" /></div>
                     <h1 className="font-heading text-3xl font-bold">Aplicație trimisă cu succes!</h1>
-                    <p className="text-muted-foreground text-lg">
-                        Mulțumim pentru aplicație, <strong>{formData.name}</strong>!
-                    </p>
-                    {/* ... rest of UI ... */}
-                    <div className="bg-muted/50 rounded-lg p-6 text-left space-y-3">
-                        {/* ... */}
-                        <h3 className="font-semibold">Ce urmează?</h3>
-                        {/* ... */}
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-                        <Button asChild>
-                            <a href="/">Înapoi la pagina principală</a>
-                        </Button>
-                    </div>
+                    <p className="text-muted-foreground text-lg">Mulțumim, <strong>{formData.name}</strong>!</p>
+                    <div className="flex justify-center pt-4"><Button asChild><a href="/">Înapoi</a></Button></div>
                 </div>
             </div>
         );
     }
 
-    // ... Render Form
     return (
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
-            {/* ... Header & Progress Bar ... */}
             <div className="mb-8 text-center space-y-2">
-                <h1 className="font-heading text-3xl font-bold md:text-4xl">
-                    Aplică ca Terapeut
-                </h1>
-                <p className="text-muted-foreground">
-                    Completează formularul pentru a te alătura platformei Terapie.md
-                </p>
+                <h1 className="font-heading text-3xl font-bold md:text-4xl">Aplică ca Terapeut</h1>
+                <p className="text-muted-foreground">Completează formularul pentru a te alătura platformei Terapie.md</p>
             </div>
-            {/* Progress Bar */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
                     {[1, 2, 3, 4].map((s) => (
-                        // ... (keep existing)
                         <div key={s} className="flex items-center flex-1">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${s <= step ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{s}</div>
                             {s < 4 && <div className={`flex-1 h-1 mx-2 transition-colors ${s < step ? "bg-primary" : "bg-muted"}`} />}
@@ -403,15 +316,10 @@ export default function TherapistApplicationPage() {
                     ))}
                 </div>
             </div>
-
-            {error && (
-                <div className="mb-6 rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive">
-                    {error}
-                </div>
-            )}
+            {error && <div className="mb-6 rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive">{error}</div>}
 
             <div className="rounded-xl border bg-card p-6 md:p-8 shadow-sm">
-                {/* Step 1: Personal Info - unchanged */}
+
                 {step === 1 && (
                     <div className="space-y-6">
                         <div><h2 className="font-heading text-2xl font-bold mb-1">Date Personale</h2></div>
@@ -426,105 +334,66 @@ export default function TherapistApplicationPage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Telefon *</label>
-                                <input
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={(e) => updateFormData("phone", e.target.value.replace(/[^0-9+]/g, ""))}
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                />
+                                <input type="tel" value={formData.phone} onChange={(e) => updateFormData("phone", e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Locație *</label>
-                                <Select
-                                    value={formData.location}
-                                    onValueChange={(value) => updateFormData("location", value)}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Selectează orașul" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {CITIES.map((city) => (
-                                            <SelectItem key={city} value={city}>
-                                                {city}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
+                                <Select value={formData.location} onValueChange={(value) => updateFormData("location", value)}>
+                                    <SelectTrigger><SelectValue placeholder="Selectează" /></SelectTrigger>
+                                    <SelectContent>{CITIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Step 2: Professional Info - UPDATED */}
                 {step === 2 && (
                     <div className="space-y-6">
-                        <div>
-                            <h2 className="font-heading text-2xl font-bold mb-1">Informații Profesionale</h2>
-                            <p className="text-sm text-muted-foreground">
-                                Specializarea și serviciile tale
-                            </p>
-                        </div>
-
+                        <div><h2 className="font-heading text-2xl font-bold mb-1">Informații Profesionale</h2></div>
                         <div className="space-y-4">
-                            {/* NEW: Specializations (Roles) Multi-Select */}
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Calificare Profesională *</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     {PROFESSIONAL_ROLES.map((role) => (
-                                        <label
-                                            key={role}
-                                            className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all ${formData.specializations.includes(role)
-                                                ? "border-primary bg-primary/5 shadow-sm"
-                                                : "hover:bg-muted/50"
-                                                }`}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.specializations.includes(role)}
-                                                onChange={() => toggleArrayItem("specializations", role)}
-                                                className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-                                            />
+                                        <label key={role} className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer border-input hover:bg-muted/50`}>
+                                            <input type="checkbox" checked={formData.specializations.includes(role)} onChange={() => toggleArrayItem("specializations", role)} className="w-4 h-4" />
                                             <span className="text-sm font-medium">{role}</span>
                                         </label>
                                     ))}
                                 </div>
                             </div>
-
-                            {/* NEW: Conditional Medical Code */}
                             {formData.specializations.includes("Psihiatru") && (
-                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <label className="text-sm font-medium text-blue-800">
-                                        Cod Parafă Medicală (Obligatoriu pentru Psihiatri) *
-                                    </label>
-                                    <div className="relative">
-                                        <Upload className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <input
-                                            type="text"
-                                            value={formData.medical_code || ""}
-                                            onChange={(e) => updateFormData("medical_code", e.target.value)}
-                                            className="flex h-10 w-full pl-9 rounded-md border border-input bg-blue-50/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                            placeholder="Introduceți codul de parafă"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Necesar pentru validarea dreptului de liberă practică medicală.
-                                    </p>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Cod Parafă Medicală *</label>
+                                    <input type="text" value={formData.medical_code || ""} onChange={(e) => updateFormData("medical_code", e.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
                                 </div>
                             )}
-
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Arii de intervenție (Probleme tratate) *</label>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                     {INTERVENTION_AREAS.map((item) => (
+                                        <label key={item} className="flex items-center gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50">
+                                            <input type="checkbox" checked={formData.intervention_areas.includes(item)} onChange={() => toggleArrayItem("intervention_areas", item)} className="rounded" />
+                                            <span className="text-sm">{item}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Abordare Terapeutică (Metode) *</label>
+                                <p className="text-xs text-muted-foreground mb-2">Selectați cel puțin o metodă de lucru.</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {THERAPIST_APPROACHES.map((item) => (
                                         <label
                                             key={item}
-                                            className="flex items-center gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50 transition-colors"
+                                            className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors ${formData.therapeutic_approaches.includes(item) ? "bg-primary/5 border-primary" : "hover:bg-muted/50"}`}
                                         >
                                             <input
                                                 type="checkbox"
-                                                checked={formData.intervention_areas.includes(item)}
-                                                onChange={() => toggleArrayItem("intervention_areas", item)}
-                                                className="rounded"
+                                                checked={formData.therapeutic_approaches.includes(item)}
+                                                onChange={() => toggleArrayItem("therapeutic_approaches", item)}
+                                                className="rounded text-primary focus:ring-primary"
                                             />
                                             <span className="text-sm">{item}</span>
                                         </label>
@@ -534,18 +403,10 @@ export default function TherapistApplicationPage() {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Limbi vorbite *</label>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="grid grid-cols-2 gap-2">
                                     {LANGUAGES_OPTIONS.map((lang) => (
-                                        <label
-                                            key={lang}
-                                            className="flex items-center gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50 transition-colors"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.languages.includes(lang)}
-                                                onChange={() => toggleArrayItem("languages", lang)}
-                                                className="rounded"
-                                            />
+                                        <label key={lang} className="flex items-center gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50">
+                                            <input type="checkbox" checked={formData.languages.includes(lang)} onChange={() => toggleArrayItem("languages", lang)} className="rounded" />
                                             <span className="text-sm">{lang}</span>
                                         </label>
                                     ))}
@@ -553,27 +414,24 @@ export default function TherapistApplicationPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Interval de prețuri (MDL) *</label>
-                                <div className="flex items-center gap-4">
-                                    <div className="flex-1">
+                                <label className="text-sm font-medium">Preț per ședință (MDL) *</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
                                         <input
                                             type="number"
                                             value={formData.priceMin}
                                             onChange={(e) => updateFormData("priceMin", e.target.value)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                            placeholder="Min (ex: 500)"
-                                            min="0"
+                                            placeholder="Min (ex: 400)"
                                         />
                                     </div>
-                                    <span className="text-muted-foreground">-</span>
-                                    <div className="flex-1">
+                                    <div>
                                         <input
                                             type="number"
                                             value={formData.priceMax}
                                             onChange={(e) => updateFormData("priceMax", e.target.value)}
                                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                            placeholder="Max (ex: 800)"
-                                            min="0"
+                                            placeholder="Max (ex: 600)"
                                         />
                                     </div>
                                 </div>
@@ -582,10 +440,6 @@ export default function TherapistApplicationPage() {
                     </div>
                 )}
 
-                {/* Step 3 & 4 remain mostly unchanged, just ensured closing tags are correct */}
-
-
-                {/* Step 3: Qualifications */}
                 {step === 3 && (
                     <div className="space-y-6">
                         <div>
@@ -676,7 +530,6 @@ export default function TherapistApplicationPage() {
                     </div>
                 )}
 
-                {/* Step 4: Profile Details */}
                 {step === 4 && (
                     <div className="space-y-6">
                         <div>
@@ -737,14 +590,13 @@ export default function TherapistApplicationPage() {
                                     ))}
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-2">
-                                    Acest mogram va fi afișat pe profilul tău. Poți modifica aceste ore ulterior din dashboard.
+                                    Acest progran va fi afișat pe profilul tău. Poți modifica aceste ore ulterior din dashboard.
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Navigation Buttons */}
                 <div className="flex justify-between pt-6 mt-6 border-t">
                     <Button
                         variant="outline"
@@ -769,6 +621,6 @@ export default function TherapistApplicationPage() {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

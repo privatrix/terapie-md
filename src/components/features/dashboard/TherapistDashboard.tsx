@@ -448,11 +448,12 @@ export function TherapistDashboard({ user }: { user: any }) {
                                     ) : (
                                         <div className="flex flex-wrap gap-2 mt-1">
                                             {(profile.specialties || [])
-                                                .filter((s: string) => THERAPIST_SPECIALTIES.includes(s as any))
+                                                // Show anything that is NOT a known approach (defaults to specialty)
+                                                .filter((s: string) => !THERAPIST_APPROACHES.includes(s as any))
                                                 .map((s: string) => (
                                                     <Badge key={s} variant="secondary" className="font-normal">{s}</Badge>
                                                 ))}
-                                            {(!profile.specialties || !profile.specialties.some((s: string) => THERAPIST_SPECIALTIES.includes(s as any))) && <span className="text-muted-foreground">-</span>}
+                                            {(!profile.specialties || profile.specialties.length === 0) && <span className="text-muted-foreground">-</span>}
                                         </div>
                                     )}
                                 </div>
@@ -570,227 +571,199 @@ export function TherapistDashboard({ user }: { user: any }) {
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="text-sm font-medium">Disponibilitate</label>
-                                {editing ? (
-                                    <input
-                                        type="text"
-                                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                                        value={profile.availability || ""}
-                                        onChange={(e) => setProfile({ ...profile, availability: e.target.value })}
-                                        placeholder="Luni - Vineri: 10:00 - 18:00"
-                                    />
-                                ) : (
-                                    <p className="text-muted-foreground mt-1">{profile.availability}</p>
-                                )}
-                            </div>
+
                         </div>
                     </div>
 
-                    {/* Availability Management - Dedicated Card */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                            <h2 className="text-2xl font-bold text-gray-900">Programul Meu</h2>
-                            {!editingSchedule ? (
-                                <Button variant="outline" size="sm" onClick={() => setEditingSchedule(true)}>
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Editează Programul
-                                </Button>
-                            ) : (
-                                <div className="flex gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => {
-                                            setEditingSchedule(false);
-                                            fetchData(); // Reset changes
-                                        }}
-                                        disabled={saving}
-                                    >
-                                        <X className="h-4 w-4 mr-2" />
-                                        Anulează
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        onClick={handleSaveProfile}
-                                        disabled={saving}
-                                    >
-                                        {saving ? (
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        ) : (
-                                            <Save className="h-4 w-4 mr-2" />
-                                        )}
-                                        Salvează
-                                    </Button>
+                </TabsContent >
+
+                <TabsContent value="appointments" className="space-y-6">
+
+                    {/* Helper function to generate slots */}
+                    {(() => {
+                        const generateSlots = (start: string, end: string) => {
+                            const slots = [];
+                            let [startH, startM] = start.split(':').map(Number);
+                            const [endH, endM] = end.split(':').map(Number);
+
+                            let currentH = startH;
+                            while (currentH < endH) {
+                                slots.push(`${currentH.toString().padStart(2, '0')}:00`);
+                                currentH++;
+                            }
+                            return slots;
+                        };
+
+                        return (
+                            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                                    <h2 className="text-2xl font-bold text-gray-900">Programul Meu de Lucru</h2>
+                                    {!editingSchedule ? (
+                                        <Button variant="outline" size="sm" onClick={() => setEditingSchedule(true)}>
+                                            <Edit className="h-4 w-4 mr-2" />
+                                            Editează Programul
+                                        </Button>
+                                    ) : (
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    setEditingSchedule(false);
+                                                    fetchData(); // Reset changes
+                                                }}
+                                                disabled={saving}
+                                            >
+                                                <X className="h-4 w-4 mr-2" />
+                                                Anulează
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleSaveProfile}
+                                                disabled={saving}
+                                            >
+                                                {saving ? (
+                                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                ) : (
+                                                    <Save className="h-4 w-4 mr-2" />
+                                                )}
+                                                Salvează
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                        <div>
-                            <div>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Configurează programul pentru fiecare zi a săptămânii.
-                                </p>
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-4">
+                                        Setează intervalul orar pentru fiecare zi. Sistemul va genera automat sloturi de 1 oră în acest interval.
+                                    </p>
 
-                                {editingSchedule ? (
-                                    <div className="space-y-6">
-                                        {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
-                                            const dayNames: Record<string, string> = {
-                                                monday: 'Luni', tuesday: 'Marți', wednesday: 'Miercuri',
-                                                thursday: 'Joi', friday: 'Vineri', saturday: 'Sâmbătă', sunday: 'Duminică'
-                                            };
+                                    {editingSchedule ? (
+                                        <div className="space-y-4 border rounded-md p-4 bg-muted/20">
+                                            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
+                                                const dayNames: Record<string, string> = {
+                                                    monday: 'Luni', tuesday: 'Marți', wednesday: 'Miercuri',
+                                                    thursday: 'Joi', friday: 'Vineri', saturday: 'Sâmbătă', sunday: 'Duminică'
+                                                };
 
-                                            const schedule = profile.weekly_schedule?.[day] || { active: false, slots: [] };
+                                                const schedule = profile.weekly_schedule?.[day] || { active: false, slots: [] };
 
-                                            return (
-                                                <div key={day} className={`border rounded-2xl p-6 transition-all ${schedule.active ? 'bg-white border-green-100 shadow-sm' : 'bg-gray-50 border-gray-100 opacity-60'}`}>
-                                                    <div className="flex items-center justify-between mb-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <span className={`font-medium text-lg ${schedule.active ? 'text-gray-900' : 'text-gray-500'}`}>{dayNames[day]}</span>
-                                                            {schedule.active && (
-                                                                <Badge variant="secondary" className="bg-green-50 text-green-700 hover:bg-green-100 border-green-200">
-                                                                    Activ
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-sm text-muted-foreground mr-2 hidden sm:inline-block">
-                                                                {schedule.active ? 'Disponibil' : 'Indisponibil'}
-                                                            </span>
+                                                // Determine initial Start/End for inputs
+                                                let start = "09:00";
+                                                let end = "17:00";
+                                                if (schedule.slots && schedule.slots.length > 0) {
+                                                    const sorted = [...schedule.slots].sort();
+                                                    start = sorted[0];
+                                                    const last = sorted[sorted.length - 1];
+                                                    const [h, m] = last.split(':').map(Number);
+                                                    end = `${(h + 1).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                                                }
+
+                                                return (
+                                                    <div key={day} className="flex items-center justify-between py-2 border-b last:border-0 border-border/50">
+                                                        <div className="flex items-center space-x-3">
                                                             <Switch
                                                                 checked={schedule.active}
-                                                                onCheckedChange={() => {
+                                                                onCheckedChange={(checked) => {
                                                                     const newSchedule = {
                                                                         ...profile.weekly_schedule,
-                                                                        [day]: { ...schedule, active: !schedule.active }
+                                                                        [day]: { ...schedule, active: checked }
                                                                     };
                                                                     setProfile({ ...profile, weekly_schedule: newSchedule });
                                                                 }}
                                                             />
+                                                            <span className={`text-sm ${schedule.active ? "font-medium" : "text-muted-foreground"}`}>
+                                                                {dayNames[day]}
+                                                            </span>
                                                         </div>
-                                                    </div>
+                                                        {schedule.active ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <input
+                                                                    type="time"
+                                                                    defaultValue={start}
+                                                                    onBlur={(e) => {
+                                                                        const newStart = e.target.value;
+                                                                        // Grab the end value from the DOM or state... sticky.
+                                                                        // Better to grab the sibling input by navigating DOM to avoid state complexity for now.
+                                                                        // This is "good enough" for quick refactor.
+                                                                        const container = e.target.parentElement;
+                                                                        const inputs = container?.querySelectorAll('input[type="time"]');
+                                                                        const currentEnd = (inputs?.[1] as HTMLInputElement)?.value || "17:00";
 
-                                                    {schedule.active && (
-                                                        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                                                            {Array.from({ length: 13 }, (_, i) => i + 8).map((hour) => {
-                                                                const time = `${hour.toString().padStart(2, '0')}:00`;
-                                                                const isSelected = schedule.slots?.includes(time);
-                                                                return (
-                                                                    <div
-                                                                        key={time}
-                                                                        onClick={() => {
-                                                                            const currentSlots = schedule.slots || [];
-                                                                            const newSlots = isSelected
-                                                                                ? currentSlots.filter((s: string) => s !== time)
-                                                                                : [...currentSlots, time].sort();
+                                                                        const newSlots = generateSlots(newStart, currentEnd);
+                                                                        const newSchedule = {
+                                                                            ...profile.weekly_schedule,
+                                                                            [day]: { ...schedule, slots: newSlots }
+                                                                        };
+                                                                        setProfile((prev: any) => ({ ...prev, weekly_schedule: newSchedule }));
+                                                                    }}
+                                                                    className="h-8 rounded border border-input bg-background px-2 text-xs w-20"
+                                                                />
+                                                                <span className="text-muted-foreground">-</span>
+                                                                <input
+                                                                    type="time"
+                                                                    defaultValue={end}
+                                                                    onBlur={(e) => {
+                                                                        const newEnd = e.target.value;
+                                                                        const container = e.target.parentElement;
+                                                                        const inputs = container?.querySelectorAll('input[type="time"]');
+                                                                        const currentStart = (inputs?.[0] as HTMLInputElement)?.value || "09:00";
 
-                                                                            const newSchedule = {
-                                                                                ...profile.weekly_schedule,
-                                                                                [day]: { ...schedule, slots: newSlots }
-                                                                            };
-                                                                            setProfile({ ...profile, weekly_schedule: newSchedule });
-                                                                        }}
-                                                                        className={`
-                                                                    cursor-pointer text-center py-2 px-1 rounded-md text-sm border transition-colors
-                                                                    ${isSelected
-                                                                                ? "bg-primary text-primary-foreground border-primary"
-                                                                                : "bg-background hover:bg-muted border-input"}
-                                                                `}
-                                                                    >
-                                                                        {time}
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
-                                            const dayNames: Record<string, string> = {
-                                                monday: 'Luni', tuesday: 'Marți', wednesday: 'Miercuri',
-                                                thursday: 'Joi', friday: 'Vineri', saturday: 'Sâmbătă', sunday: 'Duminică'
-                                            };
-                                            const schedule = profile.weekly_schedule?.[day];
-
-                                            if (!schedule?.active) return null;
-
-                                            return (
-                                                <div key={day} className="flex items-start gap-2">
-                                                    <span className="w-20 font-medium text-sm pt-1">{dayNames[day]}:</span>
-                                                    <div className="flex flex-wrap gap-1 flex-1">
-                                                        {schedule.slots?.length > 0 ? (
-                                                            schedule.slots.sort().map((slot: string) => (
-                                                                <Badge key={slot} variant="outline" className="text-xs">{slot}</Badge>
-                                                            ))
+                                                                        const newSlots = generateSlots(currentStart, newEnd);
+                                                                        const newSchedule = {
+                                                                            ...profile.weekly_schedule,
+                                                                            [day]: { ...schedule, slots: newSlots }
+                                                                        };
+                                                                        setProfile((prev: any) => ({ ...prev, weekly_schedule: newSchedule }));
+                                                                    }}
+                                                                    className="h-8 rounded border border-input bg-background px-2 text-xs w-20"
+                                                                />
+                                                            </div>
                                                         ) : (
-                                                            <span className="text-sm text-muted-foreground">Fără intervale</span>
+                                                            <span className="text-xs text-muted-foreground italic">Indisponibil</span>
                                                         )}
                                                     </div>
-                                                </div>
-                                            );
-                                        })}
-                                        {!profile.weekly_schedule && (
-                                            <div className="flex flex-wrap gap-2 mt-1">
-                                                {profile.available_slots?.sort().map((slot: string) => (
-                                                    <Badge key={slot} variant="outline" className="text-sm py-1 px-3">{slot}</Badge>
-                                                )) || <p className="text-muted-foreground">Nu sunt intervale setate</p>}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                                <p className="text-xs text-muted-foreground mt-4">
-                                    * Programările confirmate vor bloca automat intervalul respectiv pentru data specifică.
-                                </p>
-                            </div>
-                            <div className="mt-8 pt-8 border-t border-gray-100">
-                                <div className="flex items-center justify-between">
-                                    <div className="space-y-0.5">
-                                        <label className="text-sm font-medium">Notificări Email</label>
-                                        <p className="text-sm text-muted-foreground">
-                                            Primește emailuri când primești mesaje noi de la clienți.
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant={profile.user?.notification_preferences?.email_booking !== false ? "default" : "outline"}
-                                        onClick={async () => {
-                                            const current = profile.user?.notification_preferences?.email_booking !== false;
-                                            const supabase = createClient();
-                                            const { error } = await supabase
-                                                .from("users")
-                                                .update({
-                                                    notification_preferences: {
-                                                        ...profile.user?.notification_preferences,
-                                                        email_booking: !current
-                                                    }
-                                                })
-                                                .eq("id", user.id);
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
+                                                const dayNames: Record<string, string> = {
+                                                    monday: 'Luni', tuesday: 'Marți', wednesday: 'Miercuri',
+                                                    thursday: 'Joi', friday: 'Vineri', saturday: 'Sâmbătă', sunday: 'Duminică'
+                                                };
+                                                const schedule = profile.weekly_schedule?.[day];
 
-                                            if (!error) {
-                                                setProfile({
-                                                    ...profile,
-                                                    user: {
-                                                        ...profile.user,
-                                                        notification_preferences: {
-                                                            ...profile.user?.notification_preferences,
-                                                            email_booking: !current
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }}
-                                    >
-                                        {profile.user?.notification_preferences?.email_booking !== false ? "Activat" : "Dezactivat"}
-                                    </Button>
+                                                if (!schedule?.active) return null;
+
+                                                let timeDisplay = "Toată ziua";
+                                                if (schedule.slots && schedule.slots.length > 0) {
+                                                    const sorted = [...schedule.slots].sort();
+                                                    const start = sorted[0];
+                                                    const last = sorted[sorted.length - 1];
+                                                    const [h, m] = last.split(':').map(Number);
+                                                    const end = `${(h + 1).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                                                    timeDisplay = `${start} - ${end}`;
+                                                }
+
+                                                return (
+                                                    <div key={day} className="flex items-center justify-between border-b pb-2 last:border-0 border-gray-50">
+                                                        <span className="font-medium text-sm text-gray-700">{dayNames[day]}</span>
+                                                        <span className="text-sm font-medium text-primary bg-primary/5 px-3 py-1 rounded-full">
+                                                            {timeDisplay}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                            {!profile.weekly_schedule && <p className="text-muted-foreground text-sm">Nu este setat programul.</p>}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </TabsContent >
+                        );
+                    })()}
 
-                <TabsContent value="appointments" className="space-y-6">
+
                     {/* Upcoming Appointments */}
                     <div>
                         {appointments.length === 0 ? (

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ForcePasswordChange } from "@/components/auth/ForcePasswordChange";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
         )}
       >
         <Header />
+        <ForcePasswordChange />
         <main className="flex-1">
           {children}
         </main>

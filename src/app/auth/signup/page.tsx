@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -11,12 +11,20 @@ export default function SignupPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [role, setRole] = useState<"client" | "therapist">("client");
+    const [role, setRole] = useState<"client" | "therapist" | "business">("client");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect");
+    const isApplicationRedirect = redirect?.includes("aplicare-terapeut");
+
+    useEffect(() => {
+        if (isApplicationRedirect) {
+            setRole("therapist");
+        }
+    }, [isApplicationRedirect]);
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -72,9 +80,10 @@ export default function SignupPage() {
                 setTimeout(() => {
                     const redirectUrl = searchParams.get("redirect");
                     if (redirectUrl) {
-                        router.push(`/auth/login?redirect=${redirectUrl}`);
+                        // Force full reload to ensure auth state is picked up
+                        window.location.assign(`/auth/login?redirect=${redirectUrl}`);
                     } else {
-                        router.push("/auth/login");
+                        window.location.assign("/auth/login");
                     }
                 }, 3000);
             }
@@ -98,12 +107,9 @@ export default function SignupPage() {
 
                     {error === "EMAIL_RESTRICTED" ? (
                         <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 text-left text-sm space-y-2">
-                            <p className="font-bold text-yellow-800">⚠️ Mod Testare (Dev Mode)</p>
+                            <p className="font-bold text-yellow-800">⚠️ Link de Confirmare (Dev Mode)</p>
                             <p className="text-yellow-700">
-                                Email-ul nu a putut fi trimis deoarece domeniul nu este verificat în Resend.
-                            </p>
-                            <p className="text-yellow-700">
-                                Folosește acest link pentru a confirma contul manual:
+                                Deoarece ești pe localhost, iată linkul de confirmare direct:
                             </p>
                             <div className="bg-white p-2 rounded border break-all font-mono text-xs select-all">
                                 <a href={email} className="text-blue-600 hover:underline" target="_blank">
@@ -111,18 +117,24 @@ export default function SignupPage() {
                                 </a>
                             </div>
                             <Button asChild className="w-full mt-2" variant="outline">
-                                <a href={email}>Confirmă Acum</a>
+                                <a href={email}>Confirmă Acum &rarr;</a>
                             </Button>
                         </div>
                     ) : (
                         <p className="text-muted-foreground">
-                            Verifică emailul pentru a-ți activa contul. Vei fi redirecționat către login...
+                            Verifică emailul pentru a-ți activa contul.
+                            <br />
+                            <span className="text-xs">Vei fi redirecționat către login...</span>
                         </p>
                     )}
                 </div>
             </div>
         );
     }
+
+
+
+    // Correction: moving the auto-select to useEffect
 
     return (
         <div className="container mx-auto px-4 py-16 max-w-md">
@@ -134,7 +146,21 @@ export default function SignupPage() {
                     </p>
                 </div>
 
+                {/* Contextual Alert for Application Redirect */}
+                {isApplicationRedirect && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+                        <div className="mt-1 text-blue-600">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <div className="text-sm text-blue-800">
+                            <p className="font-medium">Salvează-ți aplicația</p>
+                            <p>Creează un cont pentru a finaliza trimiterea aplicației de terapeut.</p>
+                        </div>
+                    </div>
+                )}
+
                 <form onSubmit={handleSignup} className="space-y-4">
+                    {/* ... error display ... */}
                     {error && (
                         <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
                             {error}
@@ -158,25 +184,47 @@ export default function SignupPage() {
                                 </div>
                             </button>
 
-                            <Link
-                                href="/aplicare-terapeut"
-                                className="p-3 rounded-lg border-2 border-border hover:border-primary/50 transition-colors text-left block"
-                            >
-                                <div className="font-medium text-sm">Terapeut</div>
-                                <div className="text-xs text-muted-foreground mt-1">
-                                    Aplică ca specialist
-                                </div>
-                            </Link>
+                            {/* Conditional Therapist Card */}
+                            {isApplicationRedirect ? (
+                                <button
+                                    type="button"
+                                    onClick={() => setRole("therapist")}
+                                    className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "therapist"
+                                        ? "border-primary bg-primary/5 shadow-sm"
+                                        : "border-border hover:border-primary/50"
+                                        }`}
+                                >
+                                    <div className="font-medium text-sm">Terapeut</div>
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                        Finalizează
+                                        aplicarea
+                                    </div>
+                                </button>
+                            ) : (
+                                <Link
+                                    href="/aplicare-terapeut"
+                                    className="p-3 rounded-lg border-2 border-border hover:border-primary/50 transition-colors text-left block"
+                                >
+                                    <div className="font-medium text-sm">Terapeut</div>
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                        Aplică ca specialist
+                                    </div>
+                                </Link>
+                            )}
 
-                            <Link
-                                href="/business/register"
-                                className="p-3 rounded-lg border-2 border-border hover:border-primary/50 transition-colors text-left block"
+                            <button
+                                type="button"
+                                onClick={() => setRole("business")}
+                                className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "business"
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:border-primary/50"
+                                    }`}
                             >
                                 <div className="font-medium text-sm">Business</div>
                                 <div className="text-xs text-muted-foreground mt-1">
                                     Oferte wellness
                                 </div>
-                            </Link>
+                            </button>
                         </div>
                     </div>
 

@@ -573,32 +573,34 @@ export function BusinessDashboard({ user }: { user: any }) {
                                     <p className="text-muted-foreground mt-1">{profile.location || "-"}</p>
                                 )}
                             </div>
-                        </TabsContent>
+                        </div>
+                    </div>
+                </TabsContent>
 
-                        <TabsContent value="settings" className="mt-0">
-                            <AccountSettings user={user} />
-                        </TabsContent>
-                    </Tabs>
-                    <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
-                        if (!open) {
-                            setSelectedBookingForChat(null);
-                            fetchData(); // Refresh to update unread counts
-                        }
-                    }}>
-                        <DialogContent className="w-[95vw] max-w-[500px] p-0 overflow-hidden rounded-2xl">
-                            <DialogHeader className="p-4 border-b bg-muted/50">
-                                <DialogTitle className="text-base">Chat cu {selectedBookingForChat?.client?.name || selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
-                            </DialogHeader>
-                            {selectedBookingForChat && (
-                                <BookingChat
-                                    bookingId={selectedBookingForChat.id}
-                                    currentUserId={user.id}
-                                    otherUserName={selectedBookingForChat.client?.name || selectedBookingForChat.client?.email || "Client"}
-                                    className="border-0 rounded-none h-[500px]"
-                                />
-                            )}
-                        </DialogContent>
-                    </Dialog>
-                </div>
-                );
+                <TabsContent value="settings" className="mt-0">
+                    <AccountSettings user={user} />
+                </TabsContent>
+            </Tabs>
+            <Dialog open={!!selectedBookingForChat} onOpenChange={(open) => {
+                if (!open) {
+                    setSelectedBookingForChat(null);
+                    fetchData(); // Refresh to update unread counts
+                }
+            }}>
+                <DialogContent className="w-[95vw] max-w-[500px] p-0 overflow-hidden rounded-2xl">
+                    <DialogHeader className="p-4 border-b bg-muted/50">
+                        <DialogTitle className="text-base">Chat cu {selectedBookingForChat?.client?.name || selectedBookingForChat?.client?.email || "Client"}</DialogTitle>
+                    </DialogHeader>
+                    {selectedBookingForChat && (
+                        <BookingChat
+                            bookingId={selectedBookingForChat.id}
+                            currentUserId={user.id}
+                            otherUserName={selectedBookingForChat.client?.name || selectedBookingForChat.client?.email || "Client"}
+                            className="border-0 rounded-none h-[500px]"
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
 }

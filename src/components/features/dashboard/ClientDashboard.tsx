@@ -289,6 +289,7 @@ export function ClientDashboard({ user }: { user: any }) {
                                 </Card>
                             ))}
                         </div>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="settings" className="mt-6">

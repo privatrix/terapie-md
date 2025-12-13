@@ -415,6 +415,89 @@ export function TherapistDashboard({ user }: { user: any }) {
                                 </div>
                             </div>
 
+                            {/* Specialties and Approaches Section */}
+                            <div className="space-y-4 border-t border-gray-100 pt-4">
+                                <div>
+                                    <label className="text-sm font-medium mb-2 block">Arii de Expertiză (Specializări)</label>
+                                    {editing ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {THERAPIST_SPECIALTIES.map((spec) => {
+                                                const currentSpecialties = profile.specialties || [];
+                                                const isSelected = currentSpecialties.includes(spec);
+                                                return (
+                                                    <div
+                                                        key={spec}
+                                                        onClick={() => {
+                                                            const updated = isSelected
+                                                                ? currentSpecialties.filter((s: string) => s !== spec)
+                                                                : [...currentSpecialties, spec];
+                                                            setProfile({ ...profile, specialties: updated });
+                                                        }}
+                                                        className={`
+                                                            cursor-pointer px-3 py-1.5 rounded-full text-sm border transition-all
+                                                            ${isSelected
+                                                                ? "bg-secondary text-secondary-foreground border-secondary"
+                                                                : "bg-background hover:bg-muted text-muted-foreground border-input"}
+                                                        `}
+                                                    >
+                                                        {spec}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-wrap gap-2 mt-1">
+                                            {(profile.specialties || [])
+                                                .filter((s: string) => THERAPIST_SPECIALTIES.includes(s as any))
+                                                .map((s: string) => (
+                                                    <Badge key={s} variant="secondary" className="font-normal">{s}</Badge>
+                                                ))}
+                                            {(!profile.specialties || !profile.specialties.some((s: string) => THERAPIST_SPECIALTIES.includes(s as any))) && <span className="text-muted-foreground">-</span>}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="text-sm font-medium mb-2 block">Abordare Terapeutică</label>
+                                    {editing ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {THERAPIST_APPROACHES.map((approach) => {
+                                                const currentSpecialties = profile.specialties || [];
+                                                const isSelected = currentSpecialties.includes(approach);
+                                                return (
+                                                    <div
+                                                        key={approach}
+                                                        onClick={() => {
+                                                            const updated = isSelected
+                                                                ? currentSpecialties.filter((s: string) => s !== approach)
+                                                                : [...currentSpecialties, approach];
+                                                            setProfile({ ...profile, specialties: updated });
+                                                        }}
+                                                        className={`
+                                                            cursor-pointer px-3 py-1.5 rounded-full text-sm border transition-all
+                                                            ${isSelected
+                                                                ? "bg-accent text-accent-foreground border-accent font-medium"
+                                                                : "bg-background hover:bg-muted text-muted-foreground border-input"}
+                                                        `}
+                                                    >
+                                                        {approach}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-wrap gap-2 mt-1">
+                                            {(profile.specialties || [])
+                                                .filter((s: string) => THERAPIST_APPROACHES.includes(s as any))
+                                                .map((s: string) => (
+                                                    <Badge key={s} variant="outline" className="font-normal bg-accent/50">{s}</Badge>
+                                                ))}
+                                            {(!profile.specialties || !profile.specialties.some((s: string) => THERAPIST_APPROACHES.includes(s as any))) && <span className="text-muted-foreground">-</span>}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
                             {/* Medical Code - Conditional */}
                             {(profile.specializations?.includes("Psihiatru") || profile.medical_code) && (
                                 <div>
@@ -705,7 +788,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                             </div>
                         </div>
                     </div>
-                </TabsContent>
+                </TabsContent >
 
                 <TabsContent value="appointments" className="space-y-6">
                     {/* Upcoming Appointments */}

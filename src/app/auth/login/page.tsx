@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const searchParams = useSearchParams();
     const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -32,7 +33,8 @@ export default function LoginPage() {
             if (user?.user_metadata?.requires_password_change) {
                 router.push("/change-password");
             } else {
-                router.push("/");
+                const redirectUrl = searchParams.get("redirect") || "/";
+                router.push(redirectUrl);
             }
             router.refresh();
         } catch (err: any) {

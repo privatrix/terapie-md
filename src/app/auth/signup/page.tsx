@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignupPage() {
     const [name, setName] = useState("");
@@ -16,6 +16,7 @@ export default function SignupPage() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,7 +69,12 @@ export default function SignupPage() {
             } else {
                 setSuccess(true);
                 setTimeout(() => {
-                    router.push("/auth/login");
+                    const redirectUrl = searchParams.get("redirect");
+                    if (redirectUrl) {
+                        router.push(`/auth/login?redirect=${redirectUrl}`);
+                    } else {
+                        router.push("/auth/login");
+                    }
                 }, 3000);
             }
         } catch (err: any) {

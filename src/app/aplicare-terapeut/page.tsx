@@ -71,6 +71,7 @@ const EDUCATION_LEVELS = [
 ];
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { CITIES } from "@/lib/constants";
 
 export default function TherapistApplicationPage() {
@@ -109,6 +110,31 @@ export default function TherapistApplicationPage() {
         bio: "",
         availability: "",
     });
+
+    const [schedule, setSchedule] = useState([
+        { day: "Luni", active: true, start: "09:00", end: "17:00" },
+        { day: "Marți", active: true, start: "09:00", end: "17:00" },
+        { day: "Miercuri", active: true, start: "09:00", end: "17:00" },
+        { day: "Joi", active: true, start: "09:00", end: "17:00" },
+        { day: "Vineri", active: true, start: "09:00", end: "17:00" },
+        { day: "Sâmbătă", active: false, start: "10:00", end: "14:00" },
+        { day: "Duminică", active: false, start: "10:00", end: "14:00" },
+    ]);
+
+    useEffect(() => {
+        const availabilityString = schedule
+            .filter(d => d.active)
+            .map(d => `${d.day}: ${d.start}-${d.end}`)
+            .join("; ");
+        updateFormData("availability", availabilityString);
+    }, [schedule]);
+
+    const updateSchedule = (index: number, field: string, value: any) => {
+        const newSchedule = [...schedule];
+        // @ts-ignore
+        newSchedule[index][field] = value;
+        setSchedule(newSchedule);
+    };
 
     const updateFormData = (field: string, value: any) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -604,12 +630,43 @@ export default function TherapistApplicationPage() {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Disponibilitate *</label>
-                                <textarea
-                                    value={formData.availability}
-                                    onChange={(e) => updateFormData("availability", e.target.value)}
-                                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                                    placeholder="ex: Luni-Vineri, 09:00-17:00. Sesiuni online sau la cabinet."
-                                />
+                                <div className="space-y-4 border rounded-md p-4 bg-muted/20">
+                                    {schedule.map((day, index) => (
+                                        <div key={day.day} className="flex items-center justify-between py-2 border-b last:border-0 border-border/50">
+                                            <div className="flex items-center space-x-3">
+                                                <Switch
+                                                    checked={day.active}
+                                                    onCheckedChange={(checked) => updateSchedule(index, "active", checked)}
+                                                />
+                                                <span className={`text-sm ${day.active ? "font-medium" : "text-muted-foreground"}`}>
+                                                    {day.day}
+                                                </span>
+                                            </div>
+                                            {day.active ? (
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="time"
+                                                        value={day.start}
+                                                        onChange={(e) => updateSchedule(index, "start", e.target.value)}
+                                                        className="h-8 rounded border border-input bg-background px-2 text-xs"
+                                                    />
+                                                    <span className="text-muted-foreground">-</span>
+                                                    <input
+                                                        type="time"
+                                                        value={day.end}
+                                                        onChange={(e) => updateSchedule(index, "end", e.target.value)}
+                                                        className="h-8 rounded border border-input bg-background px-2 text-xs"
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground italic">Indisponibil</span>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                    Acest mogram va fi afișat pe profilul tău. Poți modifica aceste ore ulterior din dashboard.
+                                </p>
                             </div>
                         </div>
                     </div>

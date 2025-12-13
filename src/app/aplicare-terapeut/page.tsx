@@ -552,7 +552,7 @@ export default function TherapistApplicationPage() {
 
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Număr licență *</label>
+                                    <label className="text-sm font-medium">Număr licență (Opțional)</label>
                                     <input
                                         type="text"
                                         value={formData.license_number}

@@ -233,34 +233,28 @@ export default function TherapistApplicationPage() {
 
     const prevStep = () => setStep(step - 1);
 
-    const handleSubmit = async () => {
-        if (!validateStep(4)) {
-            setError("Te rugăm să completezi toate câmpurile");
-            return;
-        }
-
+    const submitApplication = async (currentUser: any) => {
         setLoading(true);
         setError("");
 
         try {
             const supabase = createClient();
 
-            if (!user) {
-                // Save draft before redirecting
-                localStorage.setItem("therapist_application_draft", JSON.stringify(formData));
-                localStorage.setItem("therapist_application_schedule", JSON.stringify(schedule));
+            // Generate availability string from current schedule if needed, 
+            // but formData.availability is updated via useEffect [schedule].
+            // However, on first render after restore, that useEffect might run too late?
+            // Let's ensure availability is consistent.
+            // Actually, if we just restored formData, it has availability string.
+            // If we just restored schedule, the useEffect will update formData.availability.
 
-                // Redirect to signup if not authenticated
-                const returnUrl = encodeURIComponent("/aplicare-terapeut");
-                router.push(`/auth/signup?redirect=${returnUrl}`);
-                return;
-            }
+            // To be safe, let's recalculate if availability is empty but schedule exists?
+            // Or just trust formData.
 
             const { error: submitError } = await supabase
                 .from("therapist_applications")
                 .insert([
                     {
-                        user_id: user.id, // Link application to user
+                        user_id: currentUser.id,
                         name: formData.name,
                         email: formData.email,
                         phone: formData.phone,
@@ -285,13 +279,37 @@ export default function TherapistApplicationPage() {
             // Clear draft on success
             localStorage.removeItem("therapist_application_draft");
             localStorage.removeItem("therapist_application_schedule");
+            localStorage.removeItem("therapist_application_pending");
             setSubmitted(true);
         } catch (err: any) {
             console.error(err);
             setError(err.message || "A apărut o eroare la trimiterea aplicației");
+            // If error, remove pending flag so we don't loop
+            localStorage.removeItem("therapist_application_pending");
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSubmit = async () => {
+        if (!validateStep(4)) {
+            setError("Te rugăm să completezi toate câmpurile");
+            return;
+        }
+
+        if (!user) {
+            // Save draft before redirecting
+            localStorage.setItem("therapist_application_draft", JSON.stringify(formData));
+            localStorage.setItem("therapist_application_schedule", JSON.stringify(schedule));
+            localStorage.setItem("therapist_application_pending", "true");
+
+            // Redirect to signup if not authenticated
+            const returnUrl = encodeURIComponent("/aplicare-terapeut");
+            router.push(`/auth/signup?redirect=${returnUrl}`);
+            return;
+        }
+
+        submitApplication(user);
     };
 
     if (authChecking) {

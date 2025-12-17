@@ -6,7 +6,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -46,80 +46,90 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-16 max-w-md">
-            <div className="space-y-6">
-                <div className="text-center space-y-2">
-                    <h1 className="font-heading text-3xl font-bold">Intră în cont</h1>
-                    <p className="text-muted-foreground">
-                        Bine ai revenit! Introdu datele tale pentru a continua.
-                    </p>
+        <div className="space-y-6">
+            <div className="text-center space-y-2">
+                <h1 className="font-heading text-3xl font-bold">Intră în cont</h1>
+                <p className="text-muted-foreground">
+                    Bine ai revenit! Introdu datele tale pentru a continua.
+                </p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+                {error && (
+                    <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                        {error}
+                    </div>
+                )}
+
+                <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="email@exemplu.com"
+                    />
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-4">
-                    {error && (
-                        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                            {error}
-                        </div>
-                    )}
+                <div className="space-y-2">
+                    <label htmlFor="password" className="text-sm font-medium">
+                        Parolă
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="••••••••"
+                    />
+                </div>
 
-                    <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="email@exemplu.com"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium">
-                            Parolă
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="••••••••"
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" />
-                            <span className="text-muted-foreground">Ține-mă minte</span>
-                        </label>
-                        <Link
-                            href="/auth/reset-password"
-                            className="text-primary hover:underline"
-                        >
-                            Ai uitat parola?
-                        </Link>
-                    </div>
-
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Se încarcă..." : "Intră în cont"}
-                    </Button>
-                </form>
-
-                <div className="text-center text-sm text-muted-foreground">
-                    Nu ai cont?{" "}
+                <div className="flex items-center justify-between text-sm">
+                    <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span className="text-muted-foreground">Ține-mă minte</span>
+                    </label>
                     <Link
-                        href={`/auth/signup${searchParams.get("redirect") ? `?redirect=${searchParams.get("redirect")}` : ""}`}
-                        className="text-primary hover:underline font-medium"
+                        href="/auth/reset-password"
+                        className="text-primary hover:underline"
                     >
-                        Creează cont nou
+                        Ai uitat parola?
                     </Link>
                 </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Se încarcă..." : "Intră în cont"}
+                </Button>
+            </form>
+
+            <div className="text-center text-sm text-muted-foreground">
+                Nu ai cont?{" "}
+                <Link
+                    href={`/auth/signup${searchParams.get("redirect") ? `?redirect=${searchParams.get("redirect")}` : ""}`}
+                    className="text-primary hover:underline font-medium"
+                >
+                    Creează cont nou
+                </Link>
             </div>
+        </div>
+    );
+};
+
+import { Suspense } from "react";
+
+export default function LoginPage() {
+    return (
+        <div className="container mx-auto px-4 py-16 max-w-md">
+            <Suspense fallback={<div className="text-center p-8">Se încarcă...</div>}>
+                <LoginForm />
+            </Suspense>
         </div>
     );
 }

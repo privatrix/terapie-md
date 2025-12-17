@@ -80,13 +80,15 @@ export function AdminDashboard({ user }: { user: any }) {
             // Handle Therapist Apps
             if (appsResult.status === 'fulfilled' && appsResult.value.data) {
                 setApplications(appsResult.value.data);
-                setStats(prev => ({ ...prev, pendingApplications: appsResult.value.data.length }));
+                const count = appsResult.value.data.length;
+                setStats(prev => ({ ...prev, pendingApplications: count }));
             }
 
             // Handle Business Apps
             if (businessAppsResult.status === 'fulfilled' && businessAppsResult.value.data) {
                 setBusinessApplications(businessAppsResult.value.data);
-                setStats(prev => ({ ...prev, pendingBusinessApps: businessAppsResult.value.data.length }));
+                const count = businessAppsResult.value.data.length;
+                setStats(prev => ({ ...prev, pendingBusinessApps: count }));
             }
 
             // Handle Therapists

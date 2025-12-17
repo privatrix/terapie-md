@@ -90,6 +90,9 @@ export function Header() {
                         <Link href="/despre" className="hover:text-primary transition-colors">
                             Despre Noi
                         </Link>
+                        <Link href="/articole" className="hover:text-primary transition-colors">
+                            Blog
+                        </Link>
                     </nav>
                     <div className="flex items-center gap-4">
                         {user && !isUpdatePasswordPage ? (
@@ -171,6 +174,13 @@ export function Header() {
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             Despre Noi
+                        </Link>
+                        <Link
+                            href="/articole"
+                            className="text-2xl font-semibold hover:text-primary transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            Blog
                         </Link>
 
                         <div className="flex flex-col gap-4 mt-8 w-[280px]">

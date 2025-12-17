@@ -104,7 +104,8 @@ export function AdminDashboard({ user }: { user: any }) {
             // Handle Contacts
             if (contactsResult.status === 'fulfilled' && contactsResult.value.data) {
                 setContactSubmissions(contactsResult.value.data);
-                setStats(prev => ({ ...prev, newContactMessages: contactsResult.value.data.filter((c: any) => c.status === 'new').length }));
+                const newMessagesCount = contactsResult.value.data.filter((c: any) => c.status === 'new').length;
+                setStats(prev => ({ ...prev, newContactMessages: newMessagesCount }));
             }
 
             // Handle Articles

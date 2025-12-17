@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { TherapistRecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
 import { useSearchParams } from "next/navigation";
 
-export default function TherapistsPage() {
+const TherapistsContent = () => {
     const searchParams = useSearchParams();
     const [therapists, setTherapists] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -203,5 +203,17 @@ export default function TherapistsPage() {
                 </>
             )}
         </div>
+    );
+};
+
+import { Suspense } from "react";
+
+export default function TherapistsPage() {
+    return (
+        <Suspense fallback={<div className="container mx-auto px-4 py-16 text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+        </div>}>
+            <TherapistsContent />
+        </Suspense>
     );
 }

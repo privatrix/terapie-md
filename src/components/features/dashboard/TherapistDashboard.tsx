@@ -84,7 +84,11 @@ export function TherapistDashboard({ user }: { user: any }) {
                     const response = await fetch('/api/therapist/bookings?t=' + Date.now(), { cache: 'no-store' });
                     if (response.ok) {
                         const appointmentsData = await response.json();
-                        setAppointments(appointmentsData);
+                        // Sort appointments by date descending (newest first)
+                        const sortedAppointments = Array.isArray(appointmentsData)
+                            ? appointmentsData.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                            : [];
+                        setAppointments(sortedAppointments);
                     } else {
                         console.error("Failed to fetch bookings");
                     }

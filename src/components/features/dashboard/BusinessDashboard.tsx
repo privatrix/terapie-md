@@ -101,7 +101,7 @@ export function BusinessDashboard({ user }: { user: any }) {
                     messages:booking_messages(id, read_at, sender_id)
                 `)
                 .eq("business_id", profileData.id)
-                .order("created_at", { ascending: false });
+                .order("date", { ascending: false });
 
             const bookingsWithUnread = (bookingsData || []).map((booking: any) => {
                 const unreadCount = booking.messages?.filter(

@@ -104,261 +104,260 @@ export function ArticleEditor({ articleId }: ArticleEditorProps) {
 
         let error;
 
-        if (articleId) {
-            // Get session for auth token
-            const { data: { session } } = await supabase.auth.getSession();
+        // Get session for auth token
+        const { data: { session } } = await supabase.auth.getSession();
 
-            if (!session) {
-                alert("Sesiune expirată.");
-                setLoading(false);
-                return;
-            }
-
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`
-            };
-
-            if (articleId) {
-                // Update via API
-                const response = await fetch('/api/admin/articles', {
-                    method: 'PUT',
-                    headers,
-                    body: JSON.stringify({ id: articleId, ...articleData }),
-                });
-
-                if (!response.ok) {
-                    const resData = await response.json();
-                    error = new Error(resData.error || 'Update failed');
-                }
-            } else {
-                // Create via API
-                const response = await fetch('/api/admin/articles', {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(articleData),
-                });
-
-                if (!response.ok) {
-                    const resData = await response.json();
-                    error = new Error(resData.error || 'Create failed');
-                }
-            }
-
+        if (!session) {
+            alert("Sesiune expirată.");
             setLoading(false);
+            return;
+        }
 
-            if (error) {
-                console.error("Error saving article:", error);
-                alert("Eroare la salvare: " + error.message);
-            } else {
-                router.push("/admin/blog");
-                router.refresh();
-            }
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
         };
 
-        if (fetching) return <div className="p-8 text-center">Se încarcă editorul...</div>;
+        if (articleId) {
+            // Update via API
+            const response = await fetch('/api/admin/articles', {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ id: articleId, ...articleData }),
+            });
 
-        return (
-            <div className="max-w-4xl mx-auto space-y-8 pb-20">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()}>
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                    <h1 className="text-2xl font-bold">
-                        {articleId ? "Editează Articol" : "Articol Nou"}
-                    </h1>
+            if (!response.ok) {
+                const resData = await response.json();
+                error = new Error(resData.error || 'Update failed');
+            }
+        } else {
+            // Create via API
+            const response = await fetch('/api/admin/articles', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(articleData),
+            });
+
+            if (!response.ok) {
+                const resData = await response.json();
+                error = new Error(resData.error || 'Create failed');
+            }
+        }
+
+        setLoading(false);
+
+        if (error) {
+            console.error("Error saving article:", error);
+            alert("Eroare la salvare: " + error.message);
+        } else {
+            router.push("/admin/blog");
+            router.refresh();
+        }
+    };
+
+    if (fetching) return <div className="p-8 text-center">Se încarcă editorul...</div>;
+
+    return (
+        <div className="max-w-4xl mx-auto space-y-8 pb-20">
+            <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" onClick={() => router.back()}>
+                    <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <h1 className="text-2xl font-bold">
+                    {articleId ? "Editează Articol" : "Articol Nou"}
+                </h1>
+            </div>
+
+            <div className="grid gap-6 bg-white p-6 rounded-xl border shadow-sm">
+
+                {/* Meta Section */}
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label>Titlu Articol *</Label>
+                        <Input
+                            value={title}
+                            onChange={handleTitleChange}
+                            placeholder="Ex: 5 Metode să reduci stresul"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>URL Slug (unic) *</Label>
+                        <Input
+                            value={slug}
+                            onChange={(e) => setSlug(e.target.value)}
+                            placeholder="ex: 5-metode-sa-reduci-stresul"
+                        />
+                    </div>
                 </div>
 
-                <div className="grid gap-6 bg-white p-6 rounded-xl border shadow-sm">
+                <div className="space-y-4">
+                    <Label>Imagine Principală</Label>
 
-                    {/* Meta Section */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <Label>Titlu Articol *</Label>
+                    <div className="flex gap-2 items-start">
+                        <div className="flex-1 space-y-2">
                             <Input
-                                value={title}
-                                onChange={handleTitleChange}
-                                placeholder="Ex: 5 Metode să reduci stresul"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                placeholder="Paste URL sau încarcă o imagine..."
                             />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>URL Slug (unic) *</Label>
-                            <Input
-                                value={slug}
-                                onChange={(e) => setSlug(e.target.value)}
-                                placeholder="ex: 5-metode-sa-reduci-stresul"
-                            />
-                        </div>
-                    </div>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    disabled={uploading}
+                                    onClick={() => document.getElementById('file-upload')?.click()}
+                                >
+                                    {uploading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Se încarcă...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ImagePlus className="mr-2 h-4 w-4" />
+                                            Încarcă Imagine
+                                        </>
+                                    )}
+                                </Button>
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
 
-                    <div className="space-y-4">
-                        <Label>Imagine Principală</Label>
+                                        const formData = new FormData();
+                                        formData.append('file', file);
 
-                        <div className="flex gap-2 items-start">
-                            <div className="flex-1 space-y-2">
-                                <Input
-                                    value={imageUrl}
-                                    onChange={(e) => setImageUrl(e.target.value)}
-                                    placeholder="Paste URL sau încarcă o imagine..."
+                                        setUploading(true);
+
+                                        try {
+                                            const response = await fetch('/api/upload', {
+                                                method: 'POST',
+                                                body: formData,
+                                            });
+
+                                            if (!response.ok) {
+                                                const errorData = await response.json();
+                                                throw new Error(errorData.error || 'Upload failed');
+                                            }
+
+                                            const data = await response.json();
+                                            setImageUrl(data.url);
+                                        } catch (error: any) {
+                                            alert("Eroare la upload: " + error.message);
+                                        } finally {
+                                            setUploading(false);
+                                            e.target.value = '';
+                                        }
+                                    }}
                                 />
-                                <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">
+                                    Suportă JPG, PNG, WEBP
+                                </span>
+                            </div>
+                        </div>
+
+                        {imageUrl && (
+                            <div className="relative group border rounded-lg overflow-hidden shrink-0 w-32 h-24 bg-gray-50">
+                                <img
+                                    src={imageUrl}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <Button
                                         type="button"
-                                        variant="secondary"
-                                        disabled={uploading}
-                                        onClick={() => document.getElementById('file-upload')?.click()}
+                                        variant="destructive"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => setImageUrl("")}
                                     >
-                                        {uploading ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Se încarcă...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ImagePlus className="mr-2 h-4 w-4" />
-                                                Încarcă Imagine
-                                            </>
-                                        )}
+                                        <X className="h-4 w-4" />
                                     </Button>
-                                    <input
-                                        id="file-upload"
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={async (e) => {
-                                            const file = e.target.files?.[0];
-                                            if (!file) return;
-
-                                            const formData = new FormData();
-                                            formData.append('file', file);
-
-                                            setUploading(true);
-
-                                            try {
-                                                const response = await fetch('/api/upload', {
-                                                    method: 'POST',
-                                                    body: formData,
-                                                });
-
-                                                if (!response.ok) {
-                                                    const errorData = await response.json();
-                                                    throw new Error(errorData.error || 'Upload failed');
-                                                }
-
-                                                const data = await response.json();
-                                                setImageUrl(data.url);
-                                            } catch (error: any) {
-                                                alert("Eroare la upload: " + error.message);
-                                            } finally {
-                                                setUploading(false);
-                                                e.target.value = '';
-                                            }
-                                        }}
-                                    />
-                                    <span className="text-xs text-muted-foreground">
-                                        Suportă JPG, PNG, WEBP
-                                    </span>
                                 </div>
                             </div>
-
-                            {imageUrl && (
-                                <div className="relative group border rounded-lg overflow-hidden shrink-0 w-32 h-24 bg-gray-50">
-                                    <img
-                                        src={imageUrl}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <Button
-                                            type="button"
-                                            variant="destructive"
-                                            size="icon"
-                                            className="h-8 w-8"
-                                            onClick={() => setImageUrl("")}
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <Label>Autor</Label>
-                            <Input
-                                value={authorName}
-                                onChange={(e) => setAuthorName(e.target.value)}
-                                placeholder="Numele autorului"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Tag-uri (separate prin virgulă)</Label>
-                            <Input
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="Ex: Anxietate, Sănătate, Ghid"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2 border p-4 rounded-lg bg-gray-50">
-                        <Toggle
-                            pressed={isFeatured}
-                            onPressedChange={setIsFeatured}
-                            aria-label="Toggle featured"
-                            className={`data-[state=on]:bg-primary data-[state=on]:text-primary-foreground ${isFeatured ? 'bg-primary text-white' : 'bg-gray-200'}`}
-                        >
-                            {isFeatured ? "ON" : "OFF"}
-                        </Toggle>
-                        <div className="flex flex-col">
-                            <Label>Articol Recomandat</Label>
-                            <span className="text-xs text-muted-foreground">
-                                Activează pentru a afișa acest articol ca principal pe pagina de blog.
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Rezumat (Excerpt)</Label>
-                        <Textarea
-                            value={excerpt}
-                            onChange={(e) => setExcerpt(e.target.value)}
-                            placeholder="O scurtă descriere ce apare în listă..."
-                            className="h-20"
-                        />
-                    </div>
-
-                    {/* Content Editor */}
-                    <div className="space-y-2">
-                        <Label>Conținut</Label>
-                        <RichTextEditor
-                            value={content}
-                            onChange={setContent}
-                        />
-                    </div>
-
-                </div>
-
-                <div className="flex justify-end gap-4">
-                    <Button variant="outline" onClick={() => router.back()}>
-                        Anulează
-                    </Button>
-                    <Button onClick={handleSave} disabled={loading} size="lg" className="min-w-[150px]">
-                        {loading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Se salvează...
-                            </>
-                        ) : (
-                            <>
-                                <Save className="mr-2 h-4 w-4" />
-                                Salvează Articolul
-                            </>
                         )}
-                    </Button>
+                    </div>
                 </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label>Autor</Label>
+                        <Input
+                            value={authorName}
+                            onChange={(e) => setAuthorName(e.target.value)}
+                            placeholder="Numele autorului"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Tag-uri (separate prin virgulă)</Label>
+                        <Input
+                            value={tags}
+                            onChange={(e) => setTags(e.target.value)}
+                            placeholder="Ex: Anxietate, Sănătate, Ghid"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex items-center space-x-2 border p-4 rounded-lg bg-gray-50">
+                    <Toggle
+                        pressed={isFeatured}
+                        onPressedChange={setIsFeatured}
+                        aria-label="Toggle featured"
+                        className={`data-[state=on]:bg-primary data-[state=on]:text-primary-foreground ${isFeatured ? 'bg-primary text-white' : 'bg-gray-200'}`}
+                    >
+                        {isFeatured ? "ON" : "OFF"}
+                    </Toggle>
+                    <div className="flex flex-col">
+                        <Label>Articol Recomandat</Label>
+                        <span className="text-xs text-muted-foreground">
+                            Activează pentru a afișa acest articol ca principal pe pagina de blog.
+                        </span>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Rezumat (Excerpt)</Label>
+                    <Textarea
+                        value={excerpt}
+                        onChange={(e) => setExcerpt(e.target.value)}
+                        placeholder="O scurtă descriere ce apare în listă..."
+                        className="h-20"
+                    />
+                </div>
+
+                {/* Content Editor */}
+                <div className="space-y-2">
+                    <Label>Conținut</Label>
+                    <RichTextEditor
+                        value={content}
+                        onChange={setContent}
+                    />
+                </div>
+
             </div>
-        );
-    }
+
+            <div className="flex justify-end gap-4">
+                <Button variant="outline" onClick={() => router.back()}>
+                    Anulează
+                </Button>
+                <Button onClick={handleSave} disabled={loading} size="lg" className="min-w-[150px]">
+                    {loading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Se salvează...
+                        </>
+                    ) : (
+                        <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Salvează Articolul
+                        </>
+                    )}
+                </Button>
+            </div>
+        </div>
+    );
+}

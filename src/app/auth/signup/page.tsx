@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignupPage() {
+const SignupForm = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -64,17 +64,9 @@ export default function SignupPage() {
 
             if (data.warning === "EMAIL_RESTRICTED" && data.confirmationLink) {
                 // Special handling for Dev Mode
-                setSuccess(true);
-                // We use the 'error' state to store the warning type temporarily, or better, use a new state
-                // Re-using 'error' state here as a flag for the success view to show the link
-                // But wait, 'email' state holds the user email. We need to store the link.
-                // Let's repurpose 'email' state to hold the link in the success view? No, that's messy.
-                // Let's just use the 'email' state variable to hold the link since we don't need the email anymore?
-                // Actually, let's just use a new state variable or a hack.
-                // The cleanest way is to add a new state, but I can't add state in this tool call easily without replacing the whole file header.
-                // I'll use the 'error' state to signal "EMAIL_RESTRICTED" and 'email' state to hold the link.
                 setError("EMAIL_RESTRICTED");
                 setEmail(data.confirmationLink); // Hack: Store link in email state for display
+                setSuccess(true);
             } else {
                 setSuccess(true);
                 setTimeout(() => {
@@ -132,189 +124,193 @@ export default function SignupPage() {
         );
     }
 
-
-
-    // Correction: moving the auto-select to useEffect
-
     return (
-        <div className="container mx-auto px-4 py-16 max-w-md">
-            <div className="space-y-6">
-                <div className="text-center space-y-2">
-                    <h1 className="font-heading text-3xl font-bold">Crează cont nou</h1>
-                    <p className="text-muted-foreground">
-                        Alătură-te platformei Terapie.md
-                    </p>
-                </div>
+        <div className="space-y-6">
+            <div className="text-center space-y-2">
+                <h1 className="font-heading text-3xl font-bold">Crează cont nou</h1>
+                <p className="text-muted-foreground">
+                    Alătură-te platformei Terapie.md
+                </p>
+            </div>
 
-                {/* Contextual Alert for Application Redirect */}
-                {isApplicationRedirect && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
-                        <div className="mt-1 text-blue-600">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <div className="text-sm text-blue-800">
-                            <p className="font-medium">Salvează-ți aplicația</p>
-                            <p>Creează un cont pentru a finaliza trimiterea aplicației de terapeut.</p>
-                        </div>
+            {/* Contextual Alert for Application Redirect */}
+            {isApplicationRedirect && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+                    <div className="mt-1 text-blue-600">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div className="text-sm text-blue-800">
+                        <p className="font-medium">Salvează-ți aplicația</p>
+                        <p>Creează un cont pentru a finaliza trimiterea aplicației de terapeut.</p>
+                    </div>
+                </div>
+            )}
+
+            <form onSubmit={handleSignup} className="space-y-4">
+                {/* ... error display ... */}
+                {error && (
+                    <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
+                        {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSignup} className="space-y-4">
-                    {/* ... error display ... */}
-                    {error && (
-                        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                            {error}
-                        </div>
-                    )}
+                <div className="space-y-3">
+                    <label className="text-sm font-medium">Tip de cont</label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setRole("client")}
+                            className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "client"
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/50"
+                                }`}
+                        >
+                            <div className="font-medium text-sm">Client</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                                Caut terapeut
+                            </div>
+                        </button>
 
-                    <div className="space-y-3">
-                        <label className="text-sm font-medium">Tip de cont</label>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {/* Conditional Therapist Card */}
+                        {isApplicationRedirect ? (
                             <button
                                 type="button"
-                                onClick={() => setRole("client")}
-                                className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "client"
-                                    ? "border-primary bg-primary/5"
+                                onClick={() => setRole("therapist")}
+                                className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "therapist"
+                                    ? "border-primary bg-primary/5 shadow-sm"
                                     : "border-border hover:border-primary/50"
                                     }`}
                             >
-                                <div className="font-medium text-sm">Client</div>
+                                <div className="font-medium text-sm">Terapeut</div>
                                 <div className="text-xs text-muted-foreground mt-1">
-                                    Caut terapeut
+                                    Finalizează
+                                    aplicarea
                                 </div>
                             </button>
-
-                            {/* Conditional Therapist Card */}
-                            {isApplicationRedirect ? (
-                                <button
-                                    type="button"
-                                    onClick={() => setRole("therapist")}
-                                    className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "therapist"
-                                        ? "border-primary bg-primary/5 shadow-sm"
-                                        : "border-border hover:border-primary/50"
-                                        }`}
-                                >
-                                    <div className="font-medium text-sm">Terapeut</div>
-                                    <div className="text-xs text-muted-foreground mt-1">
-                                        Finalizează
-                                        aplicarea
-                                    </div>
-                                </button>
-                            ) : (
-                                <Link
-                                    href="/aplicare-terapeut"
-                                    className="p-3 rounded-lg border-2 border-border hover:border-primary/50 transition-colors text-left block"
-                                >
-                                    <div className="font-medium text-sm">Terapeut</div>
-                                    <div className="text-xs text-muted-foreground mt-1">
-                                        Aplică ca specialist
-                                    </div>
-                                </Link>
-                            )}
-
-                            <button
-                                type="button"
-                                onClick={() => setRole("business")}
-                                className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "business"
-                                    ? "border-primary bg-primary/5"
-                                    : "border-border hover:border-primary/50"
-                                    }`}
+                        ) : (
+                            <Link
+                                href="/aplicare-terapeut"
+                                className="p-3 rounded-lg border-2 border-border hover:border-primary/50 transition-colors text-left block"
                             >
-                                <div className="font-medium text-sm">Business</div>
+                                <div className="font-medium text-sm">Terapeut</div>
                                 <div className="text-xs text-muted-foreground mt-1">
-                                    Oferte wellness
+                                    Aplică ca specialist
                                 </div>
-                            </button>
-                        </div>
+                            </Link>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={() => setRole("business")}
+                            className={`p-3 rounded-lg border-2 transition-colors text-left ${role === "business"
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/50"
+                                }`}
+                        >
+                            <div className="font-medium text-sm">Business</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                                Oferte wellness
+                            </div>
+                        </button>
                     </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium">
-                            Nume Public (pentru programări și recenzii)
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="Ex: Ion Popescu"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="email@exemplu.com"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium">
-                            Parolă
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="Minimum 6 caractere"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label htmlFor="confirmPassword" className="text-sm font-medium">
-                            Confirmă parola
-                        </label>
-                        <input
-                            id="confirmPassword"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="••••••••"
-                        />
-                    </div>
-
-                    <div className="text-xs text-muted-foreground">
-                        Prin crearea contului, accepți{" "}
-                        <Link href="/termeni" className="text-primary hover:underline">
-                            Termenii și condițiile
-                        </Link>{" "}
-                        și{" "}
-                        <Link href="/confidentialitate" className="text-primary hover:underline">
-                            Politica de confidențialitate
-                        </Link>
-                        .
-                    </div>
-
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Se creează contul..." : "Creează cont"}
-                    </Button>
-                </form>
-
-                <div className="text-center text-sm text-muted-foreground">
-                    Ai deja cont?{" "}
-                    <Link
-                        href={`/auth/login${searchParams.get("redirect") ? `?redirect=${searchParams.get("redirect")}` : ""}`}
-                        className="text-primary hover:underline font-medium"
-                    >
-                        Intră în cont
-                    </Link>
                 </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="name" className="text-sm font-medium">
+                        Nume Public (pentru programări și recenzii)
+                    </label>
+                    <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="Ex: Ion Popescu"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="email@exemplu.com"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="password" className="text-sm font-medium">
+                        Parolă
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="Minimum 6 caractere"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="confirmPassword" className="text-sm font-medium">
+                        Confirmă parola
+                    </label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <div className="text-xs text-muted-foreground">
+                    Prin crearea contului, accepți{" "}
+                    <Link href="/termeni" className="text-primary hover:underline">
+                        Termenii și condițiile
+                    </Link>{" "}
+                    și{" "}
+                    <Link href="/confidentialitate" className="text-primary hover:underline">
+                        Politica de confidențialitate
+                    </Link>
+                    .
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Se creează contul..." : "Creează cont"}
+                </Button>
+            </form>
+
+            <div className="text-center text-sm text-muted-foreground">
+                Ai deja cont?{" "}
+                <Link
+                    href={`/auth/login${searchParams.get("redirect") ? `?redirect=${searchParams.get("redirect")}` : ""}`}
+                    className="text-primary hover:underline font-medium"
+                >
+                    Intră în cont
+                </Link>
             </div>
+        </div>
+    );
+};
+
+export default function SignupPage() {
+    return (
+        <div className="container mx-auto px-4 py-16 max-w-md">
+            <Suspense fallback={<div className="text-center p-8">Se încarcă...</div>}>
+                <SignupForm />
+            </Suspense>
         </div>
     );
 }

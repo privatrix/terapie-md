@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Users, MapPin, ArrowUpDown } from "lucide-react";
+import { Search, Users, MapPin, ArrowUpDown, Tag, Brain } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -8,6 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { CITIES, THERAPIST_SPECIALIZATIONS, THERAPIST_SPECIALTIES, THERAPIST_APPROACHES } from "@/lib/constants";
 
 interface TherapistFiltersProps {
     searchQuery: string;
@@ -18,19 +19,10 @@ interface TherapistFiltersProps {
     onLocationChange: (location: string) => void;
     roleFilter: string;
     onRoleChange: (role: string) => void;
-}
-
-import { CITIES, THERAPIST_SPECIALIZATIONS } from "@/lib/constants";
-
-interface TherapistFiltersProps {
-    searchQuery: string;
-    onSearchChange: (query: string) => void;
-    sortBy: "rating" | "price" | "reviews";
-    onSortChange: (sort: "rating" | "price" | "reviews") => void;
-    locationFilter: string;
-    onLocationChange: (location: string) => void;
-    roleFilter: string;
-    onRoleChange: (role: string) => void;
+    specialtyFilter: string;
+    onSpecialtyChange: (specialty: string) => void;
+    approachFilter: string;
+    onApproachChange: (approach: string) => void;
 }
 
 export function TherapistFilters({
@@ -42,6 +34,10 @@ export function TherapistFilters({
     onLocationChange,
     roleFilter,
     onRoleChange,
+    specialtyFilter,
+    onSpecialtyChange,
+    approachFilter,
+    onApproachChange,
 }: TherapistFiltersProps) {
     return (
         <div className="bg-white p-5 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
@@ -49,9 +45,9 @@ export function TherapistFilters({
                 Găsește Terapeutul
             </h2>
 
-            <div className="flex flex-col xl:flex-row gap-4">
-                {/* Search Bar - Grows to fill space */}
-                <div className="relative flex-1 group">
+            <div className="flex flex-col gap-4">
+                {/* Search Bar */}
+                <div className="relative w-full group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
                         <Search className="h-5 w-5" />
                     </div>
@@ -63,14 +59,14 @@ export function TherapistFilters({
                     />
                 </div>
 
-                {/* Filters Row - Grid on mobile, Flex on desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 xl:flex gap-3">
+                {/* Filters Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
                     {/* Role Filter */}
                     <Select
                         value={roleFilter === "" ? "all" : roleFilter}
                         onValueChange={(val) => onRoleChange(val === "all" ? "" : val)}
                     >
-                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[200px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                        <SelectTrigger className="h-12 w-full px-4 rounded-xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
                             <div className="flex items-center gap-2.5 truncate">
                                 <Users className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">
@@ -86,12 +82,54 @@ export function TherapistFilters({
                         </SelectContent>
                     </Select>
 
+                    {/* Specialty Filter (Issues) */}
+                    <Select
+                        value={specialtyFilter === "" ? "all" : specialtyFilter}
+                        onValueChange={(val) => onSpecialtyChange(val === "all" ? "" : val)}
+                    >
+                        <SelectTrigger className="h-12 w-full px-4 rounded-xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <Tag className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {specialtyFilter === "" ? "Afecțiune" : specialtyFilter}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 w-[240px] max-h-[300px]">
+                            <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Afecțiunile</SelectItem>
+                            {THERAPIST_SPECIALTIES.map(spec => (
+                                <SelectItem key={spec} value={spec} className="rounded-lg focus:bg-slate-50">{spec}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    {/* Approach Filter */}
+                    <Select
+                        value={approachFilter === "" ? "all" : approachFilter}
+                        onValueChange={(val) => onApproachChange(val === "all" ? "" : val)}
+                    >
+                        <SelectTrigger className="h-12 w-full px-4 rounded-xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                                <Brain className="h-4 w-4 text-primary/70 shrink-0" />
+                                <span className="truncate">
+                                    {approachFilter === "" ? "Abordare" : approachFilter}
+                                </span>
+                            </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 w-[240px] max-h-[300px]">
+                            <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Abordările</SelectItem>
+                            {THERAPIST_APPROACHES.map(app => (
+                                <SelectItem key={app} value={app} className="rounded-lg focus:bg-slate-50">{app}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
                     {/* Location Filter */}
                     <Select
                         value={locationFilter === "" ? "all" : locationFilter}
                         onValueChange={(val) => onLocationChange(val === "all" ? "" : val)}
                     >
-                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[180px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                        <SelectTrigger className="h-12 w-full px-4 rounded-xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
                             <div className="flex items-center gap-2.5 truncate">
                                 <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">
@@ -99,7 +137,7 @@ export function TherapistFilters({
                                 </span>
                             </div>
                         </SelectTrigger>
-                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[180px]">
+                        <SelectContent className="bg-white border-slate-100 shadow-2xl rounded-xl p-1 min-w-[180px] max-h-[300px]">
                             <SelectItem value="all" className="rounded-lg focus:bg-slate-50">Toate Locațiile</SelectItem>
                             {CITIES.map(city => (
                                 <SelectItem key={city} value={city} className="rounded-lg focus:bg-slate-50">{city}</SelectItem>
@@ -112,7 +150,7 @@ export function TherapistFilters({
                         value={sortBy}
                         onValueChange={(value) => onSortChange(value as "rating" | "price" | "reviews")}
                     >
-                        <SelectTrigger className="h-12 md:h-14 w-full xl:w-[220px] px-4 rounded-2xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
+                        <SelectTrigger className="h-12 w-full px-4 rounded-xl bg-slate-50 border-transparent hover:bg-slate-100 hover:border-slate-200 transition-all text-left font-medium">
                             <div className="flex items-center gap-2.5 truncate">
                                 <ArrowUpDown className="h-4 w-4 text-primary/70 shrink-0" />
                                 <span className="truncate">

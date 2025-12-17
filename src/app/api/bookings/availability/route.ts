@@ -76,11 +76,25 @@ export async function GET(request: Request) {
             if (profile.weekly_schedule && profile.weekly_schedule[dayName]) {
                 const daySchedule = profile.weekly_schedule[dayName];
                 console.log(`[Availability] Schedule for ${dayName}:`, daySchedule);
+
                 if (daySchedule.active) {
-                    baseSlots = daySchedule.slots || [];
+                    if (daySchedule.slots && daySchedule.slots.length > 0) {
+                        baseSlots = daySchedule.slots;
+                    } else {
+                        // Return default slots 09:00 - 17:00 if active but no specific slots defined
+                        console.log(`[Availability] Day ${dayName} active but no slots. Using defaults.`);
+                        const defaultSlots = [];
+                        for (let h = 9; h < 17; h++) {
+                            defaultSlots.push(`${h.toString().padStart(2, '0')}:00`);
+                        }
+                        baseSlots = defaultSlots;
+                    }
                 }
             } else {
-                console.log(`[Availability] No specific schedule for ${dayName}, using defaults.`);
+                console.log(`[Availability] No specific schedule for ${dayName}, checking global defaults.`);
+                // Only fall back if no weekly schedule exists at all; otherwise strictly follow the schedule object.
+                // If weekly_schedule object exists but key for this day doesn't, it implies not scheduled/default.
+                // But generally weekly_schedule has all keys.
                 baseSlots = profile.available_slots || [];
             }
         }

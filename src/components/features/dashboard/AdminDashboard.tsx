@@ -11,11 +11,11 @@ import { Check, X, Loader2, FileText, Trash2, Users, UserCog, ClipboardList, Bar
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { DashboardTabsList, DashboardTabsTrigger } from "@/components/dashboard/DashboardTabs";
 import { EmailModal } from "@/components/features/admin/EmailModal";
-import Link from "next/link"; // Ensure Link is imported
+import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import { toast } from "sonner"; // Removed as not found
 
 import { ApplicationDetailsModal } from "@/components/features/admin/ApplicationDetailsModal";
+import { ArticleList } from "@/components/admin/blog/ArticleList";
 
 export function AdminDashboard({ user }: { user: any }) {
     const [stats, setStats] = useState({
@@ -25,10 +25,11 @@ export function AdminDashboard({ user }: { user: any }) {
         totalBusinesses: 0,
         pendingApplications: 0,
         pendingBusinessApps: 0,
-        newContactMessages: 0
+        newContactMessages: 0,
+        totalArticles: 0
     });
     const [selectedApp, setSelectedApp] = useState<any>(null);
-    const [applications, setApplications] = useState<any[]>([]); // Using any for recovery speed
+    const [applications, setApplications] = useState<any[]>([]);
     const [businessApplications, setBusinessApplications] = useState<any[]>([]);
     const [therapists, setTherapists] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
@@ -47,14 +48,16 @@ export function AdminDashboard({ user }: { user: any }) {
                 businessAppsResult,
                 therapistsResult,
                 businessesResult,
-                contactsResult
+                contactsResult,
+                articlesResult
             ] = await Promise.allSettled([
                 supabase.from('users').select('*'),
                 supabase.from('therapist_applications').select('*').eq('status', 'pending'),
                 supabase.from('business_profiles').select('*').eq('is_verified', false),
                 supabase.from('therapist_profiles').select('*, users(*)').eq('is_verified', true),
                 supabase.from('business_profiles').select('*').eq('is_verified', true),
-                supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
+                supabase.from('contact_submissions').select('*').order('created_at', { ascending: false }),
+                supabase.from('articles').select('id', { count: 'exact', head: true })
             ]);
 
             // Handle Users
@@ -100,6 +103,11 @@ export function AdminDashboard({ user }: { user: any }) {
             if (contactsResult.status === 'fulfilled' && contactsResult.value.data) {
                 setContactSubmissions(contactsResult.value.data);
                 setStats(prev => ({ ...prev, newContactMessages: contactsResult.value.data.filter((c: any) => c.status === 'new').length }));
+            }
+
+            // Handle Articles
+            if (articlesResult.status === 'fulfilled') {
+                setStats(prev => ({ ...prev, totalArticles: articlesResult.value.count || 0 }));
             }
 
         } catch (error) {
@@ -185,7 +193,6 @@ export function AdminDashboard({ user }: { user: any }) {
     };
 
     const handleReply = async (id: string, name: string, email: string, subject: string, message: string) => {
-        // Mock email sending
         console.log(`Sending email to ${email}: ${subject} - ${message}`);
         await handleUpdateContactStatus(id, 'resolved');
         alert(`Răspuns trimis către ${name}`);
@@ -306,6 +313,12 @@ export function AdminDashboard({ user }: { user: any }) {
                         Business
                         <span className="ml-2 bg-gray-200 text-gray-700 text-[10px] px-2 py-0.5 rounded-full">
                             {businesses.length}
+                        </span>
+                    </DashboardTabsTrigger>
+                    <DashboardTabsTrigger value="blog">
+                        Blog
+                        <span className="ml-2 bg-gray-200 text-gray-700 text-[10px] px-2 py-0.5 rounded-full">
+                            {stats.totalArticles}
                         </span>
                     </DashboardTabsTrigger>
                 </DashboardTabsList>
@@ -558,8 +571,12 @@ export function AdminDashboard({ user }: { user: any }) {
                             </div>
                         )}
                     </TabsContent>
-                </div >
-            </Tabs >
-        </div >
+
+                    <TabsContent value="blog" className="mt-0 space-y-6">
+                        <ArticleList />
+                    </TabsContent>
+                </div>
+            </Tabs>
+        </div>
     );
 }

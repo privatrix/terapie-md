@@ -22,7 +22,7 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
     return (
         <Link
             href={`/oferte/${offer.id}`}
-            className="group flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer"
+            className="group flex flex-col h-full overflow-hidden rounded-2xl border border-gray-100 bg-card shadow-sm transition-all duration-300 hover:shadow-xl cursor-pointer"
         >
             <div className="aspect-video w-full overflow-hidden bg-muted relative">
                 {offer.image ? (
@@ -42,7 +42,7 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
                     </div>
                 )}
             </div>
-            <div className="flex flex-1 flex-col p-6">
+            <div className="flex flex-1 flex-col p-8">
                 <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
                     <div className="flex items-center gap-2">
                         {offer.providerImage && (
@@ -97,7 +97,7 @@ export function OfferCard({ offer }: { offer: OfferProps }) {
                                 </span>
                             )}
                         </div>
-                        <Button className="w-full" size="lg">
+                        <Button className="w-full h-11 text-base shadow-sm group-hover:shadow-md transition-all">
                             <span className="pointer-events-none">Vezi Oferta</span>
                         </Button>
                     </div>

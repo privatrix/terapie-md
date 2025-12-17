@@ -146,6 +146,10 @@ export default function TherapistsPage() {
                     onLocationChange={setLocationFilter}
                     roleFilter={roleFilter}
                     onRoleChange={setRoleFilter}
+                    specialtyFilter={specializationFilter}
+                    onSpecialtyChange={setSpecializationFilter}
+                    approachFilter={approachFilter}
+                    onApproachChange={setApproachFilter}
                 />
             </div>
 

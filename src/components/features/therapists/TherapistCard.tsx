@@ -19,7 +19,7 @@ export function TherapistCard({ therapist }: { therapist: TherapistProps }) {
     const isPlaceholder = String(therapist.id).startsWith("placeholder");
 
     return (
-        <Link href={isPlaceholder ? "#" : `/terapeuti/${therapist.id}`} className={`group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all pb-4 ${isPlaceholder ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-md cursor-pointer'}`}>
+        <Link href={isPlaceholder ? "#" : `/terapeuti/${therapist.id}`} className={`group relative flex flex-col h-full overflow-hidden rounded-2xl border border-gray-100 bg-card text-card-foreground shadow-sm transition-all duration-300 ${isPlaceholder ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-xl cursor-pointer'}`}>
             <div className="aspect-[4/3] w-full overflow-hidden bg-muted relative">
                 {therapist.photo_url || therapist.imageUrl ? (
                     <img
@@ -40,7 +40,7 @@ export function TherapistCard({ therapist }: { therapist: TherapistProps }) {
                     </div>
                 )}
             </div>
-            <div className="flex flex-1 flex-col p-6">
+            <div className="flex flex-1 flex-col p-8">
                 <div className="flex items-start justify-between gap-4">
                     <div>
                         <h3 className="font-heading text-lg font-bold group-hover:text-primary transition-colors">
@@ -90,8 +90,8 @@ export function TherapistCard({ therapist }: { therapist: TherapistProps }) {
                     </div>
                     <Button
                         asChild={!isPlaceholder}
-                        className={`w-full text-base font-semibold shadow-sm transition-all ${!isPlaceholder ? 'hover:shadow-md' : 'opacity-70 cursor-not-allowed'}`}
-                        size="lg"
+                        className={`w-full h-11 text-base font-semibold shadow-sm transition-all ${!isPlaceholder ? 'hover:shadow-md' : 'opacity-70 cursor-not-allowed'}`}
+                        // Remove size="lg" to use h-11 explicit class for exact match
                         disabled={isPlaceholder}
                     >
                         {isPlaceholder ? (

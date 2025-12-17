@@ -78,26 +78,20 @@ export function TherapistDashboard({ user }: { user: any }) {
             .single();
 
         if (profileData) {
-            // Fetch appointments using the profile ID
-            const { data: appointmentsData } = await supabase
-                .from("bookings")
-                .select(`
-                    *,
-                    client:users!client_id(email, name),
-                    messages:booking_messages(id, read_at, sender_id)
-                `)
-                .eq("therapist_id", profileData.id)
-                .order("created_at", { ascending: false });
-
-            // Process bookings to add unread count
-            const bookingsWithUnread = appointmentsData?.map((booking: any) => {
-                const unreadCount = booking.messages?.filter(
-                    (m: any) => m.read_at === null && m.sender_id !== user.id
-                ).length || 0;
-                return { ...booking, unreadCount };
-            });
-
-            setAppointments(bookingsWithUnread || []);
+            if (profileData) {
+                // Fetch appointments securely via API
+                try {
+                    const response = await fetch('/api/therapist/bookings?t=' + Date.now(), { cache: 'no-store' });
+                    if (response.ok) {
+                        const appointmentsData = await response.json();
+                        setAppointments(appointmentsData);
+                    } else {
+                        console.error("Failed to fetch bookings");
+                    }
+                } catch (error) {
+                    console.error("Error fetching bookings:", error);
+                }
+            }
 
 
         }
@@ -106,13 +100,7 @@ export function TherapistDashboard({ user }: { user: any }) {
         setLoading(false);
     };
 
-    const PROFESSIONAL_ROLES = [
-        "Psiholog Clinician",
-        "Psihoterapeut",
-        "Consilier",
-        "Coach",
-        "Psihiatru"
-    ];
+
 
     const toggleSpecialization = (role: string) => {
         const current = profile.specializations || [];
@@ -198,6 +186,9 @@ export function TherapistDashboard({ user }: { user: any }) {
                 apt.id === bookingId ? { ...apt, status } : apt
             ));
 
+            // Fetch fresh data to get unmasked details (if confirmed)
+            await fetchData();
+
             alert(`Programare ${status === 'confirmed' ? 'confirmată' : status === 'completed' ? 'finalizată' : 'respinsă'} cu succes!`);
         } catch (error) {
             console.error("Error updating booking:", error);
@@ -271,7 +262,6 @@ export function TherapistDashboard({ user }: { user: any }) {
                     </Badge>
                 </div>
             </div>
-
             {/* Statistics Section Moved Outside Tabs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <DashboardStatsCard
@@ -775,9 +765,19 @@ export function TherapistDashboard({ user }: { user: any }) {
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <User className="h-4 w-4 text-muted-foreground" />
-                                                <span className="font-medium">{apt.client?.name || apt.client?.email || "Client"}</span>
+                                                <span className="font-medium">{apt.client?.name || "Client"}</span>
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
+                                            <div className="text-sm text-muted-foreground mt-1">
+                                                {apt.client?.is_masked ? (
+                                                    <span className="flex items-center gap-2 text-muted-foreground/50 italic">
+                                                        <span className="blur-[3px] select-none">email@example.com</span>
+                                                        <span className="text-xs not-italic bg-gray-100 px-2 py-0.5 rounded-full border">Acceptă pentru a vedea</span>
+                                                    </span>
+                                                ) : (
+                                                    <span>{apt.client?.email} {apt.client?.phone ? `• ${apt.client.phone}` : ''}</span>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-muted-foreground mt-1">
                                                 {new Date(apt.date).toLocaleDateString()} • {apt.time}
                                             </p>
                                             {apt.notes && (

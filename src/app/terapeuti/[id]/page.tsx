@@ -47,28 +47,7 @@ export default function TherapistProfilePage() {
         const supabase = createClient();
 
         if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-            // Mock data for demo
-            setTherapist({
-                id: params.id,
-                name: "Dr. Elena Popescu",
-                title: "Psihoterapeut Integrativ",
-                bio: "Cu peste 10 ani de experiență în psihoterapie, mă specializez în ajutarea persoanelor care se confruntă cu anxietate, depresie și probleme de relaționare. Abordarea mea integrativă combină terapia cognitiv-comportamentală cu tehnici de mindfulness și terapie centrată pe client.",
-                specialties: ["Anxietate", "Depresie", "Relații", "Burnout"],
-                location: "Chișinău, Centru",
-                rating: 4.9,
-                reviewCount: 124,
-                priceRange: "500 - 700 MDL",
-                experience_years: 10,
-                languages: ["Română", "Rusă", "Engleză"],
-                education: ["Universitatea de Stat din Moldova - Psihologie Clinică", "Certificat în Terapie Cognitiv-Comportamentală"],
-                availability: "Luni - Vineri: 10:00 - 18:00",
-                verified: true,
-                imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop"
-            });
-            setReviews([
-                { id: 1, client_name: "Maria I.", rating: 5, comment: "O experiență excelentă. Recomand cu încredere!", created_at: "2024-03-15" },
-                { id: 2, client_name: "Andrei P.", rating: 5, comment: "M-a ajutat foarte mult să trec peste o perioadă dificilă.", created_at: "2024-02-28" }
-            ]);
+            console.error("Missing Supabase URL");
             setLoading(false);
             return;
         }
@@ -88,8 +67,10 @@ export default function TherapistProfilePage() {
         if (error) {
             console.error("Error fetching therapist:", error);
             setLoading(false);
-            return;
+            return; // Will result in 'therapist' being null -> "Terapeut negăsit"
         }
+
+        console.log("Therapist fetched:", data);
 
         // Calculate average rating
         const fetchedReviews = data.reviews || [];
@@ -339,13 +320,84 @@ export default function TherapistProfilePage() {
                             {/* Price */}
                             <div>
                                 <p className="text-sm text-muted-foreground mb-1">Preț pe ședință</p>
-                                <p className="text-2xl font-bold">{therapist.price_range || therapist.priceRange} MDL</p>
+                                <p className="text-2xl font-bold">
+                                    {(therapist.price_range || therapist.priceRange || "").replace(/\s*MDL$/i, "")} MDL
+                                </p>
                             </div>
 
                             {/* Availability */}
                             <div>
                                 <p className="text-sm text-muted-foreground mb-1">Disponibilitate</p>
-                                <p className="text-sm">{therapist.availability}</p>
+                                <p className="text-sm">
+                                    {(() => {
+                                        if (!therapist.weekly_schedule) return therapist.availability || "Contactează pentru disponibilitate";
+
+                                        const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                                        const daysMap: Record<string, string> = {
+                                            monday: 'Luni', tuesday: 'Marți', wednesday: 'Miercuri',
+                                            thursday: 'Joi', friday: 'Vineri', saturday: 'Sâmbătă', sunday: 'Duminică'
+                                        };
+
+                                        const activeDays = dayKeys
+                                            .filter(key => therapist.weekly_schedule[key]?.active)
+                                            .map(key => {
+                                                const schedule = therapist.weekly_schedule[key];
+                                                let start = "09:00";
+                                                let end = "17:00";
+
+                                                if (schedule.slots && schedule.slots.length > 0) {
+                                                    const sorted = [...schedule.slots].sort();
+                                                    start = sorted[0];
+                                                    const last = sorted[sorted.length - 1];
+                                                    const [h, m] = last.split(':').map(Number);
+                                                    end = `${(h + 1).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                                                }
+                                                return { key, day: daysMap[key], start, end };
+                                            });
+
+                                        if (activeDays.length === 0) return "Momentan indisponibil";
+
+                                        // Group by identical hours
+                                        const groups: { hours: string, days: string[] }[] = [];
+
+                                        activeDays.forEach(d => {
+                                            const timeStr = `${d.start} - ${d.end}`;
+                                            const lastGroup = groups[groups.length - 1];
+
+                                            // Check if we can add to the last group (same hours AND consecutive)
+                                            // Actually, for "Luni, Miercuri, Vineri: 09-17", they don't need to be consecutive, just same hours.
+                                            // But "Luni - Vineri" implies range.
+                                            // Let's group commonly first.
+
+                                            if (lastGroup && lastGroup.hours === timeStr) {
+                                                lastGroup.days.push(d.day);
+                                            } else {
+                                                groups.push({ hours: timeStr, days: [d.day] });
+                                            }
+                                        });
+
+                                        return groups.map((g, i) => {
+                                            const dayStr = g.days.length > 2 && areDaysConsecutive(g.days, daysMap)
+                                                ? `${g.days[0]} - ${g.days[g.days.length - 1]}`
+                                                : g.days.join(", ");
+                                            return <span key={i} className="block">{dayStr}: {g.hours}</span>;
+                                        });
+
+                                        function areDaysConsecutive(days: string[], map: Record<string, string>) {
+                                            // This helper is hard because we only have localized names here.
+                                            // Better to check indices from original keys, but I simplified the map structure above.
+                                            // For this specific bug (Mon/Wed/Fri being group as Mon-Fri), simply joining with commas is safer and clearer unless truly consecutive.
+                                            // Let's rely on the simple join unless we implement robust checking.
+                                            // Given the requirement "Monday - Friday" is nice, but "Mon, Wed, Fri" is accurate.
+                                            // I'll stick to comma separation for non-consecutive. The logic above groups by hours.
+                                            // If I have [Mon, Wed, Fri] in the same group, it becomes "Luni, Miercuri, Vineri".
+                                            // If I have [Mon, Tue, Wed] in same group, it becomes "Luni, Marți, Miercuri".
+                                            // To get "Luni - Miercuri", I'd need index awareness.
+                                            // Let's just return comma separated for now to ensuring accuracy.
+                                            return false;
+                                        }
+                                    })()}
+                                </p>
                             </div>
 
                             {/* Book Button */}

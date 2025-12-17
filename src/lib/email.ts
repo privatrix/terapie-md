@@ -246,7 +246,7 @@ export async function sendBookingRequestEmail(data: {
           <div class="content">
             <p>Bună ${data.therapistName},</p>
             
-            <p>Ați primit o nouă cerere de programare de la <strong>${data.clientName}</strong>.</p>
+            <p>Ați primit o nouă cerere de programare de la un client nou.</p>
             
             <div class="details">
               <p><strong>Data:</strong> ${data.date}</p>
@@ -254,9 +254,9 @@ export async function sendBookingRequestEmail(data: {
               ${data.notes ? `<p><strong>Note:</strong> ${data.notes}</p>` : ''}
             </div>
             
-            <p>Vă rugăm să accesați dashboard-ul pentru a aproba sau respinge această cerere.</p>
+            <p>Pentru a vedea datele de contact ale clientului și a gestiona cererea, vă rugăm să accesați dashboard-ul.</p>
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="button">Mergi la Dashboard</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="button">Autentifică-te pentru a Accepta & Vedea Detalii</a>
           </div>
         </div>
       </body>

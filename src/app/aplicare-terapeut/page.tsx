@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircle, ArrowRight, ArrowLeft, Upload } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { CITIES, THERAPIST_APPROACHES } from "@/lib/constants";
+import { CITIES, THERAPIST_APPROACHES, THERAPIST_SPECIALIZATIONS, THERAPIST_SPECIALTIES } from "@/lib/constants";
 
 type FormData = {
     // Personal Info
@@ -34,33 +34,6 @@ type FormData = {
     profile_image?: File;
     credentials?: File[];
 };
-
-const PROFESSIONAL_ROLES = [
-    "Psiholog Clinician",
-    "Psihoterapeut",
-    "Consilier",
-    "Coach",
-    "Psihiatru"
-];
-
-const INTERVENTION_AREAS = [
-    "Anxietate",
-    "Depresie",
-    "Stres",
-    "Relații",
-    "Traumă",
-    "Burnout",
-    "Tulburări de somn",
-    "Tulburări alimentare",
-    "Dependențe",
-    "Dezvoltare personală",
-    "Consiliere de cuplu",
-    "Adolescenți",
-    "Copii",
-    "PTSD",
-    "OCD",
-    "Fobii",
-];
 
 const LANGUAGES_OPTIONS = ["Română", "Rusă", "Engleză", "Franceză", "Italiană"];
 
@@ -354,7 +327,7 @@ export default function TherapistApplicationPage() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Calificare Profesională *</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    {PROFESSIONAL_ROLES.map((role) => (
+                                    {THERAPIST_SPECIALIZATIONS.map((role) => (
                                         <label key={role} className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer border-input hover:bg-muted/50`}>
                                             <input type="checkbox" checked={formData.specializations.includes(role)} onChange={() => toggleArrayItem("specializations", role)} className="w-4 h-4" />
                                             <span className="text-sm font-medium">{role}</span>
@@ -371,7 +344,7 @@ export default function TherapistApplicationPage() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Arii de intervenție (Probleme tratate) *</label>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                    {INTERVENTION_AREAS.map((item) => (
+                                    {THERAPIST_SPECIALTIES.map((item) => (
                                         <label key={item} className="flex items-center gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50">
                                             <input type="checkbox" checked={formData.intervention_areas.includes(item)} onChange={() => toggleArrayItem("intervention_areas", item)} className="rounded" />
                                             <span className="text-sm">{item}</span>

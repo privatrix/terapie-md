@@ -3,40 +3,46 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle, Clock, Shield, Star, MapPin } from "lucide-react";
 import { TherapistCard } from "@/components/features/therapists/TherapistCard";
 import { RecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
+import { FeaturedArticles } from "@/components/features/blog/FeaturedArticles";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-background">
-        <div className="container px-4 md:px-6 mx-auto relative z-10 text-center">
+      {/* Hero Section */}
+      <section className="relative py-20 md:py-32 overflow-hidden bg-background">
+        <div className="container px-4 md:px-6 mx-auto relative z-10">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
 
-          <div className="mx-auto max-w-3xl mb-12">
-            {/* Illustration Placeholder - In real app, use the generated image */}
-            <div className="w-64 h-64 mx-auto mb-8 bg-accent rounded-full flex items-center justify-center relative overflow-hidden">
-              {/* We will replace this with actual Image tag if available, or keep abstract shape */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 animate-pulse"></div>
-              <img src="/hero_illustration.png" alt="Finding Balance" className="object-cover w-full h-full opacity-90 hover:scale-105 transition-transform duration-700" />
+            {/* Left Content: Text */}
+            <div className="text-center md:text-left space-y-6 order-2 md:order-1">
+              <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
+                Găsește echilibrul - <span className="text-primary">simplu și natural.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg mx-auto md:mx-0">
+                Evită căutările interminabile. Construit de psihologi, serviciul nostru îmbină grija umană cu tehnologia pentru a te ghida către terapeutul potrivit.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
+                <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg hover:shadow-xl transition-all gap-2 bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+                  <Link href="/terapeuti">
+                    Găsește Terapeut
+                  </Link>
+                </Button>
+              </div>
             </div>
 
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
-              Găsește echilibrul - <span className="text-primary">simplu și natural.</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
-              Evită căutările interminabile. Construit de psihologi, serviciul nostru de conectare îmbină grija umană cu tehnologia pentru a te ghida către terapeutul potrivit.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="h-14 px-10 text-lg rounded-full shadow-lg hover:shadow-xl transition-all gap-2 bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                <Link href="/terapeuti">
-                  Găsește Terapeut
-                </Link>
-              </Button>
+            {/* Right Content: Illustration */}
+            <div className="order-1 md:order-2 flex justify-center md:justify-end">
+              <div className="w-56 h-56 md:w-[28rem] md:h-[28rem] bg-accent rounded-full flex items-center justify-center relative overflow-hidden shadow-2xl/20">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 animate-pulse"></div>
+                <img src="/hero_illustration.png" alt="Finding Balance" className="object-cover w-full h-full opacity-90 hover:scale-105 transition-transform duration-700" />
+              </div>
             </div>
+
           </div>
 
           {/* Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-muted-foreground opacity-80">
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-muted-foreground opacity-80 mt-16 md:mt-24">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-primary" />
               <span>Rapid & Convenabil</span>
@@ -90,7 +96,7 @@ export default function Home() {
                 <li><Link href="/terapeuti?location=Bălți" className="hover:text-primary transition-colors">Bălți</Link></li>
                 <li><Link href="/terapeuti?location=Cahul" className="hover:text-primary transition-colors">Cahul</Link></li>
                 <li><Link href="/terapeuti?location=Ungheni" className="hover:text-primary transition-colors">Ungheni</Link></li>
-                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate orașele</Link></li>
+                <li><Link href="/orase" className="font-medium text-primary hover:underline">Vezi toate orașele</Link></li>
               </ul>
             </div>
 
@@ -101,7 +107,7 @@ export default function Home() {
                 <li><Link href="/terapeuti?specialization=Anxietate" className="hover:text-primary transition-colors">Anxietate</Link></li>
                 <li><Link href="/terapeuti?specialization=Relații de Cuplu" className="hover:text-primary transition-colors">Relații de cuplu</Link></li>
                 <li><Link href="/terapeuti?specialization=Traumă" className="hover:text-primary transition-colors">Traume</Link></li>
-                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate specializările</Link></li>
+                <li><Link href="/specializari" className="font-medium text-primary hover:underline">Vezi toate specializările</Link></li>
               </ul>
             </div>
 
@@ -112,7 +118,7 @@ export default function Home() {
                 <li><Link href="/terapeuti?approach=Psihanaliză" className="hover:text-primary transition-colors">Psihanaliză</Link></li>
                 <li><Link href="/terapeuti?approach=Umanistă" className="hover:text-primary transition-colors">Umanistă</Link></li>
                 <li><Link href="/terapeuti?approach=Integrativă" className="hover:text-primary transition-colors">Integrativă</Link></li>
-                <li><Link href="/terapeuti" className="font-medium text-primary hover:underline">Vezi toate abordările</Link></li>
+                <li><Link href="/abordari" className="font-medium text-primary hover:underline">Vezi toate abordările</Link></li>
               </ul>
             </div>
           </div>
@@ -146,6 +152,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Featured Blog Posts */}
+      <FeaturedArticles />
     </div>
   );
 }

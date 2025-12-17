@@ -8,6 +8,25 @@ export const CITIES = [
     "Orhei",
     "Comrat",
     "Strășeni",
+    "Edineț",
+    "Căușeni",
+    "Fălești",
+    "Hîncești",
+    "Ialoveni",
+    "Drochia",
+    "Sîngerei",
+    "Florești",
+    "Rezina",
+    "Taraclia",
+    "Cimișlia",
+    "Nisporeni",
+    "Basarabeasca",
+    "Cantemir",
+    "Glodeni",
+    "Leova",
+    "Rîșcani",
+    "Ștefan Vodă",
+    "Telenești",
     "Online"
 ] as const;
 
@@ -17,7 +36,9 @@ export const THERAPIST_SPECIALIZATIONS = [
     "Consilier Psihologic",
     "Psihiatru",
     "Logoped",
-    "Coach"
+    "Coach",
+    "Psihopedagog",
+    "Analist Comportamental"
 ] as const;
 
 export const THERAPIST_SPECIALTIES = [
@@ -30,8 +51,22 @@ export const THERAPIST_SPECIALTIES = [
     "Adicții",
     "Stres",
     "Burnout",
-    "Family Therapy",
-    "Child Psychology"
+    "Doliu și Pierdere",
+    "Stima de Sine",
+    "Managementul Furiei",
+    "Tulburări de Somn",
+    "Probleme de Familie",
+    "Parenting",
+    "Tulburări Obsesiv-Compulsive",
+    "Fobii",
+    "Atacuri de Panică",
+    "Tulburări de Personalitate",
+    "Dificultăți de Învățare",
+    "Autism",
+    "ADHD",
+    "Probleme Sexuale",
+    "Divorț și Separare",
+    "Singurătate"
 ] as const;
 
 export const OFFER_CATEGORIES = [
@@ -43,18 +78,30 @@ export const OFFER_CATEGORIES = [
     "Detox",
     "Spa",
     "Workshop",
-    "Retreat"
+    "Retreat",
+    "Evenimente",
+    "Cursuri"
 ] as const;
 
 export const THERAPIST_APPROACHES = [
-    "Terapie Cognitiv-Comportamentală",
+    "Terapie Cognitiv-Comportamentală (CBT)",
     "Psihanaliză",
-    "Umanistă",
-    "Integrativă",
-    "Sistemică",
-    "Gestalt",
+    "Terapie Psihodinamică",
+    "Terapie Umanistă",
+    "Terapie Integrativă",
+    "Terapie Sistemică",
+    "Gestalt Terapie",
     "Art Terapie",
-    "Terapie Centrată pe Emoții",
+    "Terapie Centrată pe Emoții (EFT)",
     "Terapie de Familie",
-    "Terapie prin Joc"
+    "Terapie prin Joc (Play Therapy)",
+    "Terapie de Schemă",
+    "Terapie Narativă",
+    "Terapie Centrată pe Client",
+    "Analiză Tranzacțională",
+    "Hipnoterapie",
+    "Terapie Somatică",
+    "Mindfulness",
+    "EMDR",
+    "Terapie de Cuplu"
 ] as const;

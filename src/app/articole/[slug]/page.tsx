@@ -9,7 +9,7 @@ import { CalendarIcon, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
-import ReactMarkdown from 'react-markdown'; // Assuming we can use this, otherwise simple render
+
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

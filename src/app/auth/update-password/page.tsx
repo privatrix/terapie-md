@@ -122,6 +122,9 @@ export default function UpdatePasswordPage() {
 
             if (error) throw error;
 
+            // Force sign out so user has to log in with new password
+            await supabase.auth.signOut();
+
             setSuccess(true);
         } catch (err: any) {
             console.error("Update password error:", err);

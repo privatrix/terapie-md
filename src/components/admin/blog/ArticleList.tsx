@@ -43,10 +43,24 @@ export function ArticleList() {
         if (!confirm("Ești sigur că vrei să ștergi acest articol?")) return;
 
         const supabase = createClient();
-        const { error } = await supabase.from('articles').delete().eq('id', id);
+        // Get session token for authentication
+        const { data: { session } } = await supabase.auth.getSession();
 
-        if (error) {
-            alert("Eroare la ștergere: " + error.message);
+        if (!session) {
+            alert("Sesiune expirată. Te rugăm să te autentifici din nou.");
+            return;
+        }
+
+        const response = await fetch(`/api/admin/articles?id=${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert("Eroare la ștergere: " + (error.error || "Necunoscută"));
         } else {
             setArticles(articles.filter(a => a.id !== id));
         }

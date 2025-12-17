@@ -14,6 +14,8 @@ export const metadata = {
     description: "Articole, sfaturi și ghiduri despre psihoterapie, anxietate, depresie și dezvoltare personală, scrise de specialiști.",
 };
 
+export const dynamic = 'force-dynamic';
+
 async function getArticles() {
     const supabase = createClient();
 

@@ -65,6 +65,9 @@ export function Header() {
         router.refresh();
     };
 
+    // Hide user controls on password update page to prevent "logged in" confusion
+    const isUpdatePasswordPage = typeof window !== 'undefined' && window.location.pathname === '/auth/update-password';
+
     return (
         <>
             <header className={`sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
@@ -89,7 +92,7 @@ export function Header() {
                         </Link>
                     </nav>
                     <div className="flex items-center gap-4">
-                        {user ? (
+                        {user && !isUpdatePasswordPage ? (
                             <>
                                 <Button variant="ghost" size="icon" className="hidden md:inline-flex" asChild>
                                     <Link href="/dashboard">
@@ -105,7 +108,7 @@ export function Header() {
                                     Ieși din cont
                                 </Button>
                             </>
-                        ) : (
+                        ) : !user ? (
                             <>
                                 <Button variant="outline" className="hidden md:inline-flex" asChild>
                                     <Link href="/auth/login">Intră în cont</Link>
@@ -114,7 +117,7 @@ export function Header() {
                                     <Link href="/specialisti">Pentru Specialiști</Link>
                                 </Button>
                             </>
-                        )}
+                        ) : null}
                         <Button
                             variant="ghost"
                             size="icon"
@@ -171,7 +174,7 @@ export function Header() {
                         </Link>
 
                         <div className="flex flex-col gap-4 mt-8 w-[280px]">
-                            {user ? (
+                            {user && !isUpdatePasswordPage ? (
                                 <>
                                     <Button
                                         variant="default"
@@ -198,7 +201,7 @@ export function Header() {
                                         Ieși din cont
                                     </Button>
                                 </>
-                            ) : (
+                            ) : !user ? (
                                 <>
                                     <Button
                                         variant="default"
@@ -219,7 +222,7 @@ export function Header() {
                                         <Link href="/specialisti">Pentru Specialiști</Link>
                                     </Button>
                                 </>
-                            )}
+                            ) : null}
                         </div>
                     </nav>
                 </div>,

@@ -62,13 +62,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <article className="container mx-auto px-4 md:px-6 py-12 max-w-4xl">
                 {/* Header */}
                 <header className="mb-12 text-center space-y-6">
-                    <div className="flex items-center justify-center gap-2 mb-6">
-                        {article.tags?.map((tag: string) => (
-                            <Badge key={tag} variant="secondary" className="px-3 py-1 text-sm bg-primary/5 text-primary border-primary/10">
-                                {tag}
-                            </Badge>
-                        ))}
-                    </div>
+
                     <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                         {article.title}
                     </h1>
@@ -94,6 +88,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         alt={article.title}
                         className="object-cover w-full h-full"
                     />
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-2xl mx-auto">
+                    {article.tags?.map((tag: string) => (
+                        <Badge key={tag} variant="secondary" className="px-3 py-1 text-sm bg-primary/5 text-primary border-primary/10">
+                            {tag}
+                        </Badge>
+                    ))}
                 </div>
 
                 {/* Content */}

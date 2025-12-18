@@ -653,7 +653,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                                                 }
 
                                                 return (
-                                                    <div key={day} className="flex items-center justify-between py-2 border-b last:border-0 border-border/50">
+                                                    <div key={day} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b last:border-0 border-border/50 gap-2 sm:gap-0">
                                                         <div className="flex items-center space-x-3">
                                                             <Switch
                                                                 checked={schedule.active}
@@ -670,7 +670,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                                                             </span>
                                                         </div>
                                                         {schedule.active ? (
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                                                                 <input
                                                                     type="time"
                                                                     defaultValue={start}
@@ -713,7 +713,7 @@ export function TherapistDashboard({ user }: { user: any }) {
                                                                 />
                                                             </div>
                                                         ) : (
-                                                            <span className="text-xs text-muted-foreground italic">Indisponibil</span>
+                                                            <span className="text-xs text-muted-foreground italic sm:text-right w-full sm:w-auto">Indisponibil</span>
                                                         )}
                                                     </div>
                                                 );

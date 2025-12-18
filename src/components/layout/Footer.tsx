@@ -51,7 +51,7 @@ export function Footer() {
                             <h3 className="font-heading font-semibold text-lg text-foreground">Suport</h3>
                             <nav className="flex flex-col gap-3 text-base text-muted-foreground/80">
                                 <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                                <Link href="/faq" className="hover:text-primary transition-colors">Întrebări Frecvente</Link>
+                                <Link href="/#faq" className="hover:text-primary transition-colors">Întrebări Frecvente</Link>
                                 <Link href="/pentru-terapeuti" className="hover:text-primary transition-colors">Pentru Specialiști</Link>
                                 <Link href="/termeni" className="hover:text-primary transition-colors">Termeni și Condiții</Link>
                             </nav>

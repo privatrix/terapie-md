@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle, Clock, Shield, Star, MapPin } from "lucide-rea
 import { TherapistCard } from "@/components/features/therapists/TherapistCard";
 import { RecruitmentCard } from "@/components/features/therapists/RecruitmentCard";
 import { FeaturedArticles } from "@/components/features/blog/FeaturedArticles";
+import { FAQSection } from "@/components/features/marketing/FAQSection";
 
 export default function Home() {
   return (
@@ -155,6 +156,9 @@ export default function Home() {
 
       {/* Featured Blog Posts */}
       <FeaturedArticles />
+
+      {/* FAQ Section */}
+      <FAQSection />
     </div>
   );
 }

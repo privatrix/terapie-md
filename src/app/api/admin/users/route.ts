@@ -40,27 +40,42 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Manually delete related records to bypass potential FK constraint issues
-        // 1. Delete Therapist Application
+
+        // STEP 1: Content related to Therapist Profile (needs Profile ID)
+        // Check if there is a therapist profile associated with this user
+        const { data: therapistProfile } = await supabaseAdmin
+            .from('therapist_profiles')
+            .select('id')
+            .eq('user_id', id)
+            .single();
+
+        if (therapistProfile) {
+            const profileId = therapistProfile.id;
+            console.log(`Found therapist profile ${profileId} for user ${id}. Cleaning up specific dependencies...`);
+
+            // Delete things linked to the Therapist Profile ID
+            await supabaseAdmin.from('waitlist').delete().eq('therapist_id', profileId);
+            await supabaseAdmin.from('bookings').delete().eq('therapist_id', profileId);
+            await supabaseAdmin.from('reviews').delete().eq('therapist_id', profileId);
+
+            // Delete the profile itself explicitly using its ID
+            await supabaseAdmin.from('therapist_profiles').delete().eq('id', profileId);
+        }
+
+        // STEP 2: Content related to User ID (direct links)
+        // Delete things linked to the User ID directly
         await supabaseAdmin.from('therapist_applications').delete().eq('user_id', id);
-        // 2. Delete Therapist Profile
-        await supabaseAdmin.from('therapist_profiles').delete().eq('id', id); // Logic assumes profile ID might match user ID or has FK
-        await supabaseAdmin.from('therapist_profiles').delete().eq('user_id', id); // Safer check
-        // 3. Delete Bookings (as client or therapist)
+
+        // Also try deleting by user_id for profiles just in case it didn't match above (redundant but safe)
+        await supabaseAdmin.from('therapist_profiles').delete().eq('user_id', id);
+
         await supabaseAdmin.from('bookings').delete().eq('client_id', id);
-        await supabaseAdmin.from('bookings').delete().eq('therapist_id', id);
-        // 4. Delete Reviews
         await supabaseAdmin.from('reviews').delete().eq('client_id', id);
-        await supabaseAdmin.from('reviews').delete().eq('therapist_id', id);
-        // 5. Delete Business Profile
-        await supabaseAdmin.from('business_profiles').delete().eq('owner_id', id);
-        // 6. Delete Contact Submissions (if any linked to email/user?) - usually email based but good to check if we tracked user_id
-        // 6. Delete Contact Submissions (if any linked to email/user?) - usually email based but good to check if we tracked user_id
-        // (Assuming checking by email might be risky if we don't have user_id there, so better to skip unless sure. 
-        // But better: checks for any other tables? Notifications? Favorites? Waitlist?)
+        await supabaseAdmin.from('waitlist').delete().eq('client_id', id);
+
         await supabaseAdmin.from('favorites').delete().eq('user_id', id);
         await supabaseAdmin.from('notifications').delete().eq('user_id', id);
-        await supabaseAdmin.from('waitlist').delete().eq('therapist_id', id);
-        await supabaseAdmin.from('waitlist').delete().eq('client_id', id); // Check if client_id exists too just in case
+        await supabaseAdmin.from('business_profiles').delete().eq('owner_id', id);
 
         // Delete the user from Supabase Auth (this usually triggers cascade delete)
         const { error } = await supabaseAdmin.auth.admin.deleteUser(id);

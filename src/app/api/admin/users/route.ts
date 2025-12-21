@@ -39,6 +39,19 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: 'User ID required' }, { status: 400 });
         }
 
+        // Manually delete related records to bypass potential FK constraint issues
+        // 1. Delete Therapist Application
+        await supabaseAdmin.from('therapist_applications').delete().eq('user_id', id);
+        // 2. Delete Therapist Profile
+        await supabaseAdmin.from('therapist_profiles').delete().eq('id', id); // Logic assumes profile ID might match user ID or has FK
+        await supabaseAdmin.from('therapist_profiles').delete().eq('user_id', id); // Safer check
+        // 3. Delete Bookings (as client or therapist)
+        await supabaseAdmin.from('bookings').delete().eq('client_id', id);
+        await supabaseAdmin.from('bookings').delete().eq('therapist_id', id);
+        // 4. Delete Reviews
+        await supabaseAdmin.from('reviews').delete().eq('client_id', id);
+        await supabaseAdmin.from('reviews').delete().eq('therapist_id', id);
+
         // Delete the user from Supabase Auth (this usually triggers cascade delete)
         const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
 

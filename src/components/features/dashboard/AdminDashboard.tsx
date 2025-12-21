@@ -168,10 +168,29 @@ export function AdminDashboard({ user }: { user: any }) {
     };
 
     const handleDeleteTherapist = async (id: string) => {
+        if (!confirm("Sigur doriți să ștergeți acest terapeut? Acțiunea este ireversibilă.")) return;
         setProcessingId(id);
-        await supabase.from('therapist_profiles').delete().eq('id', id);
-        await fetchData();
-        setProcessingId(null);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const response = await fetch(`/api/admin/therapists?id=${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${session?.access_token}`
+                }
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || "Failed to delete therapist");
+            }
+
+            await fetchData();
+        } catch (error: any) {
+            console.error("Delete failed:", error);
+            alert(`A apărut o eroare: ${error.message}`);
+        } finally {
+            setProcessingId(null);
+        }
     };
 
     const handleDeleteUser = async (id: string) => {

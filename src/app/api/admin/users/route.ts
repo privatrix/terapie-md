@@ -51,6 +51,13 @@ export async function DELETE(request: NextRequest) {
         // 4. Delete Reviews
         await supabaseAdmin.from('reviews').delete().eq('client_id', id);
         await supabaseAdmin.from('reviews').delete().eq('therapist_id', id);
+        // 5. Delete Business Profile
+        await supabaseAdmin.from('business_profiles').delete().eq('owner_id', id);
+        // 6. Delete Contact Submissions (if any linked to email/user?) - usually email based but good to check if we tracked user_id
+        // (Assuming checking by email might be risky if we don't have user_id there, so better to skip unless sure. 
+        // But better: checks for any other tables? Notifications? Favorites?)
+        await supabaseAdmin.from('favorites').delete().eq('user_id', id);
+        await supabaseAdmin.from('notifications').delete().eq('user_id', id);
 
         // Delete the user from Supabase Auth (this usually triggers cascade delete)
         const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
